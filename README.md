@@ -6,12 +6,6 @@
 pip install synup-sdk
 ```
 
-For local development from the engineering-scripts:
-
-```bash
-pip install -e synup-sdk
-```
-
 ## Configuration
 
 Create a client with your API key. You can generate API keys from your Synup workspace: **Settings → Integrations → Generate**.
@@ -486,54 +480,6 @@ try:
 except SynupAPIError as e:
     print(e.status_code, e.response_body)
 ```
-
-## SDK Design Philosophy & Development Guidelines
-
-### What This SDK Is
-
-This SDK is a developer toolkit that lets you build applications on top of Synup’s backend. Use it from scripts, apps, or automated flows — the SDK handles Synup API calls with minimal friction.
-
-### Core Principle: Simple, Predictable Design
-
-Every API, method, and response is designed to be easy to use from any kind of client:
-
-- **Simple, flat method signatures** — no deeply nested configs or complex builder patterns
-- **Predictable, consistent naming** — verb-first names (`fetch_locations`, `create_campaign`, `add_keywords`) so behavior is easy to infer
-- **Self-describing responses** — structured objects with clear field names; paginated and mutation responses include a `success` field where appropriate so callers can branch without extra context
-- **Minimal required parameters** — sensible defaults; only what’s truly necessary is required
-- **Forgiving inputs** — e.g. location IDs as numeric or base64-encoded
-
-### How Users Build With This SDK
-
-1. The user gets a message or intent from their end-user (or from their own application logic).
-2. They decide which SDK methods to call.
-3. The call is simple enough to construct correctly on the first try.
-4. The SDK returns a clear, structured response that’s easy to reason about and return to the user.
-
-The SDK sits *between* your application and Synup’s backend. Our job is to make that integration invisible and frictionless.
-
-### Code Standards
-
-- **Method design:** Prefer `do_thing(input, options?)`. Return typed, flat response objects. Every method is usable in one line with minimal cognitive load. Errors are descriptive and actionable.
-- **Response structure:** Structured objects with clear field names; `success` or `status` where it helps callers branch; avoid raw primitives when a small object is clearer.
-- **Documentation:** Every public method has a one-line description, plain-English parameter docs, and a short usage example in its docstring.
-- **Naming:** Verb-first method names; no internal jargon; names should be guessable from context.
-
-### What to Avoid
-
-- Do not design for internal backend complexity — abstract it away.
-- Do not require users to understand our infrastructure.
-- Keep auth/setup to 2–3 lines max.
-- Do not return errors that require internal docs to understand.
-- Use optional config for edge-case parameters.
-
-### The Bar for Every Feature
-
-Before finalizing any method or feature, ask:
-
-> “Could a developer (or automated client), given just the method signature and a one-line description, call this correctly and handle the response — without any additional context?”
-
-If the answer is no, simplify until it is.
 
 ## Version
 
