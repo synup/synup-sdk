@@ -1,671 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>SDK — Synup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
-<!doctype html>
-<html lang="en" class="no-js">
-  <head>
-    
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width,initial-scale=1">
-      
-        <meta name="description" content="Python SDK for building custom applications on Synup infrastructure">
-      
-      
-      
-      
-      
-        <link rel="next" href="getting-started/">
-      
-      
-        
-      
-      
-      <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
-    
-    
-      
-        <title>Synup SDK Documentation</title>
-      
-    
-    
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
-      
-        
-        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
-      
-      
-
-
-    
-    
-      
-    
-    
-      
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
-      
-    
-    
-      <link rel="stylesheet" href="assets/_mkdocstrings.css">
-    
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
-    
-      
-
-    
-    
-  </head>
-  
-  
-    
-    
-    
-    
-    
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber">
-  
-    
-    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
-    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
-    <label class="md-overlay" for="__drawer"></label>
-    <div data-md-component="skip">
-      
-        
-        <a href="#synup-sdk" class="md-skip">
-          Skip to content
-        </a>
-      
-    </div>
-    <div data-md-component="announce">
-      
-    </div>
-    
-    
-      
-
-  
-
-<header class="md-header md-header--shadow" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Synup SDK Documentation" class="md-header__button md-logo" aria-label="Synup SDK Documentation" data-md-component="logo">
-      
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
-
-    </a>
-    <label class="md-header__button md-icon" for="__drawer">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
-    </label>
-    <div class="md-header__title" data-md-component="header-title">
-      <div class="md-header__ellipsis">
-        <div class="md-header__topic">
-          <span class="md-ellipsis">
-            Synup SDK Documentation
-          </span>
-        </div>
-        <div class="md-header__topic" data-md-component="header-topic">
-          <span class="md-ellipsis">
-            
-              Home
-            
-          </span>
-        </div>
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="https://www.synup.dev/" class="nav-logo">synup<span class="nav-logo-accent">.dev</span></a>
+      <div class="nav-links">
+        <a href="#install">Install</a>
+        <a href="#apis">APIs</a>
+        <a href="#examples">Samples</a>
+        <a href="#explorer">Explorer</a>
+      </div>
+      <div class="nav-cta">
+        <a href="https://www.synup.dev/" target="_blank" class="btn btn-primary">Get API Key</a>
       </div>
     </div>
-    
-      
-    
-    
-    
-    
-      
-      
-        <label class="md-header__button md-icon" for="__search">
-          
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
-        </label>
-        <div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
-      <label class="md-search__icon md-icon" for="__search">
-        
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
-        
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
-      </label>
-      <nav class="md-search__options" aria-label="Search">
-        
-        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
-          
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-        </button>
-      </nav>
-      
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="search-result">
-          <div class="md-search-result__meta">
-            Initializing search
-          </div>
-          <ol class="md-search-result__list" role="presentation"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-      
-    
-    
-      <div class="md-header__source">
-        <a href="https://github.com/nicholasgasior/synup-sdk" title="Go to repository" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    GitHub
-  </div>
-</a>
-      </div>
-    
   </nav>
-  
-</header>
-    
-    <div class="md-container" data-md-component="container">
-      
-      
-        
-          
-        
-      
-      <main class="md-main" data-md-component="main">
-        <div class="md-main__inner md-grid">
-          
-            
-              
-              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
 
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="container hero-inner">
+      <div class="badge">SDK for Synup API</div>
+      <h1>Build on Synup's<br><span class="text-accent">local presence</span> infrastructure</h1>
+      <p class="hero-subtitle">Listings, reviews, and local search. One install, full API coverage, zero boilerplate.</p>
+      <div class="hero-actions">
+        <a href="#install" class="btn btn-primary btn-lg">Get started</a>
+        <a href="#explorer" class="btn btn-secondary btn-lg">Try it live</a>
+      </div>
 
-
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
-  <label class="md-nav__title" for="__drawer">
-    <a href="." title="Synup SDK Documentation" class="md-nav__button md-logo" aria-label="Synup SDK Documentation" data-md-component="logo">
-      
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
-
-    </a>
-    Synup SDK Documentation
-  </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/nicholasgasior/synup-sdk" title="Go to repository" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    GitHub
-  </div>
-</a>
-    </div>
-  
-  <ul class="md-nav__list" data-md-scrollfix>
-    
-      
-      
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Home
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Home
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#what-is-this" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What is this?
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quick-install" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Quick Install
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Quick Start
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#whats-included" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What's Included
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#design-philosophy" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Design Philosophy
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="getting-started/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Getting Started
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="use-cases/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Use Cases
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="api-reference/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="dashboard/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Dashboard
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-  </ul>
-</nav>
-                  </div>
-                </div>
-              </div>
-            
-            
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#what-is-this" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What is this?
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quick-install" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Quick Install
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Quick Start
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#whats-included" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What's Included
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#design-philosophy" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Design Philosophy
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
-          
-          
-            <div class="md-content" data-md-component="content">
-              
-              <article class="md-content__inner md-typeset">
-                
-                  
-
-
-  
-  
-
-
-<h1 id="synup-sdk">Synup SDK<a class="headerlink" href="#synup-sdk" title="Permanent link">&para;</a></h1>
-<p>Python SDK for building custom applications on top of Synup's infrastructure.</p>
-<h2 id="what-is-this">What is this?<a class="headerlink" href="#what-is-this" title="Permanent link">&para;</a></h2>
-<p>The Synup SDK is a <strong>pure API client</strong> — a thin, developer-friendly wrapper around Synup's v4 REST API. It's built for teams who want to build their own dashboards, automations, or integrations on Synup's backend.</p>
-<h2 id="quick-install">Quick Install<a class="headerlink" href="#quick-install" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>synup-sdk
-</code></pre></div>
-<h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">synup</span><span class="w"> </span><span class="kn">import</span> <span class="n">SynupClient</span>
-
-<span class="n">client</span> <span class="o">=</span> <span class="n">SynupClient</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;YOUR_API_KEY&quot;</span><span class="p">)</span>
-
-<span class="c1"># Fetch locations</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">fetch_all_locations</span><span class="p">(</span><span class="n">first</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">loc</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;locations&quot;</span><span class="p">]:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">loc</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">loc</span><span class="p">[</span><span class="s2">&quot;city&quot;</span><span class="p">])</span>
-</code></pre></div>
-<h2 id="whats-included">What's Included<a class="headerlink" href="#whats-included" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Component</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>SDK</strong> (<code>pip install synup-sdk</code>)</td>
-<td>Pure API client — 97 methods covering all Synup endpoints</td>
-</tr>
-<tr>
-<td><strong><a href="use-cases/">Examples</a></strong></td>
-<td>10 runnable scripts for common use cases</td>
-</tr>
-<tr>
-<td><strong><a href="dashboard/">Dashboard</a></strong></td>
-<td>Streamlit app to explore and test endpoints interactively</td>
-</tr>
-<tr>
-<td><strong><a href="api-reference/">API Reference</a></strong></td>
-<td>Auto-generated docs for every method</td>
-</tr>
-</tbody>
-</table>
-<h2 id="design-philosophy">Design Philosophy<a class="headerlink" href="#design-philosophy" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>Thin wrapper</strong> — returns raw API data, no opinionated models</li>
-<li><strong>Predictable naming</strong> — <code>fetch_*</code> for GET, <code>create_*</code>/<code>update_*</code> for POST</li>
-<li><strong>Minimal required params</strong> — sensible defaults, optional pagination</li>
-<li><strong>Auto-encoding</strong> — numeric location IDs are base64-encoded automatically</li>
-</ul>
-
-
-
-
-
-
-
-
-
-
-
-
-                
-              </article>
-            </div>
-          
-          
-<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+      <!-- Code preview -->
+      <div class="code-window">
+        <div class="code-header">
+          <div class="code-dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <span class="code-filename">quickstart.py</span>
         </div>
-        
-      </main>
-      
-        <footer class="md-footer">
-  
-  <div class="md-footer-meta md-typeset">
-    <div class="md-footer-meta__inner md-grid">
-      <div class="md-copyright">
-  
-  
-    Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-      Material for MkDocs
-    </a>
-  
-</div>
-      
+        <pre class="code-body"><code><span class="kw">from</span> <span class="mod">synup</span> <span class="kw">import</span> <span class="cls">SynupClient</span>
+
+client = <span class="cls">SynupClient</span>(api_key=<span class="str">"YOUR_API_KEY"</span>)
+
+<span class="cmt"># Fetch all locations</span>
+locations = client.fetch_all_locations(fetch_all=<span class="kw">True</span>)
+
+<span class="cmt"># Get reviews for a location</span>
+reviews = client.fetch_interactions(<span class="num">16808</span>, first=<span class="num">20</span>)
+
+<span class="cmt"># Respond to a review</span>
+client.respond_to_review(
+    interaction_id=<span class="str">"review-uuid"</span>,
+    response_content=<span class="str">"Thank you for your feedback!"</span>
+)</code></pre>
+      </div>
     </div>
-  </div>
-</footer>
-      
+  </section>
+
+  <!-- Install -->
+  <section id="install" class="section">
+    <div class="container">
+      <h2 class="section-title">Install in seconds</h2>
+      <p class="section-subtitle">One command. No heavy dependencies.</p>
+
+      <div class="install-grid">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3>Install the SDK</h3>
+          <div class="code-inline"><code>pip install synup-sdk</code></div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3>Get your API key</h3>
+          <p class="text-muted">Settings &rarr; Integrations &rarr; Generate in your <a href="https://www.synup.dev/" class="link-accent">Synup workspace</a></p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3>Start building</h3>
+          <div class="code-inline"><code>client = SynupClient(api_key="...")</code></div>
+        </div>
+      </div>
     </div>
-    <div class="md-dialog" data-md-component="dialog">
-      <div class="md-dialog__inner md-typeset"></div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">Built for developers</h2>
+      <p class="section-subtitle"></p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">&#9889;</div>
+          <h3>Full API coverage</h3>
+          <p>Locations, listings, reviews, rankings, analytics, users, and more.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128268;</div>
+          <h3>Thin wrapper</h3>
+          <p>Returns raw API data. No opinionated models. Bring your own data layer.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128196;</div>
+          <h3>Auto-pagination</h3>
+          <p>Pass <code>fetch_all=True</code> to any list method. The SDK handles cursor logic.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128273;</div>
+          <h3>Auto-encoding</h3>
+          <p>Pass numeric IDs like <code>16808</code>. The SDK base64-encodes them automatically.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128214;</div>
+          <h3>Full docstrings</h3>
+          <p>Every method has Args, Returns, and Example. IDE autocompletion just works.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128736;</div>
+          <h3>Error handling</h3>
+          <p>Clear exceptions with HTTP status and response body. Easy to debug.</p>
+        </div>
+      </div>
     </div>
-    
-    
-    
-      
-      
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.sections", "navigation.expand", "search.highlight", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-    
-    
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
-      
-    
-  </body>
+  </section>
+
+  <!-- APIs -->
+  <section id="apis" class="section">
+    <div class="container">
+      <h2 class="section-title">Every API, one client</h2>
+      <p class="section-subtitle">All endpoints accessible through <code>SynupClient</code>.</p>
+
+      <div class="api-grid">
+        <div class="api-card">
+          <div class="api-method get">GET</div>
+          <div class="api-info">
+            <h3>Locations API</h3>
+            <p>Create, update, search, and manage business locations. Organize with folders and tags.</p>
+            <div class="api-methods-list">fetch_all_locations &middot; search_locations &middot; create_location &middot; update_location &middot; archive_locations</div>
+          </div>
+        </div>
+        <div class="api-card">
+          <div class="api-method get">GET</div>
+          <div class="api-info">
+            <h3>Listings Sync API</h3>
+            <p>Push business data to 80+ directories. Check sync status and detect duplicates.</p>
+            <div class="api-methods-list">fetch_premium_listings &middot; fetch_voice_listings &middot; fetch_ai_listings</div>
+          </div>
+        </div>
+        <div class="api-card">
+          <div class="api-method post">POST</div>
+          <div class="api-info">
+            <h3>Reviews API</h3>
+            <p>Aggregate reviews from all platforms. Respond programmatically. Get sentiment analytics.</p>
+            <div class="api-methods-list">fetch_interactions &middot; respond_to_review &middot; fetch_review_analytics_overview &middot; fetch_review_phrases</div>
+          </div>
+        </div>
+        <div class="api-card">
+          <div class="api-method get">GET</div>
+          <div class="api-info">
+            <h3>Rankings API</h3>
+            <p>Track keyword positions and local pack rankings. Generate grid rank heatmaps.</p>
+            <div class="api-methods-list">fetch_keywords &middot; fetch_keywords_performance &middot; create_grid_report &middot; fetch_grid_report</div>
+          </div>
+        </div>
+        <div class="api-card">
+          <div class="api-method get">GET</div>
+          <div class="api-info">
+            <h3>Analytics API</h3>
+            <p>Unified insights from Google Business Profile, Facebook, and Bing.</p>
+            <div class="api-methods-list">fetch_google_analytics &middot; fetch_bing_analytics &middot; fetch_facebook_analytics</div>
+          </div>
+        </div>
+        <div class="api-card">
+          <div class="api-method post">POST</div>
+          <div class="api-info">
+            <h3>Review Campaigns API</h3>
+            <p>Send automated review requests via SMS and email. Customize templates.</p>
+            <div class="api-methods-list">create_review_campaign &middot; add_review_campaign_customers &middot; fetch_review_campaigns</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Samples -->
+  <section id="examples" class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">Use cases</h2>
+      <p class="section-subtitle">Runnable scripts for common workflows. Set <code>SYNUP_API_KEY</code> and go.</p>
+
+      <div class="examples-grid">
+        <div class="example-card" onclick="showExample('quickstart')">
+          <div class="example-num">01</div>
+          <h3>Quick Start</h3>
+          <p>Connect and fetch your first locations in 5 lines.</p>
+        </div>
+        <div class="example-card" onclick="showExample('reviews')">
+          <div class="example-num">02</div>
+          <h3>Review Monitoring</h3>
+          <p>Scan locations for negative reviews that need attention.</p>
+        </div>
+        <div class="example-card" onclick="showExample('analytics')">
+          <div class="example-num">03</div>
+          <h3>Analytics Report</h3>
+          <p>Pull Google, Bing, and review analytics across locations.</p>
+        </div>
+        <div class="example-card" onclick="showExample('listings')">
+          <div class="example-num">04</div>
+          <h3>Listings Audit</h3>
+          <p>Audit listing sync status and flag issues across locations.</p>
+        </div>
+        <div class="example-card" onclick="showExample('users')">
+          <div class="example-num">05</div>
+          <h3>User Management</h3>
+          <p>Create users, assign roles, and manage location access.</p>
+        </div>
+        <div class="example-card" onclick="showExample('google')">
+          <div class="example-num">06</div>
+          <h3>Google Connect</h3>
+          <p>Full OAuth flow for connecting Google Business Profiles.</p>
+        </div>
+        <div class="example-card" onclick="showExample('gridrank')">
+          <div class="example-num">07</div>
+          <h3>Grid Rank</h3>
+          <p>Create Local Rank Grid reports for geographic ranking data.</p>
+        </div>
+        <div class="example-card" onclick="showExample('campaigns')">
+          <div class="example-num">08</div>
+          <h3>Review Campaigns</h3>
+          <p>Run review solicitation campaigns with SMS and email.</p>
+        </div>
+        <div class="example-card" onclick="showExample('fastapi')">
+          <div class="example-num">09</div>
+          <h3>FastAPI Backend</h3>
+          <p>Wire the SDK into a REST API your frontend can call.</p>
+        </div>
+        <div class="example-card" onclick="showExample('fullstack')">
+          <div class="example-num">10</div>
+          <h3>Full-stack Dashboard</h3>
+          <p>Complete app with FastAPI backend + basic frontend for locations and listings.</p>
+        </div>
+      </div>
+
+      <!-- Example Modal -->
+      <div class="modal-overlay" id="exampleModal" onclick="closeExample(event)">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 id="modalTitle"></h3>
+            <button class="modal-close" onclick="closeExample()">&times;</button>
+          </div>
+          <div class="modal-tabs" id="modalTabs" style="display:none"></div>
+          <div class="code-window modal-code">
+            <div class="code-header">
+              <div class="code-dots">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-green"></span>
+              </div>
+              <span class="code-filename" id="modalFilename"></span>
+              <button class="copy-btn" onclick="copyCode()" id="copyBtn">Copy</button>
+            </div>
+            <pre class="code-body"><code id="modalCode"></code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Explorer -->
+  <section id="explorer" class="section">
+    <div class="container">
+      <h2 class="section-title">Try it live</h2>
+      <p class="section-subtitle">Enter your API key to explore any endpoint. Responses shown as JSON.</p>
+
+      <div class="explorer-container">
+        <div class="explorer-sidebar">
+          <div class="explorer-input-group">
+            <label>API Key</label>
+            <input type="password" id="apiKeyInput" placeholder="Enter your Synup API key">
+          </div>
+          <div class="explorer-input-group">
+            <label>Category</label>
+            <select id="categorySelect">
+              <option value="all">All</option>
+            </select>
+          </div>
+          <div class="explorer-input-group">
+            <label>Search</label>
+            <input type="text" id="searchInput" placeholder="Search methods...">
+          </div>
+          <div class="explorer-methods" id="methodList"></div>
+        </div>
+        <div class="explorer-main">
+          <div class="explorer-detail" id="methodDetail">
+            <div class="explorer-empty">Select a method from the sidebar to get started.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>SDK</h4>
+          <a href="#install">Install</a>
+          <a href="#examples">Samples</a>
+          <a href="#explorer">Explorer</a>
+        </div>
+        <div class="footer-col">
+          <h4>Developers</h4>
+          <a href="https://www.synup.dev/">synup.dev</a>
+          <a href="https://www.synup.dev/">API Reference</a>
+          <a href="https://pypi.org/project/synup-sdk/" target="_blank">Documentation</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="https://synup.com">synup.com</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="nav-logo">synup<span class="nav-logo-accent">.dev</span></span>
+        <span class="text-muted">&copy; 2026 Synup, Inc. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="explorer.js"></script>
+</body>
 </html>
