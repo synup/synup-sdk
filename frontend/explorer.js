@@ -360,10 +360,10 @@ for acc in accounts.get("connectedAccounts", []):
 const client = new SynupClient({ apiKey: "YOUR_API_KEY" })
 
 // Step 1: Get OAuth URL
-const result = await client.connectGoogleAccount({
-  successUrl: "https://yourapp.com/connect/success",
-  errorUrl: "https://yourapp.com/connect/error",
-})
+const result = await client.connectGoogleAccount(
+  "https://yourapp.com/connect/success",
+  "https://yourapp.com/connect/error",
+)
 console.log(\`Redirect user to: \${result.url}\`)
 
 // Step 2: List connected accounts
@@ -1183,21 +1183,6 @@ document.addEventListener('DOMContentLoaded', () => loadLocations())
 </html>`
       }
     ],
-    nodejsFilename: "10_fullstack_dashboard.ts",
-    nodejsCode: `/**
- * Full-stack Dashboard — Express backend + static frontend.
- *
- * Run:
- *   npm install synup-js express cors
- *   SYNUP_API_KEY='key' npx ts-node server.ts
- *   Open http://localhost:3000
- *
- * Full source: fullstack/
- *   server.ts             — Express backend (all API routes)
- *   static/index.html     — Frontend (locations, listings, reviews, analytics)
- *
- * Click the "Backend" and "Frontend" tabs above to see both files.
- */`
   },
 };
 
@@ -1412,7 +1397,7 @@ function showExample(key) {
 function switchExampleTab(index) {
   const ex = EXAMPLES[activeExampleKey];
   if (!ex) return;
-  var files = useNodejs ? (ex.nodejsFiles || ex.files) : ex.files;
+  var files = useNodejs ? (ex.nodejsFiles || null) : (ex.files || null);
   if (!files) return;
   activeFileIndex = index;
 
