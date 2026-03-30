@@ -895,14 +895,21 @@ Full source: examples/fullstack/
 
 Click the "Backend" and "Frontend" tabs above to see both files.
 """`,
-    nodejsFilename: "11_express_backend.ts",
-    nodejsCode: `/**
- * Wire the SDK into an Express backend your frontend can call.
- * npm install synup-js express cors
- * SYNUP_API_KEY='key' npx ts-node server.ts
+    nodejsFiles: [
+      {
+        label: "Backend",
+        filename: "fullstack/server.ts",
+        code: `/**
+ * Full-stack sample — Express backend + basic frontend.
+ *
+ * Run:
+ *   npm install synup-js express cors
+ *   SYNUP_API_KEY='key' npx ts-node server.ts
+ *   Open http://localhost:3000
  */
 import express from 'express'
 import cors from 'cors'
+import path from 'path'
 import { SynupClient } from 'synup-js'
 
 const app = express()
@@ -910,43 +917,287 @@ app.use(cors())
 app.use(express.json())
 const client = new SynupClient({ apiKey: process.env.SYNUP_API_KEY! })
 
-app.get("/locations", async (req, res) => {
-  try {
-    const first = Number(req.query.first) || 20
-    const q = req.query.q as string | undefined
-    if (q) {
-      res.json(await client.searchLocations({ query: q, first }))
-    } else {
-      res.json(await client.fetchAllLocations({ first }))
+// ── Locations (list, search, create, update, archive) ──
+
+app.get('/api/locations', async (req, res) => {
+  const first = Number(req.query.first) || 10
+  const q = req.query.q as string | undefined
+  if (q) {
+    res.json(await client.searchLocations({ query: q, first }))
+  } else {
+    res.json(await client.fetchAllLocations({ first }))
+  }
+})
+
+app.post('/api/locations', async (req, res) => {
+  res.json(await client.createLocation(req.body))
+})
+
+app.put('/api/locations', async (req, res) => {
+  res.json(await client.updateLocation(req.body))
+})
+
+app.post('/api/locations/archive', async (req, res) => {
+  res.json(await client.archiveLocations(req.body.locationIds))
+})
+
+// ── Listings (premium, voice, additional) ──
+
+app.get('/api/locations/:id/listings', async (req, res) => {
+  const id = req.params.id
+  res.json({
+    premium: await client.fetchPremiumListings(id),
+    voice: await client.fetchVoiceListings(id),
+    additional: await client.fetchAdditionalListings(id),
+  })
+})
+
+// ── Reviews (list + respond) ──
+
+app.get('/api/locations/:id/reviews', async (req, res) => {
+  const first = Number(req.query.first) || 10
+  res.json(await client.fetchInteractions({ locationId: req.params.id, first }))
+})
+
+app.post('/api/reviews/:id/respond', async (req, res) => {
+  res.json(await client.respondToReview(req.params.id, req.body.content))
+})
+
+// ── Analytics, Grid Rank, Campaigns, Google Connect ──
+
+app.get('/api/locations/:id/analytics/google', async (req, res) => {
+  res.json(await client.fetchGoogleAnalytics({ locationId: req.params.id }))
+})
+
+app.get('/api/locations/:id/analytics/reviews', async (req, res) => {
+  res.json(await client.fetchReviewAnalyticsOverview({ locationId: req.params.id }))
+})
+
+app.get('/api/locations/:id/grid-reports', async (req, res) => {
+  res.json(await client.fetchLocationGridReports(req.params.id))
+})
+
+app.get('/api/grid-report/:reportId', async (req, res) => {
+  res.json(await client.fetchGridReport(req.params.reportId))
+})
+
+app.get('/api/locations/:id/campaigns', async (req, res) => {
+  res.json(await client.fetchReviewCampaigns({ locationId: req.params.id }))
+})
+
+app.post('/api/google/connect', async (req, res) => {
+  res.json(await client.connectGoogleAccount(req.body.successUrl, req.body.errorUrl))
+})
+
+app.get('/api/connected-accounts', async (req, res) => {
+  res.json(await client.fetchConnectedAccounts())
+})
+
+// ── Serve frontend ──
+app.use(express.static(path.join(__dirname, 'static')))
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'static/index.html')))
+
+app.listen(3000, () => console.log('Listening on http://localhost:3000'))`
+      },
+      {
+        label: "Frontend",
+        filename: "fullstack/static/index.html",
+        lang: "html",
+        code: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Local Dashboard</title>
+  <style>
+    :root {
+      --bg: #080A19; --bg-card: #0f1221; --accent: #0085FF;
+      --green: #2cb735; --yellow: #e5c07b; --red: #e06c75;
+      --text: #e1e4eb; --text-muted: #8b92a5;
+      --border: rgba(255,255,255,0.08);
     }
-  } catch (e: any) {
-    res.status(e.statusCode ?? 500).json({ error: e.message })
-  }
-})
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
+    nav { border-bottom: 1px solid var(--border); padding: 12px 32px; display: flex; gap: 24px; }
+    .nav-tab { padding: 8px 16px; border: none; background: none; color: var(--text-muted); cursor: pointer; }
+    .nav-tab.active { color: var(--accent); background: rgba(0,133,255,0.1); border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a class="logo" href="#">Local Dashboard</a>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showPage('home')">Home</button>
+      <button class="nav-tab" onclick="showPage('analytics')">Analytics</button>
+      <button class="nav-tab" onclick="showPage('gridrank')">Grid Rank</button>
+      <button class="nav-tab" onclick="showPage('campaigns')">Campaigns</button>
+      <button class="nav-tab" onclick="showPage('google')">Google Connect</button>
+    </div>
+  </nav>
 
-app.get("/locations/:locationId/listings", async (req, res) => {
-  try {
-    const locId = req.params.locationId
-    res.json({
-      premium: await client.fetchPremiumListings(locId),
-      voice: await client.fetchVoiceListings(locId),
-      additional: await client.fetchAdditionalListings(locId),
-    })
-  } catch (e: any) {
-    res.status(e.statusCode ?? 500).json({ error: e.message })
-  }
-})
+  <div class="container">
+    <!-- HOME: Location cards with search + add/edit/archive -->
+    <div class="page active" id="page-home">
+      <div class="search-row">
+        <input id="locSearch" placeholder="Search locations...">
+        <button class="btn btn-primary" onclick="searchLocations()">Search</button>
+        <button class="btn btn-primary" onclick="openAddModal()">+ Add Location</button>
+      </div>
+      <div class="card-grid" id="locGrid"></div>
+    </div>
 
-app.get("/locations/:locationId/reviews", async (req, res) => {
-  try {
-    const first = Number(req.query.first) || 20
-    res.json(await client.fetchInteractions({ locationId: req.params.locationId, first }))
-  } catch (e: any) {
-    res.status(e.statusCode ?? 500).json({ error: e.message })
-  }
-})
+    <!-- ANALYTICS -->
+    <div class="page" id="page-analytics">
+      <input id="analyticsLocId" placeholder="Location ID">
+      <button onclick="loadAnalytics()">Load Analytics</button>
+      <div id="analyticsContent"></div>
+    </div>
 
-app.listen(8000, () => console.log("Listening on :8000"))`
+    <!-- GRID RANK -->
+    <div class="page" id="page-gridrank">
+      <input id="gridrankLocId" placeholder="Location ID">
+      <button onclick="loadGridReports()">Load Reports</button>
+      <div id="gridrankContent"></div>
+    </div>
+
+    <!-- CAMPAIGNS -->
+    <div class="page" id="page-campaigns">
+      <input id="campaignsLocId" placeholder="Location ID">
+      <button onclick="loadCampaigns()">Load Campaigns</button>
+      <div id="campaignsContent"></div>
+    </div>
+
+    <!-- GOOGLE CONNECT -->
+    <div class="page" id="page-google">
+      <button onclick="startGoogleConnect()">Connect Google Account</button>
+      <button onclick="loadConnectedAccounts()">View Connected Accounts</button>
+      <div id="googleContent"></div>
+    </div>
+  </div>
+
+  <!-- Detail panel: Listings + Reviews + Analytics tabs -->
+  <div class="overlay" id="detailOverlay">
+    <div class="panel">
+      <h2 id="panelName"></h2>
+      <div class="tab-bar">
+        <button class="active" onclick="switchTab('listings')">Listings</button>
+        <button onclick="switchTab('reviews')">Reviews</button>
+        <button onclick="switchTab('analytics')">Analytics</button>
+      </div>
+      <div id="tab-listings"></div>
+      <div id="tab-reviews"></div>
+      <div id="tab-analytics"></div>
+    </div>
+  </div>
+
+<script>
+const API = '' // same origin
+
+async function api(path, opts = {}) {
+  const res = await fetch(API + path, opts)
+  return res.json()
+}
+
+// ── Locations ──
+async function loadLocations(query) {
+  const url = query
+    ? '/api/locations?q=' + encodeURIComponent(query) + '&first=10'
+    : '/api/locations?first=10'
+  const data = await api(url)
+  renderLocationCards(data.locations || [])
+}
+
+function searchLocations() {
+  loadLocations(document.getElementById('locSearch').value.trim())
+}
+
+// ── Detail panel with listings, reviews, respond ──
+let currentLoc = null
+
+async function openDetail(loc) {
+  currentLoc = loc
+  document.getElementById('panelName').textContent = loc.name
+  loadListings(loc.id)
+  loadReviews(loc.id)
+}
+
+async function loadListings(locId) {
+  const data = await api('/api/locations/' + locId + '/listings')
+  // Render premium, voice, additional listings in tables
+}
+
+async function loadReviews(locId) {
+  const data = await api('/api/locations/' + locId + '/reviews?first=10')
+  // Render review cards with reply input for unanswered reviews
+}
+
+async function respondReview(interactionId) {
+  const el = document.getElementById('reply-' + interactionId)
+  await api('/api/reviews/' + interactionId + '/respond', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content: el.value }),
+  })
+}
+
+// ── Analytics ──
+async function loadAnalytics() {
+  const locId = document.getElementById('analyticsLocId').value
+  const [google, reviews] = await Promise.all([
+    api('/api/locations/' + locId + '/analytics/google'),
+    api('/api/locations/' + locId + '/analytics/reviews'),
+  ])
+}
+
+// ── Grid Rank ──
+async function loadGridReports() {
+  const locId = document.getElementById('gridrankLocId').value
+  const data = await api('/api/locations/' + locId + '/grid-reports')
+}
+
+// ── Campaigns ──
+async function loadCampaigns() {
+  const locId = document.getElementById('campaignsLocId').value
+  const data = await api('/api/locations/' + locId + '/campaigns')
+}
+
+// ── Google Connect ──
+async function startGoogleConnect() {
+  const data = await api('/api/google/connect', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      successUrl: location.origin + '/?google=success',
+      errorUrl: location.origin + '/?google=error',
+    }),
+  })
+  if (data.url) window.location.href = data.url
+}
+
+async function loadConnectedAccounts() {
+  const data = await api('/api/connected-accounts')
+  // Render connected accounts table
+}
+
+document.addEventListener('DOMContentLoaded', () => loadLocations())
+</script>
+</body>
+</html>`
+      }
+    ],
+    nodejsFilename: "10_fullstack_dashboard.ts",
+    nodejsCode: `/**
+ * Full-stack Dashboard — Express backend + static frontend.
+ *
+ * Run:
+ *   npm install synup-js express cors
+ *   SYNUP_API_KEY='key' npx ts-node server.ts
+ *   Open http://localhost:3000
+ *
+ * Full source: fullstack/
+ *   server.ts             — Express backend (all API routes)
+ *   static/index.html     — Frontend (locations, listings, reviews, analytics)
+ *
+ * Click the "Backend" and "Frontend" tabs above to see both files.
+ */`
   },
 };
 
@@ -1132,15 +1383,18 @@ function showExample(key) {
   document.getElementById("modalTitle").textContent = ex.title;
   const tabsEl = document.getElementById("modalTabs");
 
-  if (!useNodejs && ex.files && ex.files.length > 1) {
-    // Multi-file example: show tabs (Python only — fullstack)
+  // Determine which files array to use
+  var files = useNodejs ? (ex.nodejsFiles || null) : (ex.files || null);
+
+  if (files && files.length > 1) {
+    // Multi-file example: show tabs
     tabsEl.style.display = "flex";
-    tabsEl.innerHTML = ex.files.map((f, i) =>
+    tabsEl.innerHTML = files.map((f, i) =>
       `<button class="modal-tab${i === 0 ? ' active' : ''}" onclick="switchExampleTab(${i})">${f.label}</button>`
     ).join("");
-    renderExampleFile(ex.files[0]);
+    renderExampleFile(files[0]);
   } else {
-    // Single-file example (or Node.js view)
+    // Single-file example
     tabsEl.style.display = "none";
     tabsEl.innerHTML = "";
     if (useNodejs && ex.nodejsCode) {
@@ -1157,7 +1411,9 @@ function showExample(key) {
 
 function switchExampleTab(index) {
   const ex = EXAMPLES[activeExampleKey];
-  if (!ex || !ex.files) return;
+  if (!ex) return;
+  var files = useNodejs ? (ex.nodejsFiles || ex.files) : ex.files;
+  if (!files) return;
   activeFileIndex = index;
 
   // Update tab active state
@@ -1165,33 +1421,52 @@ function switchExampleTab(index) {
     btn.classList.toggle("active", i === index);
   });
 
-  renderExampleFile(ex.files[index]);
+  renderExampleFile(files[index]);
 }
 
 function renderExampleFile(file) {
   document.getElementById("modalFilename").textContent = file.filename;
   if (file.lang === "html") {
     document.getElementById("modalCode").innerHTML = highlightHTML(file.code);
+  } else if (useNodejs) {
+    document.getElementById("modalCode").innerHTML = highlightJS(file.code);
   } else {
     document.getElementById("modalCode").innerHTML = highlightPython(file.code);
   }
 }
 
 function highlightHTML(code) {
-  let html = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  // Tags
-  html = html.replace(/(&lt;\/?)([\w-]+)/g, '$1<span class="py-kw">$2</span>');
-  // Attributes
-  html = html.replace(/\b(class|id|type|href|src|onclick|placeholder|value|style|charset|name|content|rel|lang)=/g, '<span class="py-cls">$1</span>=');
-  // Strings
-  html = html.replace(/("(?:[^"\\]|\\.)*")/g, '<span class="py-str">$1</span>');
-  // Comments
-  html = html.replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="py-cmt">$1</span>');
-  // JS keywords inside script
-  const jsKws = ['async', 'await', 'function', 'const', 'let', 'var', 'return', 'if', 'for', 'document', 'window', 'location'];
-  jsKws.forEach(kw => {
-    html = html.replace(new RegExp(`\\b(${kw})\\b(?![^<]*>)`, 'g'), '<span class="py-kw">$1</span>');
+  var html = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  var stash = [];
+  function s(highlighted) { var i = stash.length; stash.push(highlighted); return '\x00S' + i + '\x00'; }
+
+  // 1. Stash comments
+  html = html.replace(/&lt;!--[\s\S]*?--&gt;/g, function(m) { return s('<span class="py-cmt">' + m + '</span>'); });
+
+  // 2. Stash strings
+  html = html.replace(/(["'])(?:(?!\1)[^\\]|\\.)*\1/g, function(m) { return s('<span class="py-str">' + m + '</span>'); });
+
+  // 3. Tag names — highlight AND stash immediately
+  html = html.replace(/(&lt;\/?)([\w-]+)/g, function(m, prefix, tag) {
+    return s(prefix + '<span class="py-kw">' + tag + '</span>');
   });
+
+  // 4. Attributes — safe now, no class= in text to collide with
+  var attrs = ['class','id','type','href','src','onclick','placeholder','value','style','charset','name','content','rel','lang','method','headers'];
+  var attrPat = new RegExp('\\b(' + attrs.join('|') + ')=', 'g');
+  html = html.replace(attrPat, function(m, attr) { return s('<span class="py-cls">' + attr + '</span>='); });
+
+  // 5. JS keywords — single pass
+  var jsKws = ['async','await','function','const','let','var','return','if','else','for','of','in','new','true','false','null','document','window','location','console'];
+  var jsKwPat = new RegExp('\\b(' + jsKws.join('|') + ')\\b', 'g');
+  html = html.replace(jsKwPat, '<span class="py-kw">$1</span>');
+
+  // 6. Restore all stashed content
+  // Nested stashes need multiple passes (a stash might contain references to earlier stashes)
+  var limit = 10;
+  while (html.indexOf('\x00S') !== -1 && limit-- > 0) {
+    html = html.replace(/\x00S(\d+)\x00/g, function(m, idx) { return stash[parseInt(idx)]; });
+  }
   return html;
 }
 
@@ -1203,10 +1478,11 @@ function closeExample(event) {
 function copyCode() {
   const ex = EXAMPLES[activeExampleKey];
   let code;
-  if (useNodejs && ex && ex.nodejsCode) {
+  var files = useNodejs ? (ex && ex.nodejsFiles) : (ex && ex.files);
+  if (files && files.length > 1) {
+    code = files[activeFileIndex].code;
+  } else if (useNodejs && ex && ex.nodejsCode) {
     code = ex.nodejsCode;
-  } else if (ex && ex.files && ex.files.length > 1) {
-    code = ex.files[activeFileIndex].code;
   } else {
     code = document.getElementById("modalCode").textContent;
   }
