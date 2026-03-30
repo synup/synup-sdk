@@ -18,7 +18,21 @@ result = client.fetch_all_locations(first=5)
 if result.get("success"):
     for loc in result["locations"]:
         print(f"{loc['name']} — {loc.get('city')}, {loc.get('stateIso')}")
-    print(f"Has more pages: {result['page_info']['has_next_page']}")`
+    print(f"Has more pages: {result['page_info']['has_next_page']}")`,
+    nodejsFilename: "01_quickstart.ts",
+    nodejsCode: `import { SynupClient } from 'synup-js'
+
+const client = new SynupClient({ apiKey: process.env.SYNUP_API_KEY! })
+
+// Fetch first 5 locations
+const result = await client.fetchAllLocations({ first: 5 })
+
+if (result.success) {
+  for (const loc of result.locations) {
+    console.log(\`\${loc.name} — \${loc.city}, \${loc.stateIso}\`)
+  }
+  console.log(\`Has more pages: \${result.pageInfo.hasNextPage}\`)
+}`
   },
   export: {
     title: "Bulk CSV Export",
@@ -37,7 +51,22 @@ fields = ["id", "name", "storeId", "street", "city", "stateIso", "postalCode", "
 with open("locations_export.csv", "w", newline="") as f:
     writer = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
     writer.writeheader()
-    writer.writerows(locations)`
+    writer.writerows(locations)`,
+    nodejsFilename: "02_bulk_export_locations.ts",
+    nodejsCode: `import { SynupClient } from 'synup-js'
+import { writeFileSync } from 'fs'
+
+const client = new SynupClient({ apiKey: "YOUR_API_KEY" })
+
+// Fetch ALL locations (auto-paginates)
+const locations = await client.fetchAllLocations({ fetchAll: true })
+console.log(\`Fetched \${locations.length} locations\`)
+
+// Write to CSV
+const fields = ["id", "name", "storeId", "street", "city", "stateIso", "postalCode", "phone"]
+const header = fields.join(",")
+const rows = locations.map(loc => fields.map(f => loc[f] ?? "").join(","))
+writeFileSync("locations_export.csv", [header, ...rows].join("\\n"))`
   },
   reviews: {
     title: "Review Monitoring",
@@ -58,7 +87,27 @@ for loc in result["locations"]:
 
         flag = " ** NEEDS ATTENTION **" if rating <= 2 else ""
         status = "Responded" if responded else "No reply"
-        print(f"[{rating}] {author} ({status}){flag}")`
+        print(f"[{rating}] {author} ({status}){flag}")`,
+    nodejsFilename: "03_review_monitoring.ts",
+    nodejsCode: `import { SynupClient } from 'synup-js'
+
+const client = new SynupClient({ apiKey: "YOUR_API_KEY" })
+
+// Get locations and check reviews
+const result = await client.fetchAllLocations({ first: 5 })
+for (const loc of result.locations) {
+  const reviews = await client.fetchInteractions({ locationId: loc.id, first: 10 })
+
+  for (const review of reviews.interactions ?? []) {
+    const rating = review.rating ?? "N/A"
+    const author = review.authorName ?? "Anonymous"
+    const responded = (review.responses?.length ?? 0) > 0
+
+    const flag = rating <= 2 ? " ** NEEDS ATTENTION **" : ""
+    const status = responded ? "Responded" : "No reply"
+    console.log(\`[\${rating}] \${author} (\${status})\${flag}\`)
+  }
+}`
   },
   respond: {
     title: "Bulk Respond to Reviews",
@@ -83,7 +132,30 @@ for review in unanswered:
     rating = review.get("rating", 3)
     template = TEMPLATES.get(rating, TEMPLATES[3])
     client.respond_to_review(review["interactionId"], template)
-    print(f"Replied to {review.get('authorName')} ({rating} stars)")`
+    print(f"Replied to {review.get('authorName')} ({rating} stars)")`,
+    nodejsFilename: "04_bulk_respond_reviews.ts",
+    nodejsCode: `import { SynupClient } from 'synup-js'
+
+const client = new SynupClient({ apiKey: "YOUR_API_KEY" })
+
+const TEMPLATES: Record<number, string> = {
+  5: "Thank you so much for the wonderful review!",
+  4: "Thank you for your kind review!",
+  3: "Thank you for your feedback. We'd love to hear more.",
+  2: "We're sorry to hear about your experience.",
+  1: "We sincerely apologize. Please reach out to us.",
+}
+
+const reviews = await client.fetchInteractions({ locationId: 16808, first: 50 })
+const unanswered = (reviews.interactions ?? [])
+  .filter(r => !r.responses?.length && r.interactionId)
+
+for (const review of unanswered) {
+  const rating = review.rating ?? 3
+  const template = TEMPLATES[rating] ?? TEMPLATES[3]
+  await client.respondToReview(review.interactionId, template)
+  console.log(\`Replied to \${review.authorName} (\${rating} stars)\`)
+}`
   },
   analytics: {
     title: "Analytics Report",
@@ -111,7 +183,33 @@ for loc in locations[:10]:
     # Per-site breakdown
     sites = client.fetch_review_analytics_sites_stats(
         loc_id, start_date="2024-01-01", end_date="2024-12-31"
-    )`
+    )`,
+    nodejsFilename: "05_analytics_report.ts",
+    nodejsCode: `import { SynupClient } from 'synup-js'
+
+const client = new SynupClient({ apiKey: "YOUR_API_KEY" })
+
+const locations = await client.fetchAllLocations({ fetchAll: true })
+
+for (const loc of locations.slice(0, 10)) {
+  const locId = loc.id
+  console.log(\`--- \${loc.name} ---\`)
+
+  // Google profile analytics
+  const google = await client.fetchGoogleAnalytics({
+    locationId: locId, fromDate: "2024-01-01", toDate: "2024-12-31"
+  })
+
+  // Review analytics overview
+  const reviewStats = await client.fetchReviewAnalyticsOverview({
+    locationId: locId, startDate: "2024-01-01", endDate: "2024-12-31"
+  })
+
+  // Per-site breakdown
+  const sites = await client.fetchReviewAnalyticsSitesStats({
+    locationId: locId, startDate: "2024-01-01", endDate: "2024-12-31"
+  })
+}`
   },
   listings: {
     title: "Listings Audit",
@@ -138,7 +236,31 @@ for loc in result["locations"]:
     # AI listing suggestions
     ai = client.fetch_ai_listings(loc_id)
     if ai:
-        print(f"  AI suggestions available")`
+        print(f"  AI suggestions available")`,
+    nodejsFilename: "06_listings_audit.ts",
+    nodejsCode: `import { SynupClient } from 'synup-js'
+
+const client = new SynupClient({ apiKey: "YOUR_API_KEY" })
+
+const result = await client.fetchAllLocations({ first: 10 })
+for (const loc of result.locations) {
+  const locId = loc.id
+  console.log(\`--- \${loc.name} ---\`)
+
+  // Premium listings (Google, Yelp, Facebook, etc.)
+  const premium = await client.fetchPremiumListings(locId)
+  const synced = premium.filter(l => l.syncStatus === "SYNCED")
+  const notSynced = premium.filter(l => l.syncStatus !== "SYNCED")
+  console.log(\`  Premium: \${synced.length} synced, \${notSynced.length} not synced\`)
+
+  // Voice assistant listings
+  const voice = await client.fetchVoiceListings(locId)
+  console.log(\`  Voice: \${voice.length} listings\`)
+
+  // AI listing suggestions
+  const ai = await client.fetchAiListings(locId)
+  if (ai?.length) console.log("  AI suggestions available")
+}`
   },
   users: {
     title: "User Management",
@@ -170,7 +292,39 @@ if result.get("success"):
     user_id = result["user"]["id"]
     locations = client.fetch_all_locations(first=5)
     loc_ids = [loc["id"] for loc in locations["locations"]]
-    client.add_user_locations(user_id, loc_ids)`
+    client.add_user_locations(user_id, loc_ids)`,
+    nodejsFilename: "07_user_management.ts",
+    nodejsCode: `import { SynupClient } from 'synup-js'
+
+const client = new SynupClient({ apiKey: "YOUR_API_KEY" })
+
+// List current users
+const users = await client.fetchUsers()
+for (const user of users) {
+  console.log(\`\${user.email} — \${user.firstName}\`)
+}
+
+// List available roles
+const roles = await client.fetchRoles()
+for (const role of roles) {
+  console.log(\`\${role.name} (id: \${role.id})\`)
+}
+
+// Create a new user
+const result = await client.createUser({
+  email: "newuser@example.com",
+  roleId: roles[0].id,
+  firstName: "Jane",
+  lastName: "Doe",
+})
+
+// Assign locations to user
+if (result.success) {
+  const userId = result.user.id
+  const locations = await client.fetchAllLocations({ first: 5 })
+  const locIds = locations.locations.map(loc => loc.id)
+  await client.addUserLocations(userId, locIds)
+}`
   },
   google: {
     title: "Google Connect Flow",
@@ -199,7 +353,30 @@ for acc in accounts.get("connectedAccounts", []):
     # Step 4: Get listings under this account
     listings = client.fetch_connected_account_listings(
         acc["id"], page=1, per_page=10
-    )`
+    )`,
+    nodejsFilename: "08_google_connect.ts",
+    nodejsCode: `import { SynupClient } from 'synup-js'
+
+const client = new SynupClient({ apiKey: "YOUR_API_KEY" })
+
+// Step 1: Get OAuth URL
+const result = await client.connectGoogleAccount({
+  successUrl: "https://yourapp.com/connect/success",
+  errorUrl: "https://yourapp.com/connect/error",
+})
+console.log(\`Redirect user to: \${result.url}\`)
+
+// Step 2: List connected accounts
+const accounts = await client.fetchConnectedAccounts({ publisher: "google" })
+for (const acc of accounts.connectedAccounts ?? []) {
+  console.log(\`\${acc.email} — status: \${acc.status}\`)
+
+  // Step 3: See connection suggestions
+  const suggestions = await client.fetchConnectionSuggestions(acc.id, { page: 1, perPage: 10 })
+
+  // Step 4: Get listings under this account
+  const listings = await client.fetchConnectedAccountListings(acc.id, { page: 1, perPage: 10 })
+}`
   },
   gridrank: {
     title: "Grid Rank Report",
@@ -231,7 +408,37 @@ print(f"Created {len(report_ids)} grid reports")
 for rid in report_ids:
     report = client.fetch_grid_report(rid)
     print(f"Keyword: {report.get('keyword')}")
-    print(f"Grid points: {len(report.get('gridPoints', []))}")`
+    print(f"Grid points: {len(report.get('gridPoints', []))}")`,
+    nodejsFilename: "09_grid_rank.ts",
+    nodejsCode: `import { SynupClient } from 'synup-js'
+
+const client = new SynupClient({ apiKey: "YOUR_API_KEY" })
+
+// Create a grid rank report
+const result = await client.createGridReport({
+  locationId: 16808,
+  keywords: ["italian restaurant", "pizza near me"],
+  businessName: "Your Business",
+  businessStreet: "123 Main St",
+  businessCity: "New York",
+  businessState: "NY",
+  businessCountry: "US",
+  latitude: 40.7128,
+  longitude: -74.0060,
+  distance: 10,
+  distanceUnit: "mi",
+  gridSize: 3,
+})
+
+const reportIds = result.reportIds ?? []
+console.log(\`Created \${reportIds.length} grid reports\`)
+
+// Fetch results
+for (const rid of reportIds) {
+  const report = await client.fetchGridReport(rid)
+  console.log(\`Keyword: \${report.keyword}\`)
+  console.log(\`Grid points: \${(report.gridPoints ?? []).length}\`)
+}`
   },
   campaigns: {
     title: "Review Campaigns",
@@ -261,7 +468,34 @@ if result.get("success"):
     client.add_review_campaign_customers(
         campaign_id,
         [{"name": "Charlie Davis", "email": "charlie@example.com"}],
-    )`
+    )`,
+    nodejsFilename: "10_review_campaign.ts",
+    nodejsCode: `import { SynupClient } from 'synup-js'
+
+const client = new SynupClient({ apiKey: "YOUR_API_KEY" })
+
+// Create a review campaign
+const customers = [
+  { name: "Alice Johnson", email: "alice@example.com" },
+  { name: "Bob Smith", email: "bob@example.com", phone: "5551234567" },
+]
+
+const result = await client.createReviewCampaign({
+  locationId: 16808,
+  name: "Q1 Feedback Campaign",
+  locationCustomers: customers,
+  screening: false,
+})
+
+if (result.success) {
+  const campaignId = result.reviewCampaign.id
+  console.log(\`Created campaign: \${result.reviewCampaign.name}\`)
+
+  // Add more customers later
+  await client.addReviewCampaignCustomers(campaignId, [
+    { name: "Charlie Davis", email: "charlie@example.com" },
+  ])
+}`
   },
   fastapi: {
     title: "FastAPI Backend",
@@ -304,7 +538,59 @@ def get_reviews(location_id: str, first: int = Query(20)):
     try:
         return client.fetch_interactions(location_id, first=first)
     except SynupAPIError as e:
-        raise HTTPException(status_code=e.status_code or 500, detail=str(e))`
+        raise HTTPException(status_code=e.status_code or 500, detail=str(e))`,
+    nodejsFilename: "11_express_backend.ts",
+    nodejsCode: `/**
+ * Wire the SDK into an Express backend your frontend can call.
+ * npm install synup-js express cors
+ * SYNUP_API_KEY='key' npx ts-node server.ts
+ */
+import express from 'express'
+import cors from 'cors'
+import { SynupClient } from 'synup-js'
+
+const app = express()
+app.use(cors())
+app.use(express.json())
+const client = new SynupClient({ apiKey: process.env.SYNUP_API_KEY! })
+
+app.get("/locations", async (req, res) => {
+  try {
+    const first = Number(req.query.first) || 20
+    const q = req.query.q as string | undefined
+    if (q) {
+      res.json(await client.searchLocations({ query: q, first }))
+    } else {
+      res.json(await client.fetchAllLocations({ first }))
+    }
+  } catch (e: any) {
+    res.status(e.statusCode ?? 500).json({ error: e.message })
+  }
+})
+
+app.get("/locations/:locationId/listings", async (req, res) => {
+  try {
+    const locId = req.params.locationId
+    res.json({
+      premium: await client.fetchPremiumListings(locId),
+      voice: await client.fetchVoiceListings(locId),
+      additional: await client.fetchAdditionalListings(locId),
+    })
+  } catch (e: any) {
+    res.status(e.statusCode ?? 500).json({ error: e.message })
+  }
+})
+
+app.get("/locations/:locationId/reviews", async (req, res) => {
+  try {
+    const first = Number(req.query.first) || 20
+    res.json(await client.fetchInteractions({ locationId: req.params.locationId, first }))
+  } catch (e: any) {
+    res.status(e.statusCode ?? 500).json({ error: e.message })
+  }
+})
+
+app.listen(8000, () => console.log("Listening on :8000"))`
   },
   fullstack: {
     title: "Full-stack Dashboard",
@@ -608,33 +894,230 @@ Full source: examples/fullstack/
     static/index.html  — Frontend (locations, listings, reviews, analytics)
 
 Click the "Backend" and "Frontend" tabs above to see both files.
-"""`
+"""`,
+    nodejsFilename: "11_express_backend.ts",
+    nodejsCode: `/**
+ * Wire the SDK into an Express backend your frontend can call.
+ * npm install synup-js express cors
+ * SYNUP_API_KEY='key' npx ts-node server.ts
+ */
+import express from 'express'
+import cors from 'cors'
+import { SynupClient } from 'synup-js'
+
+const app = express()
+app.use(cors())
+app.use(express.json())
+const client = new SynupClient({ apiKey: process.env.SYNUP_API_KEY! })
+
+app.get("/locations", async (req, res) => {
+  try {
+    const first = Number(req.query.first) || 20
+    const q = req.query.q as string | undefined
+    if (q) {
+      res.json(await client.searchLocations({ query: q, first }))
+    } else {
+      res.json(await client.fetchAllLocations({ first }))
+    }
+  } catch (e: any) {
+    res.status(e.statusCode ?? 500).json({ error: e.message })
+  }
+})
+
+app.get("/locations/:locationId/listings", async (req, res) => {
+  try {
+    const locId = req.params.locationId
+    res.json({
+      premium: await client.fetchPremiumListings(locId),
+      voice: await client.fetchVoiceListings(locId),
+      additional: await client.fetchAdditionalListings(locId),
+    })
+  } catch (e: any) {
+    res.status(e.statusCode ?? 500).json({ error: e.message })
+  }
+})
+
+app.get("/locations/:locationId/reviews", async (req, res) => {
+  try {
+    const first = Number(req.query.first) || 20
+    res.json(await client.fetchInteractions({ locationId: req.params.locationId, first }))
+  } catch (e: any) {
+    res.status(e.statusCode ?? 500).json({ error: e.message })
+  }
+})
+
+app.listen(8000, () => console.log("Listening on :8000"))`
   },
 };
 
-function highlightPython(code) {
-  // Escape HTML
-  let html = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-  // Comments (must come first)
-  html = html.replace(/(#.*)/g, '<span class="py-cmt">$1</span>');
-
-  // Strings (double and single quoted, including f-strings)
-  html = html.replace(/(f?"[^"]*"|f?'[^']*')/g, '<span class="py-str">$1</span>');
-
-  // Keywords
-  const kws = ['from', 'import', 'if', 'for', 'in', 'not', 'and', 'or', 'with', 'as', 'try', 'except', 'True', 'False', 'None', 'return', 'def', 'class', 'else', 'elif', 'print', 'open', 'len', 'bool', 'int', 'str'];
-  kws.forEach(kw => {
-    html = html.replace(new RegExp(`\\b(${kw})\\b(?![^<]*>)`, 'g'), '<span class="py-kw">$1</span>');
+function _highlightWithStash(html, commentStringRegex, kwList) {
+  // Phase 1: Stash comments and strings as placeholders so keyword regex can't touch them
+  var stash = [];
+  html = html.replace(commentStringRegex, function() {
+    var cmt = arguments[1], str = arguments[2];
+    var idx = stash.length;
+    if (cmt) {
+      stash.push('<span class="py-cmt">' + cmt + '</span>');
+    } else if (str) {
+      stash.push('<span class="py-str">' + str + '</span>');
+    } else {
+      return arguments[0];
+    }
+    return '\x00STASH' + idx + '\x00';
   });
 
-  // Class names (capitalized words like SynupClient, DictWriter)
+  // Phase 2: Highlight keywords in a single pass (avoids keyword matching inside its own spans)
+  var kwPattern = new RegExp('\\b(' + kwList.join('|') + ')\\b', 'g');
+  html = html.replace(kwPattern, '<span class="py-kw">$1</span>');
+  // Class names and numbers — use lookahead to skip inside tags
   html = html.replace(/\b([A-Z][a-zA-Z]+)\b(?![^<]*>)/g, '<span class="py-cls">$1</span>');
-
-  // Numbers
   html = html.replace(/\b(\d+\.?\d*)\b(?![^<]*>)/g, '<span class="py-num">$1</span>');
 
+  // Phase 3: Restore stashed comments and strings
+  html = html.replace(/\x00STASH(\d+)\x00/g, function(m, idx) {
+    return stash[parseInt(idx)];
+  });
   return html;
+}
+
+function highlightPython(code) {
+  var html = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  var re = /(#.*)|("""[\s\S]*?"""|'''[\s\S]*?'''|f?"(?:[^"\\]|\\.)*"|f?'(?:[^'\\]|\\.)*')/g;
+  var kws = ['from','import','if','for','in','not','and','or','with','as','try','except','True','False','None','return','def','class','else','elif','print','open','len','bool','int','str'];
+  return _highlightWithStash(html, re, kws);
+}
+
+function highlightJS(code) {
+  var html = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  var re = /(\/\/.*|\/\*[\s\S]*?\*\/)|(`[^`]*`|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g;
+  var kws = ['import','from','export','const','let','var','function','async','await','if','else','for','of','in','return','new','true','false','null','undefined','typeof','class','extends','try','catch','throw','console'];
+  return _highlightWithStash(html, re, kws);
+}
+
+let useNodejs = false;
+
+// Restore saved language preference on load
+(function() {
+  var saved = localStorage.getItem('synup-sdk-lang');
+  if (saved === 'nodejs' || saved === 'python') {
+    document.addEventListener('DOMContentLoaded', function() {
+      toggleLanguage(saved);
+    });
+  }
+})();
+
+function toggleLanguage(lang) {
+  useNodejs = (lang === 'nodejs');
+  localStorage.setItem('synup-sdk-lang', lang);
+
+  // Update toggle container class for sliding track
+  var toggle = document.getElementById('langToggle');
+  if (toggle) toggle.classList.toggle('nodejs', useNodejs);
+
+  // Update toggle button active states
+  document.querySelectorAll('.lang-toggle button').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-lang') === (useNodejs ? 'nodejs' : 'python'));
+  });
+
+  // Hero code visibility
+  var heroPy = document.getElementById('heroPython');
+  var heroJs = document.getElementById('heroNodejs');
+  var heroFn = document.getElementById('heroFilename');
+  if (heroPy) heroPy.style.display = useNodejs ? 'none' : '';
+  if (heroJs) heroJs.style.display = useNodejs ? '' : 'none';
+  if (heroFn) heroFn.textContent = useNodejs ? 'quickstart.ts' : 'quickstart.py';
+
+  // Install step content
+  var installCmd = document.getElementById('installCmd');
+  if (installCmd) installCmd.textContent = useNodejs ? 'npm install synup-js' : 'pip install synup-sdk';
+  var installInit = document.getElementById('installInit');
+  if (installInit) installInit.textContent = useNodejs ? 'const client = new SynupClient({ apiKey: "..." })' : 'client = SynupClient(api_key="...")';
+
+  // Feature descriptions
+  var featPagination = document.getElementById('featurePagination');
+  if (featPagination) {
+    featPagination.innerHTML = useNodejs
+      ? 'Pass <code>fetchAll: true</code> to any list method. The SDK handles cursor logic.'
+      : 'Pass <code>fetch_all=True</code> to any list method. The SDK handles cursor logic.';
+  }
+  var featDocsTitle = document.getElementById('featureDocsTitle');
+  var featDocsDesc = document.getElementById('featureDocsDesc');
+  if (featDocsTitle) featDocsTitle.textContent = useNodejs ? 'Full TypeDoc' : 'Full docstrings';
+  if (featDocsDesc) featDocsDesc.textContent = useNodejs ? 'Every method has full TypeScript types and JSDoc. IDE autocompletion just works.' : 'Every method has Args, Returns, and Example. IDE autocompletion just works.';
+
+  // API method name lists
+  var apiMap = {
+    apiLocations: {
+      python: 'fetch_all_locations \u00b7 search_locations \u00b7 create_location \u00b7 update_location \u00b7 archive_locations',
+      nodejs: 'fetchAllLocations \u00b7 searchLocations \u00b7 createLocation \u00b7 updateLocation \u00b7 archiveLocations'
+    },
+    apiListings: {
+      python: 'fetch_premium_listings \u00b7 fetch_voice_listings \u00b7 fetch_ai_listings',
+      nodejs: 'fetchPremiumListings \u00b7 fetchVoiceListings \u00b7 fetchAiListings'
+    },
+    apiReviews: {
+      python: 'fetch_interactions \u00b7 respond_to_review \u00b7 fetch_review_analytics_overview \u00b7 fetch_review_phrases',
+      nodejs: 'fetchInteractions \u00b7 respondToReview \u00b7 fetchReviewAnalyticsOverview \u00b7 fetchReviewPhrases'
+    },
+    apiRankings: {
+      python: 'fetch_keywords \u00b7 fetch_keywords_performance \u00b7 create_grid_report \u00b7 fetch_grid_report',
+      nodejs: 'fetchKeywords \u00b7 fetchKeywordsPerformance \u00b7 createGridReport \u00b7 fetchGridReport'
+    },
+    apiAnalytics: {
+      python: 'fetch_google_analytics \u00b7 fetch_bing_analytics \u00b7 fetch_facebook_analytics',
+      nodejs: 'fetchGoogleAnalytics \u00b7 fetchBingAnalytics \u00b7 fetchFacebookAnalytics'
+    },
+    apiCampaigns: {
+      python: 'create_review_campaign \u00b7 add_review_campaign_customers \u00b7 fetch_review_campaigns',
+      nodejs: 'createReviewCampaign \u00b7 addReviewCampaignCustomers \u00b7 fetchReviewCampaigns'
+    }
+  };
+  for (var id in apiMap) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = useNodejs ? apiMap[id].nodejs : apiMap[id].python;
+  }
+
+  // Example card titles for fastapi/fullstack
+  var exFastapiTitle = document.getElementById('exFastapiTitle');
+  var exFastapiDesc = document.getElementById('exFastapiDesc');
+  if (exFastapiTitle) exFastapiTitle.textContent = useNodejs ? 'Express Backend' : 'FastAPI Backend';
+  if (exFastapiDesc) exFastapiDesc.textContent = useNodejs ? 'Wire the SDK into an Express API your frontend can call.' : 'Wire the SDK into a REST API your frontend can call.';
+
+  var exFullstackTitle = document.getElementById('exFullstackTitle');
+  var exFullstackDesc = document.getElementById('exFullstackDesc');
+  if (exFullstackTitle) exFullstackTitle.textContent = useNodejs ? 'Full-stack Dashboard' : 'Full-stack Dashboard';
+  if (exFullstackDesc) exFullstackDesc.textContent = useNodejs ? 'Complete app with Express backend + basic frontend for locations and listings.' : 'Complete app with FastAPI backend + basic frontend for locations and listings.';
+
+  // Footer documentation link
+  var footerDocLink = document.getElementById('footerDocLink');
+  if (footerDocLink) {
+    footerDocLink.href = useNodejs ? 'https://www.npmjs.com/package/synup-js' : 'https://pypi.org/project/synup-sdk/';
+    footerDocLink.textContent = useNodejs ? 'npm Package' : 'PyPI Package';
+  }
+
+  // Badge text
+  var badge = document.querySelector('.badge');
+  if (badge) badge.textContent = useNodejs ? 'Node.js SDK for Synup API' : 'Python SDK for Synup API';
+
+  // API section subtitle
+  var apiSubtitle = document.getElementById('apiSubtitle');
+  if (apiSubtitle) {
+    apiSubtitle.innerHTML = useNodejs
+      ? 'All endpoints accessible through <code>SynupClient</code>. Install with <code>npm install synup-js</code>.'
+      : 'All endpoints accessible through <code>SynupClient</code>. Install with <code>pip install synup-sdk</code>.';
+  }
+
+  // Re-render explorer method list with correct names
+  renderMethodList();
+  if (selectedMethod) {
+    var m = SDK_METHODS.find(function(x) { return x.name === selectedMethod; });
+    if (m) renderMethodDetail(m);
+  }
+
+  // If modal is open, re-render with correct language
+  if (activeExampleKey && document.getElementById('exampleModal').classList.contains('active')) {
+    showExample(activeExampleKey);
+  }
 }
 
 let activeExampleKey = null;
@@ -649,19 +1132,24 @@ function showExample(key) {
   document.getElementById("modalTitle").textContent = ex.title;
   const tabsEl = document.getElementById("modalTabs");
 
-  if (ex.files && ex.files.length > 1) {
-    // Multi-file example: show tabs
+  if (!useNodejs && ex.files && ex.files.length > 1) {
+    // Multi-file example: show tabs (Python only — fullstack)
     tabsEl.style.display = "flex";
     tabsEl.innerHTML = ex.files.map((f, i) =>
       `<button class="modal-tab${i === 0 ? ' active' : ''}" onclick="switchExampleTab(${i})">${f.label}</button>`
     ).join("");
     renderExampleFile(ex.files[0]);
   } else {
-    // Single-file example
+    // Single-file example (or Node.js view)
     tabsEl.style.display = "none";
     tabsEl.innerHTML = "";
-    document.getElementById("modalFilename").textContent = ex.filename;
-    document.getElementById("modalCode").innerHTML = highlightPython(ex.code);
+    if (useNodejs && ex.nodejsCode) {
+      document.getElementById("modalFilename").textContent = ex.nodejsFilename;
+      document.getElementById("modalCode").innerHTML = highlightJS(ex.nodejsCode);
+    } else {
+      document.getElementById("modalFilename").textContent = ex.filename;
+      document.getElementById("modalCode").innerHTML = highlightPython(ex.code);
+    }
   }
 
   document.getElementById("exampleModal").classList.add("active");
@@ -715,7 +1203,9 @@ function closeExample(event) {
 function copyCode() {
   const ex = EXAMPLES[activeExampleKey];
   let code;
-  if (ex && ex.files && ex.files.length > 1) {
+  if (useNodejs && ex && ex.nodejsCode) {
+    code = ex.nodejsCode;
+  } else if (ex && ex.files && ex.files.length > 1) {
     code = ex.files[activeFileIndex].code;
   } else {
     code = document.getElementById("modalCode").textContent;
@@ -739,134 +1229,134 @@ document.addEventListener("keydown", (e) => {
 
 const SDK_METHODS = [
   // --- Locations ---
-  { name: "fetch_all_locations", category: "Locations", doc: "Get locations for the account, with optional pagination or fetch-all.", params: [
+  { name: "fetch_all_locations", jsName: "fetchAllLocations", category: "Locations", doc: "Get locations for the account, with optional pagination or fetch-all.", params: [
     { name: "first", type: "int", required: false },
     { name: "after", type: "str", required: false },
   ]},
-  { name: "fetch_locations_by_ids", category: "Locations", doc: "Get locations by a list of IDs. Accepts numeric or base64-encoded IDs.", params: [
+  { name: "fetch_locations_by_ids", jsName: "fetchLocationsByIds", category: "Locations", doc: "Get locations by a list of IDs. Accepts numeric or base64-encoded IDs.", params: [
     { name: "location_ids", type: "json", required: true, placeholder: '["16808"]' },
   ]},
-  { name: "fetch_locations_by_store_codes", category: "Locations", doc: "Get locations that match the given store codes.", params: [
+  { name: "fetch_locations_by_store_codes", jsName: "fetchLocationsByStoreCodes", category: "Locations", doc: "Get locations that match the given store codes.", params: [
     { name: "store_codes", type: "json", required: true, placeholder: '["STORE01"]' },
   ]},
-  { name: "search_locations", category: "Locations", doc: "Search locations by keyword (name, address, or store ID).", params: [
+  { name: "search_locations", jsName: "searchLocations", category: "Locations", doc: "Search locations by keyword (name, address, or store ID).", params: [
     { name: "query", type: "str", required: true },
     { name: "first", type: "int", required: false },
   ]},
-  { name: "fetch_locations_by_folder", category: "Locations", doc: "Get all locations in a folder.", params: [
+  { name: "fetch_locations_by_folder", jsName: "fetchLocationsByFolder", category: "Locations", doc: "Get all locations in a folder.", params: [
     { name: "folder_name", type: "str", required: false },
     { name: "folder_id", type: "str", required: false },
   ]},
-  { name: "fetch_locations_by_tags", category: "Locations", doc: "Get locations that have any of the given tags.", params: [
+  { name: "fetch_locations_by_tags", jsName: "fetchLocationsByTags", category: "Locations", doc: "Get locations that have any of the given tags.", params: [
     { name: "tags", type: "json", required: true, placeholder: '["recent"]' },
     { name: "first", type: "int", required: false },
   ]},
-  { name: "create_location", category: "Locations", doc: "Create a new location. Use camelCase keys.", params: [
+  { name: "create_location", jsName: "createLocation", category: "Locations", doc: "Create a new location. Use camelCase keys.", params: [
     { name: "input", type: "json", required: true, placeholder: '{"name":"...","storeId":"...","street":"...","city":"...","stateIso":"...","postalCode":"...","countryIso":"...","phone":"..."}' },
   ]},
-  { name: "update_location", category: "Locations", doc: "Update a location. Pass id plus fields to change.", params: [
+  { name: "update_location", jsName: "updateLocation", category: "Locations", doc: "Update a location. Pass id plus fields to change.", params: [
     { name: "input", type: "json", required: true, placeholder: '{"id":"16808","phone":"5559876543"}' },
   ]},
-  { name: "archive_locations", category: "Locations", doc: "Archive one or more locations.", params: [
+  { name: "archive_locations", jsName: "archiveLocations", category: "Locations", doc: "Archive one or more locations.", params: [
     { name: "location_ids", type: "json", required: true, placeholder: '["16808"]' },
   ]},
-  { name: "activate_locations", category: "Locations", doc: "Reactivate previously archived locations.", params: [
+  { name: "activate_locations", jsName: "activateLocations", category: "Locations", doc: "Reactivate previously archived locations.", params: [
     { name: "location_ids", type: "json", required: true, placeholder: '["16808"]' },
   ]},
 
   // --- Listings ---
-  { name: "fetch_premium_listings", category: "Listings", doc: "Get premium (directory) listings for a location.", params: [
+  { name: "fetch_premium_listings", jsName: "fetchPremiumListings", category: "Listings", doc: "Get premium (directory) listings for a location.", params: [
     { name: "location_id", type: "str", required: true },
   ]},
-  { name: "fetch_voice_listings", category: "Listings", doc: "Get voice assistant listings for a location.", params: [
+  { name: "fetch_voice_listings", jsName: "fetchVoiceListings", category: "Listings", doc: "Get voice assistant listings for a location.", params: [
     { name: "location_id", type: "str", required: true },
   ]},
-  { name: "fetch_additional_listings", category: "Listings", doc: "Get additional (non-premium) listings for a location.", params: [
+  { name: "fetch_additional_listings", jsName: "fetchAdditionalListings", category: "Listings", doc: "Get additional (non-premium) listings for a location.", params: [
     { name: "location_id", type: "str", required: true },
   ]},
-  { name: "fetch_ai_listings", category: "Listings", doc: "Get AI-generated listing suggestions for a location.", params: [
+  { name: "fetch_ai_listings", jsName: "fetchAiListings", category: "Listings", doc: "Get AI-generated listing suggestions for a location.", params: [
     { name: "location_id", type: "str", required: true },
   ]},
 
   // --- Reviews ---
-  { name: "fetch_interactions", category: "Reviews", doc: "Get reviews and interactions for a location.", params: [
+  { name: "fetch_interactions", jsName: "fetchInteractions", category: "Reviews", doc: "Get reviews and interactions for a location.", params: [
     { name: "location_id", type: "str", required: true },
     { name: "first", type: "int", required: false },
     { name: "start_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
     { name: "end_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
   ]},
-  { name: "fetch_review_settings", category: "Reviews", doc: "Get review source settings for a location.", params: [
+  { name: "fetch_review_settings", jsName: "fetchReviewSettings", category: "Reviews", doc: "Get review source settings for a location.", params: [
     { name: "location_id", type: "str", required: true },
   ]},
-  { name: "respond_to_review", category: "Reviews", doc: "Post a reply to a review.", params: [
+  { name: "respond_to_review", jsName: "respondToReview", category: "Reviews", doc: "Post a reply to a review.", params: [
     { name: "interaction_id", type: "str", required: true },
     { name: "response_content", type: "str", required: true },
   ]},
-  { name: "fetch_review_analytics_overview", category: "Reviews", doc: "Get overall review analytics for a location.", params: [
+  { name: "fetch_review_analytics_overview", jsName: "fetchReviewAnalyticsOverview", category: "Reviews", doc: "Get overall review analytics for a location.", params: [
     { name: "location_id", type: "str", required: true },
     { name: "start_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
     { name: "end_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
   ]},
 
   // --- Rankings ---
-  { name: "fetch_keywords", category: "Rankings", doc: "Get all keywords tracked for a location.", params: [
+  { name: "fetch_keywords", jsName: "fetchKeywords", category: "Rankings", doc: "Get all keywords tracked for a location.", params: [
     { name: "location_id", type: "str", required: true },
   ]},
-  { name: "fetch_keywords_performance", category: "Rankings", doc: "Get ranking performance for a location's keywords.", params: [
+  { name: "fetch_keywords_performance", jsName: "fetchKeywordsPerformance", category: "Rankings", doc: "Get ranking performance for a location's keywords.", params: [
     { name: "location_id", type: "str", required: true },
     { name: "from_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
     { name: "to_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
   ]},
-  { name: "add_keywords", category: "Rankings", doc: "Add keywords to a location for ranking tracking.", params: [
+  { name: "add_keywords", jsName: "addKeywords", category: "Rankings", doc: "Add keywords to a location for ranking tracking.", params: [
     { name: "location_id", type: "str", required: true },
     { name: "keywords", type: "json", required: true, placeholder: '["plumber","plumbing near me"]' },
   ]},
 
   // --- Analytics ---
-  { name: "fetch_google_analytics", category: "Analytics", doc: "Get Google (GMB) profile analytics for a location.", params: [
+  { name: "fetch_google_analytics", jsName: "fetchGoogleAnalytics", category: "Analytics", doc: "Get Google (GMB) profile analytics for a location.", params: [
     { name: "location_id", type: "str", required: true },
     { name: "from_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
     { name: "to_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
   ]},
-  { name: "fetch_bing_analytics", category: "Analytics", doc: "Get Bing profile analytics for a location.", params: [
+  { name: "fetch_bing_analytics", jsName: "fetchBingAnalytics", category: "Analytics", doc: "Get Bing profile analytics for a location.", params: [
     { name: "location_id", type: "str", required: true },
     { name: "from_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
     { name: "to_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
   ]},
-  { name: "fetch_facebook_analytics", category: "Analytics", doc: "Get Facebook page analytics for a location.", params: [
+  { name: "fetch_facebook_analytics", jsName: "fetchFacebookAnalytics", category: "Analytics", doc: "Get Facebook page analytics for a location.", params: [
     { name: "location_id", type: "str", required: true },
     { name: "from_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
     { name: "to_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
   ]},
 
   // --- Photos ---
-  { name: "fetch_location_photos", category: "Photos", doc: "Get photos and media attached to a location.", params: [
+  { name: "fetch_location_photos", jsName: "fetchLocationPhotos", category: "Photos", doc: "Get photos and media attached to a location.", params: [
     { name: "location_id", type: "str", required: true },
   ]},
-  { name: "add_location_photos", category: "Photos", doc: "Add photos to a location.", params: [
+  { name: "add_location_photos", jsName: "addLocationPhotos", category: "Photos", doc: "Add photos to a location.", params: [
     { name: "location_id", type: "str", required: true },
     { name: "photos", type: "json", required: true, placeholder: '[{"photo":"https://...","type":"LOGO"}]' },
   ]},
 
   // --- Folders ---
-  { name: "fetch_folders_flat", category: "Folders", doc: "Get all folders as a flat list.", params: [] },
-  { name: "fetch_folders_tree", category: "Folders", doc: "Get all folders as a nested tree structure.", params: [] },
-  { name: "create_folder", category: "Folders", doc: "Create a folder to organize locations.", params: [
+  { name: "fetch_folders_flat", jsName: "fetchFoldersFlat", category: "Folders", doc: "Get all folders as a flat list.", params: [] },
+  { name: "fetch_folders_tree", jsName: "fetchFoldersTree", category: "Folders", doc: "Get all folders as a nested tree structure.", params: [] },
+  { name: "create_folder", jsName: "createFolder", category: "Folders", doc: "Create a folder to organize locations.", params: [
     { name: "name", type: "str", required: true },
     { name: "parent_folder_name", type: "str", required: false },
   ]},
 
   // --- Tags ---
-  { name: "fetch_tags", category: "Tags", doc: "Get all tags defined in the account.", params: [] },
-  { name: "add_location_tag", category: "Tags", doc: "Add a tag to a location.", params: [
+  { name: "fetch_tags", jsName: "fetchTags", category: "Tags", doc: "Get all tags defined in the account.", params: [] },
+  { name: "add_location_tag", jsName: "addLocationTag", category: "Tags", doc: "Add a tag to a location.", params: [
     { name: "location_id", type: "str", required: true },
     { name: "tag", type: "str", required: true },
   ]},
 
   // --- Users ---
-  { name: "fetch_users", category: "Users", doc: "Get all users in the account.", params: [] },
-  { name: "fetch_roles", category: "Users", doc: "Get all roles defined in the account.", params: [] },
-  { name: "create_user", category: "Users", doc: "Create a user with the given role.", params: [
+  { name: "fetch_users", jsName: "fetchUsers", category: "Users", doc: "Get all users in the account.", params: [] },
+  { name: "fetch_roles", jsName: "fetchRoles", category: "Users", doc: "Get all roles defined in the account.", params: [] },
+  { name: "create_user", jsName: "createUser", category: "Users", doc: "Create a user with the given role.", params: [
     { name: "email", type: "str", required: true },
     { name: "role_id", type: "str", required: true },
     { name: "first_name", type: "str", required: true },
@@ -874,34 +1364,34 @@ const SDK_METHODS = [
   ]},
 
   // --- Grid Rank ---
-  { name: "fetch_location_grid_reports", category: "Grid Rank", doc: "Get all Local Rank Grid reports for a location.", params: [
+  { name: "fetch_location_grid_reports", jsName: "fetchLocationGridReports", category: "Grid Rank", doc: "Get all Local Rank Grid reports for a location.", params: [
     { name: "location_id", type: "str", required: true },
     { name: "page_size", type: "int", required: false },
     { name: "page", type: "int", required: false },
   ]},
-  { name: "fetch_grid_report", category: "Grid Rank", doc: "Get a grid rank report by its ID.", params: [
+  { name: "fetch_grid_report", jsName: "fetchGridReport", category: "Grid Rank", doc: "Get a grid rank report by its ID.", params: [
     { name: "report_id", type: "str", required: true },
   ]},
 
   // --- Review Campaigns ---
-  { name: "fetch_review_campaigns", category: "Campaigns", doc: "Get review campaigns for a location.", params: [
+  { name: "fetch_review_campaigns", jsName: "fetchReviewCampaigns", category: "Campaigns", doc: "Get review campaigns for a location.", params: [
     { name: "location_id", type: "str", required: true },
     { name: "start_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
     { name: "end_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
   ]},
 
   // --- Connected Accounts ---
-  { name: "fetch_connected_accounts", category: "Connected Accounts", doc: "Get connected third-party accounts.", params: [
+  { name: "fetch_connected_accounts", jsName: "fetchConnectedAccounts", category: "Connected Accounts", doc: "Get connected third-party accounts.", params: [
     { name: "publisher", type: "str", required: false, placeholder: "google" },
     { name: "page", type: "int", required: false },
   ]},
 
   // --- Account ---
-  { name: "fetch_plan_sites", category: "Account", doc: "Get supported directories for your plan.", params: [] },
-  { name: "fetch_countries", category: "Account", doc: "Get supported countries and states.", params: [] },
-  { name: "fetch_subscriptions", category: "Account", doc: "Get active subscriptions for the account.", params: [] },
-  { name: "fetch_review_site_config", category: "Account", doc: "Get eligible review sources and site config.", params: [] },
-  { name: "fetch_connection_info", category: "Account", doc: "Get OAuth connection status for a location.", params: [
+  { name: "fetch_plan_sites", jsName: "fetchPlanSites", category: "Account", doc: "Get supported directories for your plan.", params: [] },
+  { name: "fetch_countries", jsName: "fetchCountries", category: "Account", doc: "Get supported countries and states.", params: [] },
+  { name: "fetch_subscriptions", jsName: "fetchSubscriptions", category: "Account", doc: "Get active subscriptions for the account.", params: [] },
+  { name: "fetch_review_site_config", jsName: "fetchReviewSiteConfig", category: "Account", doc: "Get eligible review sources and site config.", params: [] },
+  { name: "fetch_connection_info", jsName: "fetchConnectionInfo", category: "Account", doc: "Get OAuth connection status for a location.", params: [
     { name: "location_id", type: "str", required: true },
   ]},
 ];
@@ -929,6 +1419,10 @@ function populateCategories() {
   });
 }
 
+function getMethodDisplayName(method) {
+  return useNodejs ? (method.jsName || method.name) : method.name;
+}
+
 function renderMethodList() {
   const list = document.getElementById("methodList");
   const category = document.getElementById("categorySelect").value;
@@ -939,14 +1433,17 @@ function renderMethodList() {
     filtered = filtered.filter(m => m.category === category);
   }
   if (search) {
-    filtered = filtered.filter(m => m.name.toLowerCase().includes(search));
+    filtered = filtered.filter(m =>
+      m.name.toLowerCase().includes(search) ||
+      (m.jsName && m.jsName.toLowerCase().includes(search))
+    );
   }
 
   list.innerHTML = "";
   filtered.forEach(method => {
     const el = document.createElement("div");
     el.className = "method-item" + (selectedMethod === method.name ? " active" : "");
-    el.textContent = method.name;
+    el.textContent = getMethodDisplayName(method);
     el.addEventListener("click", () => selectMethod(method));
     list.appendChild(el);
   });
@@ -960,6 +1457,7 @@ function selectMethod(method) {
 
 function renderMethodDetail(method) {
   const detail = document.getElementById("methodDetail");
+  const displayName = getMethodDisplayName(method);
 
   let paramsHTML = "";
   if (method.params.length > 0) {
@@ -977,7 +1475,7 @@ function renderMethodDetail(method) {
   }
 
   detail.innerHTML = `
-    <div class="explorer-method-title">${method.name}</div>
+    <div class="explorer-method-title">${displayName}</div>
     <div class="explorer-method-doc">${method.doc}</div>
     ${paramsHTML}
     <button class="explorer-execute" onclick="executeMethod('${method.name}')">Execute</button>

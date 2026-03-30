@@ -22,6 +22,17 @@
         <a href="#examples">Samples</a>
         <a href="#explorer">Explorer</a>
       </div>
+      <div class="lang-toggle" id="langToggle">
+        <div class="lang-toggle-track" id="langTrack"></div>
+        <button class="active" data-lang="python" onclick="toggleLanguage('python')">
+          <svg width="14" height="14" viewBox="0 0 256 255" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M126.9 0C62.3 0 66.5 27.6 66.5 27.6l.1 28.6h61.5v8.6H40.3S0 60.5 0 127.2c0 66.7 35.2 64.3 35.2 64.3h21V161s-1.1-35.2 34.6-35.2h59.6s33.5.5 33.5-32.4V32.5S189.5 0 126.9 0zM92 18.7a10.8 10.8 0 110 21.6 10.8 10.8 0 010-21.6z" fill="currentColor"/><path d="M128.6 254.1c64.6 0 60.4-27.6 60.4-27.6l-.1-28.6H127.4v-8.6h87.8s40.3 4.3 40.3-62.4c0-66.7-35.2-64.3-35.2-64.3h-21v30.5s1.1 35.2-34.6 35.2h-59.6s-33.5-.5-33.5 32.4v60.9s-5.6 32.5 57 32.5zm34.9-18.7a10.8 10.8 0 110-21.6 10.8 10.8 0 010 21.6z" fill="currentColor"/></svg>
+          Python
+        </button>
+        <button data-lang="nodejs" onclick="toggleLanguage('nodejs')">
+          <svg width="14" height="14" viewBox="0 0 256 289" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M128 288.5c-3.5 0-6.8-.9-9.8-2.6L86 266.7c-4.6-2.6-2.4-3.5-0.8-4 6.4-2.2 7.7-2.7 14.5-6.6.7-.4 1.7-.3 2.4.2l24.4 14.5c.9.5 2.1.5 2.9 0l95.2-55c.9-.5 1.5-1.5 1.5-2.6V102.3c0-1.1-.6-2.1-1.5-2.6L129.4 44.8c-.9-.5-2-.5-2.9 0L31.4 99.7c-.9.5-1.5 1.6-1.5 2.6v110.9c0 1 .6 2 1.5 2.5l26 15c14.2 7.1 22.8-1.3 22.8-9.7V112.5c0-1.5 1.2-2.7 2.7-2.7h11.7c1.5 0 2.7 1.2 2.7 2.7V221c0 19.1-10.4 30-28.5 30-5.6 0-10 0-22.2-6l-25-14.4a19.7 19.7 0 01-9.8-17.1V102.6c0-7 3.7-13.5 9.8-17l95.2-55a20.3 20.3 0 0119.6 0l95.2 55c6 3.5 9.8 10 9.8 17v110.9c0 7-3.7 13.5-9.8 17l-95.2 55c-3 1.7-6.4 2.6-9.8 2.6z" fill="currentColor"/></svg>
+          Node.js
+        </button>
+      </div>
       <div class="nav-cta">
         <a href="https://www.synup.dev/" target="_blank" class="btn btn-primary">Get API Key</a>
       </div>
@@ -48,9 +59,9 @@
             <span class="dot dot-yellow"></span>
             <span class="dot dot-green"></span>
           </div>
-          <span class="code-filename">quickstart.py</span>
+          <span class="code-filename" id="heroFilename">quickstart.py</span>
         </div>
-        <pre class="code-body"><code><span class="kw">from</span> <span class="mod">synup</span> <span class="kw">import</span> <span class="cls">SynupClient</span>
+        <pre class="code-body" id="heroPython"><code><span class="kw">from</span> <span class="mod">synup</span> <span class="kw">import</span> <span class="cls">SynupClient</span>
 
 client = <span class="cls">SynupClient</span>(api_key=<span class="str">"YOUR_API_KEY"</span>)
 
@@ -65,6 +76,18 @@ client.respond_to_review(
     interaction_id=<span class="str">"review-uuid"</span>,
     response_content=<span class="str">"Thank you for your feedback!"</span>
 )</code></pre>
+        <pre class="code-body" id="heroNodejs" style="display:none"><code><span class="kw">import</span> { <span class="cls">SynupClient</span> } <span class="kw">from</span> <span class="str">'synup-js'</span>
+
+<span class="kw">const</span> client = <span class="kw">new</span> <span class="cls">SynupClient</span>({ apiKey: <span class="str">"YOUR_API_KEY"</span> })
+
+<span class="cmt">// Fetch all locations</span>
+<span class="kw">const</span> locations = <span class="kw">await</span> client.fetchAllLocations({ fetchAll: <span class="kw">true</span> })
+
+<span class="cmt">// Get reviews for a location</span>
+<span class="kw">const</span> reviews = <span class="kw">await</span> client.fetchInteractions({ locationId: <span class="num">16808</span>, first: <span class="num">20</span> })
+
+<span class="cmt">// Respond to a review</span>
+<span class="kw">await</span> client.respondToReview(<span class="str">"review-uuid"</span>, <span class="str">"Thank you for your feedback!"</span>)</code></pre>
       </div>
     </div>
   </section>
@@ -79,7 +102,7 @@ client.respond_to_review(
         <div class="step-card">
           <div class="step-number">1</div>
           <h3>Install the SDK</h3>
-          <div class="code-inline"><code>pip install synup-sdk</code></div>
+          <div class="code-inline"><code id="installCmd">pip install synup-sdk</code></div>
         </div>
         <div class="step-card">
           <div class="step-number">2</div>
@@ -89,7 +112,7 @@ client.respond_to_review(
         <div class="step-card">
           <div class="step-number">3</div>
           <h3>Start building</h3>
-          <div class="code-inline"><code>client = SynupClient(api_key="...")</code></div>
+          <div class="code-inline"><code id="installInit">client = SynupClient(api_key="...")</code></div>
         </div>
       </div>
     </div>
@@ -115,7 +138,7 @@ client.respond_to_review(
         <div class="feature-card">
           <div class="feature-icon">&#128196;</div>
           <h3>Auto-pagination</h3>
-          <p>Pass <code>fetch_all=True</code> to any list method. The SDK handles cursor logic.</p>
+          <p id="featurePagination">Pass <code>fetch_all=True</code> to any list method. The SDK handles cursor logic.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">&#128273;</div>
@@ -124,8 +147,8 @@ client.respond_to_review(
         </div>
         <div class="feature-card">
           <div class="feature-icon">&#128214;</div>
-          <h3>Full docstrings</h3>
-          <p>Every method has Args, Returns, and Example. IDE autocompletion just works.</p>
+          <h3 id="featureDocsTitle">Full docstrings</h3>
+          <p id="featureDocsDesc">Every method has Args, Returns, and Example. IDE autocompletion just works.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">&#128736;</div>
@@ -140,7 +163,7 @@ client.respond_to_review(
   <section id="apis" class="section">
     <div class="container">
       <h2 class="section-title">Every API, one client</h2>
-      <p class="section-subtitle">All endpoints accessible through <code>SynupClient</code>.</p>
+      <p class="section-subtitle" id="apiSubtitle">All endpoints accessible through <code>SynupClient</code>. Install with <code>pip install synup-sdk</code>.</p>
 
       <div class="api-grid">
         <div class="api-card">
@@ -148,7 +171,7 @@ client.respond_to_review(
           <div class="api-info">
             <h3>Locations API</h3>
             <p>Create, update, search, and manage business locations. Organize with folders and tags.</p>
-            <div class="api-methods-list">fetch_all_locations &middot; search_locations &middot; create_location &middot; update_location &middot; archive_locations</div>
+            <div class="api-methods-list" id="apiLocations">fetch_all_locations &middot; search_locations &middot; create_location &middot; update_location &middot; archive_locations</div>
           </div>
         </div>
         <div class="api-card">
@@ -156,7 +179,7 @@ client.respond_to_review(
           <div class="api-info">
             <h3>Listings Sync API</h3>
             <p>Push business data to 80+ directories. Check sync status and detect duplicates.</p>
-            <div class="api-methods-list">fetch_premium_listings &middot; fetch_voice_listings &middot; fetch_ai_listings</div>
+            <div class="api-methods-list" id="apiListings">fetch_premium_listings &middot; fetch_voice_listings &middot; fetch_ai_listings</div>
           </div>
         </div>
         <div class="api-card">
@@ -164,7 +187,7 @@ client.respond_to_review(
           <div class="api-info">
             <h3>Reviews API</h3>
             <p>Aggregate reviews from all platforms. Respond programmatically. Get sentiment analytics.</p>
-            <div class="api-methods-list">fetch_interactions &middot; respond_to_review &middot; fetch_review_analytics_overview &middot; fetch_review_phrases</div>
+            <div class="api-methods-list" id="apiReviews">fetch_interactions &middot; respond_to_review &middot; fetch_review_analytics_overview &middot; fetch_review_phrases</div>
           </div>
         </div>
         <div class="api-card">
@@ -172,7 +195,7 @@ client.respond_to_review(
           <div class="api-info">
             <h3>Rankings API</h3>
             <p>Track keyword positions and local pack rankings. Generate grid rank heatmaps.</p>
-            <div class="api-methods-list">fetch_keywords &middot; fetch_keywords_performance &middot; create_grid_report &middot; fetch_grid_report</div>
+            <div class="api-methods-list" id="apiRankings">fetch_keywords &middot; fetch_keywords_performance &middot; create_grid_report &middot; fetch_grid_report</div>
           </div>
         </div>
         <div class="api-card">
@@ -180,7 +203,7 @@ client.respond_to_review(
           <div class="api-info">
             <h3>Analytics API</h3>
             <p>Unified insights from Google Business Profile, Facebook, and Bing.</p>
-            <div class="api-methods-list">fetch_google_analytics &middot; fetch_bing_analytics &middot; fetch_facebook_analytics</div>
+            <div class="api-methods-list" id="apiAnalytics">fetch_google_analytics &middot; fetch_bing_analytics &middot; fetch_facebook_analytics</div>
           </div>
         </div>
         <div class="api-card">
@@ -188,7 +211,7 @@ client.respond_to_review(
           <div class="api-info">
             <h3>Review Campaigns API</h3>
             <p>Send automated review requests via SMS and email. Customize templates.</p>
-            <div class="api-methods-list">create_review_campaign &middot; add_review_campaign_customers &middot; fetch_review_campaigns</div>
+            <div class="api-methods-list" id="apiCampaigns">create_review_campaign &middot; add_review_campaign_customers &middot; fetch_review_campaigns</div>
           </div>
         </div>
       </div>
@@ -244,13 +267,13 @@ client.respond_to_review(
         </div>
         <div class="example-card" onclick="showExample('fastapi')">
           <div class="example-num">09</div>
-          <h3>FastAPI Backend</h3>
-          <p>Wire the SDK into a REST API your frontend can call.</p>
+          <h3 id="exFastapiTitle">FastAPI Backend</h3>
+          <p id="exFastapiDesc">Wire the SDK into a REST API your frontend can call.</p>
         </div>
         <div class="example-card" onclick="showExample('fullstack')">
           <div class="example-num">10</div>
-          <h3>Full-stack Dashboard</h3>
-          <p>Complete app with FastAPI backend + basic frontend for locations and listings.</p>
+          <h3 id="exFullstackTitle">Full-stack Dashboard</h3>
+          <p id="exFullstackDesc">Complete app with FastAPI backend + basic frontend for locations and listings.</p>
         </div>
       </div>
 
@@ -326,7 +349,7 @@ client.respond_to_review(
           <h4>Developers</h4>
           <a href="https://www.synup.dev/">synup.dev</a>
           <a href="https://www.synup.dev/">API Reference</a>
-          <a href="https://pypi.org/project/synup-sdk/" target="_blank">Documentation</a>
+          <a href="https://pypi.org/project/synup-sdk/" target="_blank" id="footerDocLink">PyPI Package</a>
         </div>
         <div class="footer-col">
           <h4>Company</h4>

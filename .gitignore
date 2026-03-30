@@ -29,3 +29,6 @@ htmlcov/
 
 # Docs
 site/
+
+#Claude
+.claude/
