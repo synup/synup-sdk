@@ -84,6 +84,32 @@
     .link-accent:hover {
       text-decoration: underline;
     }
+    .file-tabs {
+      display: flex;
+      gap: 0;
+      margin-left: auto;
+      margin-right: 8px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 6px;
+      padding: 2px;
+    }
+    .file-tab {
+      padding: 3px 12px;
+      background: none;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    .file-tab:hover { color: var(--text-secondary); }
+    .file-tab.active {
+      color: var(--text-primary);
+      background: rgba(255,255,255,0.08);
+    }
   </style>
 </head>
 <body>
@@ -653,9 +679,13 @@ app.listen(<span class="num">8000</span>, () => console.log(<span class="str">'S
               <button class="code-lang-tab active" data-lang="python">Python</button>
               <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
             </div>
+            <div class="file-tabs" data-group="fullstack">
+              <button class="file-tab active" onclick="switchFileTab(this, 'backend')">Backend</button>
+              <button class="file-tab" onclick="switchFileTab(this, 'frontend')">Frontend</button>
+            </div>
             <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
           </div>
-          <pre class="code-lang-python"><code><span class="cmt"># server.py — Full-stack FastAPI app with static frontend</span>
+          <pre class="code-lang-python file-backend"><code><span class="cmt"># server.py — FastAPI backend</span>
 <span class="kw">from</span> <span class="mod">fastapi</span> <span class="kw">import</span> <span class="cls">FastAPI</span>
 <span class="kw">from</span> <span class="mod">fastapi.staticfiles</span> <span class="kw">import</span> <span class="cls">StaticFiles</span>
 <span class="kw">import</span> <span class="mod">synup</span>
@@ -680,45 +710,56 @@ client = <span class="mod">synup</span>.<span class="cls">Synup</span>()
     }
 
 app.mount(<span class="str">"/"</span>, <span class="cls">StaticFiles</span>(directory=<span class="str">"static"</span>, html=<span class="kw">True</span>))
-<span class="cmt"># Run: SYNUP_API_KEY='key' uvicorn server:app --reload --port 8000</span>
+<span class="cmt"># Run: SYNUP_API_KEY='key' uvicorn server:app --reload --port 8000</span></code></pre>
+          <pre class="code-lang-python file-frontend" style="display:none"><code><span class="cmt">&lt;!-- static/index.html --&gt;</span>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Synup Dashboard&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Locations&lt;/h1&gt;
+  &lt;div id="locations"&gt;&lt;/div&gt;
+  &lt;div id="dashboard"&gt;&lt;/div&gt;
+  &lt;script&gt;
+    fetch('/api/locations')
+      .then(r =&gt; r.json())
+      .then(locations =&gt; {
+        document.getElementById('locations').innerHTML =
+          locations.map(l =&gt;
+            `&lt;div onclick="loadDash(${l.databaseId})" style="cursor:pointer;padding:8px;border-bottom:1px solid #eee"&gt;
+              &lt;b&gt;${l.name}&lt;/b&gt; — ${l.city}, ${l.stateIso}
+            &lt;/div&gt;`
+          ).join('')
+      })
 
-<span class="cmt"># --- static/index.html ---</span>
-<span class="cmt"># &lt;!DOCTYPE html&gt;</span>
-<span class="cmt"># &lt;html&gt;&lt;head&gt;&lt;title&gt;Synup Dashboard&lt;/title&gt;&lt;/head&gt;</span>
-<span class="cmt"># &lt;body&gt;</span>
-<span class="cmt">#   &lt;h1&gt;Locations&lt;/h1&gt;</span>
-<span class="cmt">#   &lt;div id="locations"&gt;&lt;/div&gt;</span>
-<span class="cmt">#   &lt;div id="dashboard"&gt;&lt;/div&gt;</span>
-<span class="cmt">#   &lt;script&gt;</span>
-<span class="cmt">#     fetch('/api/locations').then(r =&gt; r.json())</span>
-<span class="cmt">#       .then(locs =&gt; {</span>
-<span class="cmt">#         document.getElementById('locations').innerHTML =</span>
-<span class="cmt">#           locs.map(l =&gt; `&lt;div onclick="loadDash(${l.databaseId})"&gt;</span>
-<span class="cmt">#             &lt;b&gt;${l.name}&lt;/b&gt; — ${l.city}, ${l.stateIso}&lt;/div&gt;`).join('')</span>
-<span class="cmt">#       })</span>
-<span class="cmt">#     function loadDash(id) {</span>
-<span class="cmt">#       fetch(`/api/locations/${id}/dashboard`).then(r =&gt; r.json())</span>
-<span class="cmt">#         .then(d =&gt; {</span>
-<span class="cmt">#           document.getElementById('dashboard').innerHTML =</span>
-<span class="cmt">#             `&lt;h2&gt;Reviews&lt;/h2&gt;&lt;pre&gt;${JSON.stringify(d.reviews,null,2)}&lt;/pre&gt;</span>
-<span class="cmt">#              &lt;h2&gt;Listings (${d.listings.length})&lt;/h2&gt;</span>
-<span class="cmt">#              &lt;h2&gt;Google&lt;/h2&gt;&lt;pre&gt;${JSON.stringify(d.google,null,2)}&lt;/pre&gt;`</span>
-<span class="cmt">#         })</span>
-<span class="cmt">#     }</span>
-<span class="cmt">#   &lt;/script&gt;</span>
-<span class="cmt"># &lt;/body&gt;&lt;/html&gt;</span></code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">import</span> express <span class="kw">from</span> <span class="str">'express'</span>
+    function loadDash(id) {
+      fetch(`/api/locations/${id}/dashboard`)
+        .then(r =&gt; r.json())
+        .then(data =&gt; {
+          document.getElementById('dashboard').innerHTML = `
+            &lt;h2&gt;Reviews&lt;/h2&gt;
+            &lt;pre&gt;${JSON.stringify(data.reviews, null, 2)}&lt;/pre&gt;
+            &lt;h2&gt;Listings (${data.listings.length})&lt;/h2&gt;
+            &lt;ul&gt;${data.listings.map(l =&gt; `&lt;li&gt;${l.site} — ${l.syncStatus}&lt;/li&gt;`).join('')}&lt;/ul&gt;
+            &lt;h2&gt;Google Analytics&lt;/h2&gt;
+            &lt;pre&gt;${JSON.stringify(data.google, null, 2)}&lt;/pre&gt;`
+        })
+    }
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+          <pre class="code-lang-nodejs file-backend" style="display:none"><code><span class="cmt">// server.js — Express backend</span>
+<span class="kw">import</span> express <span class="kw">from</span> <span class="str">'express'</span>
 <span class="kw">import</span> { <span class="cls">SynupClient</span> } <span class="kw">from</span> <span class="str">'synup-js'</span>
 
 <span class="kw">const</span> app = express()
 <span class="kw">const</span> client = <span class="kw">new</span> <span class="cls">SynupClient</span>({ apiKey: process.env.<span class="mod">SYNUP_API_KEY</span> })
 
-app.get(<span class="str">'/api/locations'</span>, <span class="kw">async</span> (req, res) => {
+app.get(<span class="str">'/api/locations'</span>, <span class="kw">async</span> (req, res) =&gt; {
   <span class="kw">const</span> result = <span class="kw">await</span> client.fetchAllLocations({ first: <span class="num">10</span> })
   res.json(result.locations)
 })
 
-app.get(<span class="str">'/api/locations/:id/dashboard'</span>, <span class="kw">async</span> (req, res) => {
+app.get(<span class="str">'/api/locations/:id/dashboard'</span>, <span class="kw">async</span> (req, res) =&gt; {
   <span class="kw">const</span> [reviews, listings, google] = <span class="kw">await</span> Promise.all([
     client.fetchReviewAnalyticsOverview(req.params.id),
     client.fetchPremiumListings(req.params.id),
@@ -729,18 +770,43 @@ app.get(<span class="str">'/api/locations/:id/dashboard'</span>, <span class="kw
 
 app.use(express.static(<span class="str">'public'</span>))
 app.listen(<span class="num">8000</span>)
-<span class="cmt">// Run: SYNUP_API_KEY='key' node server.js</span>
+<span class="cmt">// Run: SYNUP_API_KEY='key' node server.js</span></code></pre>
+          <pre class="code-lang-nodejs file-frontend" style="display:none"><code><span class="cmt">&lt;!-- public/index.html --&gt;</span>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Synup Dashboard&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Locations&lt;/h1&gt;
+  &lt;div id="locations"&gt;&lt;/div&gt;
+  &lt;div id="dashboard"&gt;&lt;/div&gt;
+  &lt;script&gt;
+    fetch('/api/locations')
+      .then(r =&gt; r.json())
+      .then(locations =&gt; {
+        document.getElementById('locations').innerHTML =
+          locations.map(l =&gt;
+            `&lt;div onclick="loadDash(${l.databaseId})" style="cursor:pointer;padding:8px;border-bottom:1px solid #eee"&gt;
+              &lt;b&gt;${l.name}&lt;/b&gt; — ${l.city}, ${l.stateIso}
+            &lt;/div&gt;`
+          ).join('')
+      })
 
-<span class="cmt">// --- public/index.html --- (same frontend as Python version)</span>
-<span class="cmt">// &lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;title&gt;Synup Dashboard&lt;/title&gt;&lt;/head&gt;</span>
-<span class="cmt">// &lt;body&gt;&lt;h1&gt;Locations&lt;/h1&gt;&lt;div id="locations"&gt;&lt;/div&gt;</span>
-<span class="cmt">// &lt;div id="dashboard"&gt;&lt;/div&gt;&lt;script&gt;</span>
-<span class="cmt">// fetch('/api/locations').then(r =&gt; r.json())</span>
-<span class="cmt">//   .then(locs =&gt; { ... render locations ... })</span>
-<span class="cmt">// function loadDash(id) {</span>
-<span class="cmt">//   fetch(`/api/locations/${id}/dashboard`).then(r =&gt; r.json())</span>
-<span class="cmt">//     .then(d =&gt; { ... render dashboard ... })</span>
-<span class="cmt">// }&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</span></code></pre>
+    function loadDash(id) {
+      fetch(`/api/locations/${id}/dashboard`)
+        .then(r =&gt; r.json())
+        .then(data =&gt; {
+          document.getElementById('dashboard').innerHTML = `
+            &lt;h2&gt;Reviews&lt;/h2&gt;
+            &lt;pre&gt;${JSON.stringify(data.reviews, null, 2)}&lt;/pre&gt;
+            &lt;h2&gt;Listings (${data.listings.length})&lt;/h2&gt;
+            &lt;ul&gt;${data.listings.map(l =&gt; `&lt;li&gt;${l.site} — ${l.syncStatus}&lt;/li&gt;`).join('')}&lt;/ul&gt;
+            &lt;h2&gt;Google Analytics&lt;/h2&gt;
+            &lt;pre&gt;${JSON.stringify(data.google, null, 2)}&lt;/pre&gt;`
+        })
+    }
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
         </div>
       </section>
 
@@ -1354,8 +1420,34 @@ client = <span class="mod">synup</span>.<span class="cls">Synup</span>()
     function copyActiveBlock(btn) {
       const block = btn.closest('.code-block');
       if (!block) return;
-      const activePre = block.querySelector('pre.code-lang-' + currentLang);
-      if (activePre) navigator.clipboard.writeText(activePre.textContent);
+      // Find the visible pre in this block
+      const visible = block.querySelector('pre:not([style*="display:none"]):not([style*="display: none"])');
+      if (visible) navigator.clipboard.writeText(visible.textContent);
+    }
+
+    // File tab switching (Backend / Frontend within one card)
+    let currentFileTab = 'backend';
+    function switchFileTab(btn, tab) {
+      currentFileTab = tab;
+      const block = btn.closest('.code-block');
+      if (!block) return;
+      // Update file tab buttons
+      block.querySelectorAll('.file-tab').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase() === tab));
+      // Show/hide pres based on both lang and file tab
+      updateBlockVisibility(block);
+    }
+
+    function updateBlockVisibility(block) {
+      const hasFileTabs = block.querySelector('.file-tabs');
+      block.querySelectorAll('pre').forEach(pre => {
+        const isLang = pre.classList.contains('code-lang-' + currentLang);
+        if (hasFileTabs) {
+          const isFile = pre.classList.contains('file-' + currentFileTab);
+          pre.style.display = (isLang && isFile) ? '' : 'none';
+        } else {
+          pre.style.display = isLang ? '' : 'none';
+        }
+      });
     }
 
     // Global language switching
@@ -1364,8 +1456,7 @@ client = <span class="mod">synup</span>.<span class="cls">Synup</span>()
     function setGlobalLang(lang) {
       currentLang = lang;
       // Update all code blocks
-      document.querySelectorAll('.code-lang-python').forEach(el => el.style.display = lang === 'python' ? '' : 'none');
-      document.querySelectorAll('.code-lang-nodejs').forEach(el => el.style.display = lang === 'nodejs' ? '' : 'none');
+      document.querySelectorAll('.code-block').forEach(block => updateBlockVisibility(block));
       // Update all tab buttons
       document.querySelectorAll('.code-lang-tab').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.lang === lang);
