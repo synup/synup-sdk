@@ -1303,7 +1303,7 @@ function toggleLanguage(lang) {
 
   // Badge text
   var badge = document.querySelector('.badge');
-  if (badge) badge.textContent = useNodejs ? 'Node.js SDK' : 'Python & Node.js SDK';
+  if (badge) badge.textContent = useNodejs ? 'Node.js SDK' : 'Python SDK';
 
   // API section subtitle — keep builder-focused copy
   var apiSubtitle = document.getElementById('apiSubtitle');
