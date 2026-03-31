@@ -24,6 +24,33 @@
       color: var(--text-muted);
       margin-top: 8px;
     }
+    .sidebar-dropdown {
+      margin: 0;
+    }
+    .sidebar-dropdown summary {
+      list-style: none;
+      cursor: pointer;
+    }
+    .sidebar-dropdown summary::-webkit-details-marker { display: none; }
+    .sidebar-dropdown summary .sidebar-link {
+      position: relative;
+      padding-right: 28px;
+    }
+    .sidebar-dropdown summary .sidebar-link::after {
+      content: "";
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      width: 5px;
+      height: 5px;
+      border-right: 1.5px solid var(--text-muted);
+      border-bottom: 1.5px solid var(--text-muted);
+      transform: translateY(-60%) rotate(45deg);
+      transition: transform 0.2s;
+    }
+    .sidebar-dropdown[open] summary .sidebar-link::after {
+      transform: translateY(-40%) rotate(-135deg);
+    }
     .sidebar-sublink {
       display: block;
       padding: 4px 16px 4px 32px;
@@ -88,7 +115,6 @@
 
         <div class="sidebar-section">
           <div class="sidebar-heading">Use Cases</div>
-          <a href="#use-cases" class="sidebar-link">Overview</a>
           <a href="#uc-auto-reply" class="sidebar-link">Auto-reply reviews</a>
           <a href="#uc-onboard" class="sidebar-link">Onboard location</a>
           <a href="#uc-bulk-onboard" class="sidebar-link">Bulk onboard</a>
@@ -104,31 +130,39 @@
         </div>
 
         <div class="sidebar-section">
-          <div class="sidebar-heading">Resources</div>
-          <a href="#locations" class="sidebar-link">Locations</a>
-          <a href="#locations-list" class="sidebar-sublink">list</a>
-          <a href="#locations-retrieve" class="sidebar-sublink">retrieve</a>
-          <a href="#locations-search" class="sidebar-sublink">search</a>
-          <a href="#locations-create" class="sidebar-sublink">create</a>
-          <a href="#locations-update" class="sidebar-sublink">update</a>
-          <a href="#reviews" class="sidebar-link">Reviews</a>
-          <a href="#reviews-list" class="sidebar-sublink">list</a>
-          <a href="#reviews-respond" class="sidebar-sublink">respond</a>
-          <a href="#reviews-analytics" class="sidebar-sublink">analytics</a>
-          <a href="#listings" class="sidebar-link">Listings</a>
-          <a href="#listings-premium" class="sidebar-sublink">premium</a>
-          <a href="#listings-voice" class="sidebar-sublink">voice</a>
-          <a href="#listings-duplicates" class="sidebar-sublink">duplicates</a>
-          <a href="#analytics" class="sidebar-link">Analytics</a>
-          <a href="#keywords" class="sidebar-link">Keywords</a>
-          <a href="#campaigns" class="sidebar-link">Campaigns</a>
-          <a href="#folders" class="sidebar-link">Folders</a>
-          <a href="#tags" class="sidebar-link">Tags</a>
+          <div class="sidebar-heading">Common Resources</div>
+          <details class="sidebar-dropdown">
+            <summary><a href="#locations" class="sidebar-link">Locations</a></summary>
+            <a href="#locations-list" class="sidebar-sublink">list</a>
+            <a href="#locations-retrieve" class="sidebar-sublink">retrieve</a>
+            <a href="#locations-search" class="sidebar-sublink">search</a>
+            <a href="#locations-create" class="sidebar-sublink">create</a>
+            <a href="#locations-update" class="sidebar-sublink">update</a>
+            <a href="#folders" class="sidebar-sublink">folders</a>
+            <a href="#tags" class="sidebar-sublink">tags</a>
+            <a href="#photos" class="sidebar-sublink">photos</a>
+            <a href="#automations" class="sidebar-sublink">automations</a>
+          </details>
+          <details class="sidebar-dropdown">
+            <summary><a href="#reviews" class="sidebar-link">Reviews</a></summary>
+            <a href="#reviews-list" class="sidebar-sublink">list</a>
+            <a href="#reviews-respond" class="sidebar-sublink">respond</a>
+            <a href="#reviews-analytics" class="sidebar-sublink">analytics</a>
+            <a href="#campaigns" class="sidebar-sublink">campaigns</a>
+          </details>
+          <details class="sidebar-dropdown">
+            <summary><a href="#listings" class="sidebar-link">Listings</a></summary>
+            <a href="#listings-premium" class="sidebar-sublink">premium</a>
+            <a href="#listings-voice" class="sidebar-sublink">voice</a>
+            <a href="#listings-duplicates" class="sidebar-sublink">duplicates</a>
+            <a href="#connected-accounts" class="sidebar-sublink">connected accounts</a>
+          </details>
+          <details class="sidebar-dropdown">
+            <summary><a href="#analytics" class="sidebar-link">Analytics</a></summary>
+            <a href="#keywords" class="sidebar-sublink">keywords</a>
+            <a href="#grid-reports" class="sidebar-sublink">grid reports</a>
+          </details>
           <a href="#users" class="sidebar-link">Users</a>
-          <a href="#photos" class="sidebar-link">Photos</a>
-          <a href="#connected-accounts" class="sidebar-link">Connected accounts</a>
-          <a href="#grid-reports" class="sidebar-link">Grid reports</a>
-          <a href="#automations" class="sidebar-link">Automations</a>
         </div>
 
         <div class="sidebar-section">
@@ -286,12 +320,6 @@ client = <span class="mod">synup</span>.<span class="cls">Synup</span>(
       </section>
 
       <!-- Use Cases -->
-      <section id="use-cases" class="doc-section">
-        <h2>Use Cases</h2>
-        <p>Pre-built automations that combine multiple API calls into single, product-level operations. These are real features — one function call, multiple API operations.</p>
-        <div class="workflow-notice code-lang-nodejs" style="display:none">Workflows are available in the Synup SDK. Node.js support coming soon.</div>
-      </section>
-
       <section id="uc-auto-reply" class="doc-section">
         <h3>Auto-reply to reviews</h3>
         <p>Fetches recent reviews, filters by rating and response status, and posts replies using your template.</p>
@@ -673,9 +701,82 @@ app.use(express.static(<span class="str">'public'</span>))
 app.listen(<span class="num">8000</span>)
 <span class="cmt">// Run: SYNUP_API_KEY='key' node server.js</span></code></pre>
         </div>
+        <p>Frontend — save as <code>static/index.html</code> (Python) or <code>public/index.html</code> (Node.js):</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">index.html</span>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code><span class="cmt">&lt;!-- static/index.html --&gt;</span>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Synup Dashboard&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Locations&lt;/h1&gt;
+  &lt;div id="locations"&gt;&lt;/div&gt;
+  &lt;div id="dashboard"&gt;&lt;/div&gt;
+  &lt;script&gt;
+    fetch('/api/locations')
+      .then(r =&gt; r.json())
+      .then(locations =&gt; {
+        document.getElementById('locations').innerHTML =
+          locations.map(l =&gt;
+            `&lt;div onclick="loadDashboard(${l.databaseId})"&gt;
+              &lt;b&gt;${l.name}&lt;/b&gt; — ${l.city}, ${l.stateIso}
+            &lt;/div&gt;`
+          ).join('')
+      })
+
+    function loadDashboard(id) {
+      fetch(`/api/locations/${id}/dashboard`)
+        .then(r =&gt; r.json())
+        .then(data =&gt; {
+          document.getElementById('dashboard').innerHTML = `
+            &lt;h2&gt;Reviews&lt;/h2&gt;&lt;pre&gt;${JSON.stringify(data.reviews, null, 2)}&lt;/pre&gt;
+            &lt;h2&gt;Listings (${data.listings.length})&lt;/h2&gt;
+            &lt;h2&gt;Google Analytics&lt;/h2&gt;&lt;pre&gt;${JSON.stringify(data.google, null, 2)}&lt;/pre&gt;`
+        })
+    }
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="cmt">&lt;!-- public/index.html --&gt;</span>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Synup Dashboard&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Locations&lt;/h1&gt;
+  &lt;div id="locations"&gt;&lt;/div&gt;
+  &lt;div id="dashboard"&gt;&lt;/div&gt;
+  &lt;script&gt;
+    fetch('/api/locations')
+      .then(r =&gt; r.json())
+      .then(locations =&gt; {
+        document.getElementById('locations').innerHTML =
+          locations.map(l =&gt;
+            `&lt;div onclick="loadDashboard(${l.databaseId})"&gt;
+              &lt;b&gt;${l.name}&lt;/b&gt; — ${l.city}, ${l.stateIso}
+            &lt;/div&gt;`
+          ).join('')
+      })
+
+    function loadDashboard(id) {
+      fetch(`/api/locations/${id}/dashboard`)
+        .then(r =&gt; r.json())
+        .then(data =&gt; {
+          document.getElementById('dashboard').innerHTML = `
+            &lt;h2&gt;Reviews&lt;/h2&gt;&lt;pre&gt;${JSON.stringify(data.reviews, null, 2)}&lt;/pre&gt;
+            &lt;h2&gt;Listings (${data.listings.length})&lt;/h2&gt;
+            &lt;h2&gt;Google Analytics&lt;/h2&gt;&lt;pre&gt;${JSON.stringify(data.google, null, 2)}&lt;/pre&gt;`
+        })
+    }
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+        </div>
       </section>
 
-      <!-- Resources -->
+      <!-- Common Resources -->
 
       <!-- Locations -->
       <section id="locations" class="doc-section">
