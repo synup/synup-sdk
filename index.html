@@ -680,7 +680,33 @@ client = <span class="mod">synup</span>.<span class="cls">Synup</span>()
     }
 
 app.mount(<span class="str">"/"</span>, <span class="cls">StaticFiles</span>(directory=<span class="str">"static"</span>, html=<span class="kw">True</span>))
-<span class="cmt"># Run: SYNUP_API_KEY='key' uvicorn server:app --reload --port 8000</span></code></pre>
+<span class="cmt"># Run: SYNUP_API_KEY='key' uvicorn server:app --reload --port 8000</span>
+
+<span class="cmt"># --- static/index.html ---</span>
+<span class="cmt"># &lt;!DOCTYPE html&gt;</span>
+<span class="cmt"># &lt;html&gt;&lt;head&gt;&lt;title&gt;Synup Dashboard&lt;/title&gt;&lt;/head&gt;</span>
+<span class="cmt"># &lt;body&gt;</span>
+<span class="cmt">#   &lt;h1&gt;Locations&lt;/h1&gt;</span>
+<span class="cmt">#   &lt;div id="locations"&gt;&lt;/div&gt;</span>
+<span class="cmt">#   &lt;div id="dashboard"&gt;&lt;/div&gt;</span>
+<span class="cmt">#   &lt;script&gt;</span>
+<span class="cmt">#     fetch('/api/locations').then(r =&gt; r.json())</span>
+<span class="cmt">#       .then(locs =&gt; {</span>
+<span class="cmt">#         document.getElementById('locations').innerHTML =</span>
+<span class="cmt">#           locs.map(l =&gt; `&lt;div onclick="loadDash(${l.databaseId})"&gt;</span>
+<span class="cmt">#             &lt;b&gt;${l.name}&lt;/b&gt; — ${l.city}, ${l.stateIso}&lt;/div&gt;`).join('')</span>
+<span class="cmt">#       })</span>
+<span class="cmt">#     function loadDash(id) {</span>
+<span class="cmt">#       fetch(`/api/locations/${id}/dashboard`).then(r =&gt; r.json())</span>
+<span class="cmt">#         .then(d =&gt; {</span>
+<span class="cmt">#           document.getElementById('dashboard').innerHTML =</span>
+<span class="cmt">#             `&lt;h2&gt;Reviews&lt;/h2&gt;&lt;pre&gt;${JSON.stringify(d.reviews,null,2)}&lt;/pre&gt;</span>
+<span class="cmt">#              &lt;h2&gt;Listings (${d.listings.length})&lt;/h2&gt;</span>
+<span class="cmt">#              &lt;h2&gt;Google&lt;/h2&gt;&lt;pre&gt;${JSON.stringify(d.google,null,2)}&lt;/pre&gt;`</span>
+<span class="cmt">#         })</span>
+<span class="cmt">#     }</span>
+<span class="cmt">#   &lt;/script&gt;</span>
+<span class="cmt"># &lt;/body&gt;&lt;/html&gt;</span></code></pre>
           <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">import</span> express <span class="kw">from</span> <span class="str">'express'</span>
 <span class="kw">import</span> { <span class="cls">SynupClient</span> } <span class="kw">from</span> <span class="str">'synup-js'</span>
 
@@ -703,80 +729,18 @@ app.get(<span class="str">'/api/locations/:id/dashboard'</span>, <span class="kw
 
 app.use(express.static(<span class="str">'public'</span>))
 app.listen(<span class="num">8000</span>)
-<span class="cmt">// Run: SYNUP_API_KEY='key' node server.js</span></code></pre>
-        </div>
-        <p>Frontend — save as <code>static/index.html</code> (Python) or <code>public/index.html</code> (Node.js):</p>
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-lang">index.html</span>
-            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
-          </div>
-          <pre class="code-lang-python"><code><span class="cmt">&lt;!-- static/index.html --&gt;</span>
-&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;&lt;title&gt;Synup Dashboard&lt;/title&gt;&lt;/head&gt;
-&lt;body&gt;
-  &lt;h1&gt;Locations&lt;/h1&gt;
-  &lt;div id="locations"&gt;&lt;/div&gt;
-  &lt;div id="dashboard"&gt;&lt;/div&gt;
-  &lt;script&gt;
-    fetch('/api/locations')
-      .then(r =&gt; r.json())
-      .then(locations =&gt; {
-        document.getElementById('locations').innerHTML =
-          locations.map(l =&gt;
-            `&lt;div onclick="loadDashboard(${l.databaseId})"&gt;
-              &lt;b&gt;${l.name}&lt;/b&gt; — ${l.city}, ${l.stateIso}
-            &lt;/div&gt;`
-          ).join('')
-      })
+<span class="cmt">// Run: SYNUP_API_KEY='key' node server.js</span>
 
-    function loadDashboard(id) {
-      fetch(`/api/locations/${id}/dashboard`)
-        .then(r =&gt; r.json())
-        .then(data =&gt; {
-          document.getElementById('dashboard').innerHTML = `
-            &lt;h2&gt;Reviews&lt;/h2&gt;&lt;pre&gt;${JSON.stringify(data.reviews, null, 2)}&lt;/pre&gt;
-            &lt;h2&gt;Listings (${data.listings.length})&lt;/h2&gt;
-            &lt;h2&gt;Google Analytics&lt;/h2&gt;&lt;pre&gt;${JSON.stringify(data.google, null, 2)}&lt;/pre&gt;`
-        })
-    }
-  &lt;/script&gt;
-&lt;/body&gt;
-&lt;/html&gt;</code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="cmt">&lt;!-- public/index.html --&gt;</span>
-&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;&lt;title&gt;Synup Dashboard&lt;/title&gt;&lt;/head&gt;
-&lt;body&gt;
-  &lt;h1&gt;Locations&lt;/h1&gt;
-  &lt;div id="locations"&gt;&lt;/div&gt;
-  &lt;div id="dashboard"&gt;&lt;/div&gt;
-  &lt;script&gt;
-    fetch('/api/locations')
-      .then(r =&gt; r.json())
-      .then(locations =&gt; {
-        document.getElementById('locations').innerHTML =
-          locations.map(l =&gt;
-            `&lt;div onclick="loadDashboard(${l.databaseId})"&gt;
-              &lt;b&gt;${l.name}&lt;/b&gt; — ${l.city}, ${l.stateIso}
-            &lt;/div&gt;`
-          ).join('')
-      })
-
-    function loadDashboard(id) {
-      fetch(`/api/locations/${id}/dashboard`)
-        .then(r =&gt; r.json())
-        .then(data =&gt; {
-          document.getElementById('dashboard').innerHTML = `
-            &lt;h2&gt;Reviews&lt;/h2&gt;&lt;pre&gt;${JSON.stringify(data.reviews, null, 2)}&lt;/pre&gt;
-            &lt;h2&gt;Listings (${data.listings.length})&lt;/h2&gt;
-            &lt;h2&gt;Google Analytics&lt;/h2&gt;&lt;pre&gt;${JSON.stringify(data.google, null, 2)}&lt;/pre&gt;`
-        })
-    }
-  &lt;/script&gt;
-&lt;/body&gt;
-&lt;/html&gt;</code></pre>
+<span class="cmt">// --- public/index.html --- (same frontend as Python version)</span>
+<span class="cmt">// &lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;title&gt;Synup Dashboard&lt;/title&gt;&lt;/head&gt;</span>
+<span class="cmt">// &lt;body&gt;&lt;h1&gt;Locations&lt;/h1&gt;&lt;div id="locations"&gt;&lt;/div&gt;</span>
+<span class="cmt">// &lt;div id="dashboard"&gt;&lt;/div&gt;&lt;script&gt;</span>
+<span class="cmt">// fetch('/api/locations').then(r =&gt; r.json())</span>
+<span class="cmt">//   .then(locs =&gt; { ... render locations ... })</span>
+<span class="cmt">// function loadDash(id) {</span>
+<span class="cmt">//   fetch(`/api/locations/${id}/dashboard`).then(r =&gt; r.json())</span>
+<span class="cmt">//     .then(d =&gt; { ... render dashboard ... })</span>
+<span class="cmt">// }&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</span></code></pre>
         </div>
       </section>
 
@@ -885,7 +849,98 @@ client.locations.archive([<span class="num">16808</span>])</code></pre>
         </div>
       </section>
 
-      <!-- Reviews -->
+      <section id="folders" class="doc-section">
+        <h2>Folders</h2>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code>folders = client.folders.list()
+tree = client.folders.tree()
+client.folders.create(<span class="str">"franchise"</span>, parent_folder_name=<span class="str">"all_franchise"</span>)
+client.folders.rename(<span class="str">"Old"</span>, <span class="str">"New"</span>)
+client.folders.add_locations(<span class="str">"franchise"</span>, [<span class="num">16808</span>])
+client.folders.delete(<span class="str">"folder-name"</span>)</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> folders = <span class="kw">await</span> client.fetchFolders()
+<span class="kw">const</span> tree = <span class="kw">await</span> client.fetchFolderTree()
+<span class="kw">await</span> client.createFolder(<span class="str">"franchise"</span>, { parentFolderName: <span class="str">"all_franchise"</span> })
+<span class="kw">await</span> client.renameFolder(<span class="str">"Old"</span>, <span class="str">"New"</span>)
+<span class="kw">await</span> client.addLocationsToFolder(<span class="str">"franchise"</span>, [<span class="num">16808</span>])
+<span class="kw">await</span> client.deleteFolder(<span class="str">"folder-name"</span>)</code></pre>
+        </div>
+      </section>
+
+      <section id="tags" class="doc-section">
+        <h2>Tags</h2>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code>tags = client.tags.list()
+client.tags.add(<span class="num">16808</span>, <span class="str">"vip"</span>)
+client.tags.remove(<span class="num">16808</span>, <span class="str">"old-tag"</span>)</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> tags = <span class="kw">await</span> client.fetchTags()
+<span class="kw">await</span> client.addTag(<span class="num">16808</span>, <span class="str">"vip"</span>)
+<span class="kw">await</span> client.removeTag(<span class="num">16808</span>, <span class="str">"old-tag"</span>)</code></pre>
+        </div>
+      </section>
+
+      <section id="photos" class="doc-section">
+        <h2>Photos</h2>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code>photos = client.photos.list(<span class="num">16808</span>)
+client.photos.add(<span class="num">16808</span>, [{<span class="str">"photo"</span>: <span class="str">"https://example.com/img.jpg"</span>, <span class="str">"type"</span>: <span class="str">"ADDITIONAL"</span>}])
+client.photos.remove(<span class="num">16808</span>, [<span class="str">"photo-id"</span>])
+client.photos.star(<span class="num">16808</span>, [<span class="str">"media-id"</span>], starred=<span class="kw">True</span>)</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> photos = <span class="kw">await</span> client.fetchPhotos(<span class="num">16808</span>)
+<span class="kw">await</span> client.addPhotos(<span class="num">16808</span>, [{ photo: <span class="str">"https://example.com/img.jpg"</span>, type: <span class="str">"ADDITIONAL"</span> }])
+<span class="kw">await</span> client.removePhotos(<span class="num">16808</span>, [<span class="str">"photo-id"</span>])
+<span class="kw">await</span> client.starPhotos(<span class="num">16808</span>, [<span class="str">"media-id"</span>], <span class="kw">true</span>)</code></pre>
+        </div>
+      </section>
+
+      <section id="automations" class="doc-section">
+        <h2>Automations</h2>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code>result = client.automations.temporary_close(
+    name=<span class="str">"Holiday closure"</span>,
+    start_date=<span class="str">"2025-12-24"</span>,
+    start_time=<span class="str">"18:00:00"</span>,
+    end_date=<span class="str">"2025-12-26"</span>,
+    location_id=<span class="num">16808</span>,
+)</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> result = <span class="kw">await</span> client.createTemporaryClose({
+  name: <span class="str">"Holiday closure"</span>,
+  startDate: <span class="str">"2025-12-24"</span>,
+  startTime: <span class="str">"18:00:00"</span>,
+  endDate: <span class="str">"2025-12-26"</span>,
+  locationId: <span class="num">16808</span>,
+})</code></pre>
+        </div>
+      </section>
+
       <section id="reviews" class="doc-section">
         <h2>Reviews</h2>
         <p>List reviews, respond, and access review analytics.</p>
@@ -947,7 +1002,31 @@ phrases = client.reviews.phrases([<span class="str">"TG9jYXRpb246MTY4MDg="</span
         </div>
       </section>
 
-      <!-- Listings -->
+      <section id="campaigns" class="doc-section">
+        <h2>Campaigns</h2>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code>campaigns = client.campaigns.list(<span class="num">16808</span>)
+result = client.campaigns.create(
+    <span class="num">16808</span>, name=<span class="str">"Holiday Feedback"</span>,
+    customers=[{<span class="str">"name"</span>: <span class="str">"John"</span>, <span class="str">"email"</span>: <span class="str">"john@example.com"</span>}],
+    screening=<span class="kw">False</span>,
+)
+client.campaigns.add_customers(<span class="str">"campaign-id"</span>, [{<span class="str">"name"</span>: <span class="str">"Jane"</span>}])</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> result = <span class="kw">await</span> client.createReviewCampaign({
+  locationId: <span class="num">16808</span>,
+  name: <span class="str">"Holiday Feedback"</span>,
+  locationCustomers: [{ name: <span class="str">"John"</span>, email: <span class="str">"john@example.com"</span> }],
+})</code></pre>
+        </div>
+      </section>
+
       <section id="listings" class="doc-section">
         <h2>Listings</h2>
         <p>Check sync status across 80+ directories, manage duplicates, connect/disconnect profiles.</p>
@@ -1006,6 +1085,33 @@ client.listings.mark_duplicate(<span class="num">16808</span>, [<span class="str
         </div>
       </section>
 
+      <section id="connected-accounts" class="doc-section">
+        <h2>Connected accounts</h2>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code>accounts = client.connected_accounts.list()
+url = client.connected_accounts.connect_google(<span class="str">"https://ok.com"</span>, <span class="str">"https://err.com"</span>)
+client.connected_accounts.disconnect_google(<span class="str">"account-id"</span>)
+
+<span class="cmt"># OAuth for single location</span>
+url = client.connected_accounts.oauth_url(<span class="num">16808</span>, <span class="str">"GOOGLE"</span>, <span class="str">"https://ok.com"</span>, <span class="str">"https://err.com"</span>)
+client.connected_accounts.oauth_disconnect(<span class="num">16808</span>, <span class="str">"FACEBOOK"</span>)</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> accounts = <span class="kw">await</span> client.fetchConnectedAccounts()
+<span class="kw">const</span> url = <span class="kw">await</span> client.connectGoogle(<span class="str">"https://ok.com"</span>, <span class="str">"https://err.com"</span>)
+<span class="kw">await</span> client.disconnectGoogle(<span class="str">"account-id"</span>)
+
+<span class="cmt">// OAuth for single location</span>
+<span class="kw">const</span> oauthUrl = <span class="kw">await</span> client.getOAuthUrl(<span class="num">16808</span>, <span class="str">"GOOGLE"</span>, <span class="str">"https://ok.com"</span>, <span class="str">"https://err.com"</span>)
+<span class="kw">await</span> client.oauthDisconnect(<span class="num">16808</span>, <span class="str">"FACEBOOK"</span>)</code></pre>
+        </div>
+      </section>
+
       <section id="analytics" class="doc-section">
         <h2>Analytics</h2>
         <p>Google, Bing, and Facebook profile analytics. Ranking timelines and histograms.</p>
@@ -1046,148 +1152,6 @@ client.keywords.archive(<span class="str">"keyword-id"</span>)</code></pre>
         </div>
       </section>
 
-      <section id="campaigns" class="doc-section">
-        <h2>Campaigns</h2>
-        <div class="code-block">
-          <div class="code-block-header">
-            <div class="code-lang-tabs">
-              <button class="code-lang-tab active" data-lang="python">Python</button>
-              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
-            </div>
-            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
-          </div>
-          <pre class="code-lang-python"><code>campaigns = client.campaigns.list(<span class="num">16808</span>)
-result = client.campaigns.create(
-    <span class="num">16808</span>, name=<span class="str">"Holiday Feedback"</span>,
-    customers=[{<span class="str">"name"</span>: <span class="str">"John"</span>, <span class="str">"email"</span>: <span class="str">"john@example.com"</span>}],
-    screening=<span class="kw">False</span>,
-)
-client.campaigns.add_customers(<span class="str">"campaign-id"</span>, [{<span class="str">"name"</span>: <span class="str">"Jane"</span>}])</code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> result = <span class="kw">await</span> client.createReviewCampaign({
-  locationId: <span class="num">16808</span>,
-  name: <span class="str">"Holiday Feedback"</span>,
-  locationCustomers: [{ name: <span class="str">"John"</span>, email: <span class="str">"john@example.com"</span> }],
-})</code></pre>
-        </div>
-      </section>
-
-      <section id="folders" class="doc-section">
-        <h2>Folders</h2>
-        <div class="code-block">
-          <div class="code-block-header">
-            <div class="code-lang-tabs">
-              <button class="code-lang-tab active" data-lang="python">Python</button>
-              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
-            </div>
-            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
-          </div>
-          <pre class="code-lang-python"><code>folders = client.folders.list()
-tree = client.folders.tree()
-client.folders.create(<span class="str">"franchise"</span>, parent_folder_name=<span class="str">"all_franchise"</span>)
-client.folders.rename(<span class="str">"Old"</span>, <span class="str">"New"</span>)
-client.folders.add_locations(<span class="str">"franchise"</span>, [<span class="num">16808</span>])
-client.folders.delete(<span class="str">"folder-name"</span>)</code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> folders = <span class="kw">await</span> client.fetchFolders()
-<span class="kw">const</span> tree = <span class="kw">await</span> client.fetchFolderTree()
-<span class="kw">await</span> client.createFolder(<span class="str">"franchise"</span>, { parentFolderName: <span class="str">"all_franchise"</span> })
-<span class="kw">await</span> client.renameFolder(<span class="str">"Old"</span>, <span class="str">"New"</span>)
-<span class="kw">await</span> client.addLocationsToFolder(<span class="str">"franchise"</span>, [<span class="num">16808</span>])
-<span class="kw">await</span> client.deleteFolder(<span class="str">"folder-name"</span>)</code></pre>
-        </div>
-      </section>
-
-      <section id="tags" class="doc-section">
-        <h2>Tags</h2>
-        <div class="code-block">
-          <div class="code-block-header">
-            <div class="code-lang-tabs">
-              <button class="code-lang-tab active" data-lang="python">Python</button>
-              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
-            </div>
-            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
-          </div>
-          <pre class="code-lang-python"><code>tags = client.tags.list()
-client.tags.add(<span class="num">16808</span>, <span class="str">"vip"</span>)
-client.tags.remove(<span class="num">16808</span>, <span class="str">"old-tag"</span>)</code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> tags = <span class="kw">await</span> client.fetchTags()
-<span class="kw">await</span> client.addTag(<span class="num">16808</span>, <span class="str">"vip"</span>)
-<span class="kw">await</span> client.removeTag(<span class="num">16808</span>, <span class="str">"old-tag"</span>)</code></pre>
-        </div>
-      </section>
-
-      <section id="users" class="doc-section">
-        <h2>Users</h2>
-        <div class="code-block">
-          <div class="code-block-header">
-            <div class="code-lang-tabs">
-              <button class="code-lang-tab active" data-lang="python">Python</button>
-              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
-            </div>
-            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
-          </div>
-          <pre class="code-lang-python"><code>users = client.users.list()
-roles = client.users.roles()
-result = client.users.create(email=<span class="str">"jane@example.com"</span>, role_id=<span class="str">"..."</span>, first_name=<span class="str">"Jane"</span>)
-client.users.update(<span class="str">"user-id"</span>, first_name=<span class="str">"Jane Updated"</span>)
-client.users.add_locations(<span class="str">"user-id"</span>, [<span class="num">16808</span>])
-client.users.remove_locations(<span class="str">"user-id"</span>, [<span class="num">16808</span>])</code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> users = <span class="kw">await</span> client.fetchUsers()
-<span class="kw">const</span> roles = <span class="kw">await</span> client.fetchRoles()
-<span class="kw">const</span> result = <span class="kw">await</span> client.createUser({ email: <span class="str">"jane@example.com"</span>, roleId: <span class="str">"..."</span>, firstName: <span class="str">"Jane"</span> })
-<span class="kw">await</span> client.updateUser(<span class="str">"user-id"</span>, { firstName: <span class="str">"Jane Updated"</span> })
-<span class="kw">await</span> client.addUserLocations(<span class="str">"user-id"</span>, [<span class="num">16808</span>])
-<span class="kw">await</span> client.removeUserLocations(<span class="str">"user-id"</span>, [<span class="num">16808</span>])</code></pre>
-        </div>
-      </section>
-
-      <section id="photos" class="doc-section">
-        <h2>Photos</h2>
-        <div class="code-block">
-          <div class="code-block-header">
-            <div class="code-lang-tabs">
-              <button class="code-lang-tab active" data-lang="python">Python</button>
-              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
-            </div>
-            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
-          </div>
-          <pre class="code-lang-python"><code>photos = client.photos.list(<span class="num">16808</span>)
-client.photos.add(<span class="num">16808</span>, [{<span class="str">"photo"</span>: <span class="str">"https://example.com/img.jpg"</span>, <span class="str">"type"</span>: <span class="str">"ADDITIONAL"</span>}])
-client.photos.remove(<span class="num">16808</span>, [<span class="str">"photo-id"</span>])
-client.photos.star(<span class="num">16808</span>, [<span class="str">"media-id"</span>], starred=<span class="kw">True</span>)</code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> photos = <span class="kw">await</span> client.fetchPhotos(<span class="num">16808</span>)
-<span class="kw">await</span> client.addPhotos(<span class="num">16808</span>, [{ photo: <span class="str">"https://example.com/img.jpg"</span>, type: <span class="str">"ADDITIONAL"</span> }])
-<span class="kw">await</span> client.removePhotos(<span class="num">16808</span>, [<span class="str">"photo-id"</span>])
-<span class="kw">await</span> client.starPhotos(<span class="num">16808</span>, [<span class="str">"media-id"</span>], <span class="kw">true</span>)</code></pre>
-        </div>
-      </section>
-
-      <section id="connected-accounts" class="doc-section">
-        <h2>Connected accounts</h2>
-        <div class="code-block">
-          <div class="code-block-header">
-            <div class="code-lang-tabs">
-              <button class="code-lang-tab active" data-lang="python">Python</button>
-              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
-            </div>
-            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
-          </div>
-          <pre class="code-lang-python"><code>accounts = client.connected_accounts.list()
-url = client.connected_accounts.connect_google(<span class="str">"https://ok.com"</span>, <span class="str">"https://err.com"</span>)
-client.connected_accounts.disconnect_google(<span class="str">"account-id"</span>)
-
-<span class="cmt"># OAuth for single location</span>
-url = client.connected_accounts.oauth_url(<span class="num">16808</span>, <span class="str">"GOOGLE"</span>, <span class="str">"https://ok.com"</span>, <span class="str">"https://err.com"</span>)
-client.connected_accounts.oauth_disconnect(<span class="num">16808</span>, <span class="str">"FACEBOOK"</span>)</code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> accounts = <span class="kw">await</span> client.fetchConnectedAccounts()
-<span class="kw">const</span> url = <span class="kw">await</span> client.connectGoogle(<span class="str">"https://ok.com"</span>, <span class="str">"https://err.com"</span>)
-<span class="kw">await</span> client.disconnectGoogle(<span class="str">"account-id"</span>)
-
-<span class="cmt">// OAuth for single location</span>
-<span class="kw">const</span> oauthUrl = <span class="kw">await</span> client.getOAuthUrl(<span class="num">16808</span>, <span class="str">"GOOGLE"</span>, <span class="str">"https://ok.com"</span>, <span class="str">"https://err.com"</span>)
-<span class="kw">await</span> client.oauthDisconnect(<span class="num">16808</span>, <span class="str">"FACEBOOK"</span>)</code></pre>
-        </div>
-      </section>
-
       <section id="grid-reports" class="doc-section">
         <h2>Grid reports</h2>
         <div class="code-block">
@@ -1225,8 +1189,8 @@ report = client.grid_reports.retrieve(<span class="str">"report-id"</span>)</cod
         </div>
       </section>
 
-      <section id="automations" class="doc-section">
-        <h2>Automations</h2>
+      <section id="users" class="doc-section">
+        <h2>Users</h2>
         <div class="code-block">
           <div class="code-block-header">
             <div class="code-lang-tabs">
@@ -1235,22 +1199,22 @@ report = client.grid_reports.retrieve(<span class="str">"report-id"</span>)</cod
             </div>
             <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
           </div>
-          <pre class="code-lang-python"><code>result = client.automations.temporary_close(
-    name=<span class="str">"Holiday closure"</span>,
-    start_date=<span class="str">"2025-12-24"</span>,
-    start_time=<span class="str">"18:00:00"</span>,
-    end_date=<span class="str">"2025-12-26"</span>,
-    location_id=<span class="num">16808</span>,
-)</code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> result = <span class="kw">await</span> client.createTemporaryClose({
-  name: <span class="str">"Holiday closure"</span>,
-  startDate: <span class="str">"2025-12-24"</span>,
-  startTime: <span class="str">"18:00:00"</span>,
-  endDate: <span class="str">"2025-12-26"</span>,
-  locationId: <span class="num">16808</span>,
-})</code></pre>
+          <pre class="code-lang-python"><code>users = client.users.list()
+roles = client.users.roles()
+result = client.users.create(email=<span class="str">"jane@example.com"</span>, role_id=<span class="str">"..."</span>, first_name=<span class="str">"Jane"</span>)
+client.users.update(<span class="str">"user-id"</span>, first_name=<span class="str">"Jane Updated"</span>)
+client.users.add_locations(<span class="str">"user-id"</span>, [<span class="num">16808</span>])
+client.users.remove_locations(<span class="str">"user-id"</span>, [<span class="num">16808</span>])</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> users = <span class="kw">await</span> client.fetchUsers()
+<span class="kw">const</span> roles = <span class="kw">await</span> client.fetchRoles()
+<span class="kw">const</span> result = <span class="kw">await</span> client.createUser({ email: <span class="str">"jane@example.com"</span>, roleId: <span class="str">"..."</span>, firstName: <span class="str">"Jane"</span> })
+<span class="kw">await</span> client.updateUser(<span class="str">"user-id"</span>, { firstName: <span class="str">"Jane Updated"</span> })
+<span class="kw">await</span> client.addUserLocations(<span class="str">"user-id"</span>, [<span class="num">16808</span>])
+<span class="kw">await</span> client.removeUserLocations(<span class="str">"user-id"</span>, [<span class="num">16808</span>])</code></pre>
         </div>
       </section>
+
+
 
       <!-- Errors -->
       <section id="errors" class="doc-section">
