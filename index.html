@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>SDK — Synup</title>
+  <title>Synup SDK — Documentation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -12,357 +12,580 @@
 </head>
 <body>
 
-  <!-- Navigation -->
-  <nav class="nav">
-    <div class="container nav-inner">
-      <a href="https://www.synup.dev/" class="nav-logo">synup<span class="nav-logo-accent">.dev</span></a>
-      <div class="nav-links">
-        <a href="#install">Install</a>
-        <a href="#apis">APIs</a>
-        <a href="#examples">Samples</a>
-        <a href="#explorer">Explorer</a>
-      </div>
-      <div class="lang-toggle" id="langToggle">
-        <div class="lang-toggle-track" id="langTrack"></div>
-        <button class="active" data-lang="python" onclick="toggleLanguage('python')">
-          <svg width="14" height="14" viewBox="0 0 256 255" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M126.9 0C62.3 0 66.5 27.6 66.5 27.6l.1 28.6h61.5v8.6H40.3S0 60.5 0 127.2c0 66.7 35.2 64.3 35.2 64.3h21V161s-1.1-35.2 34.6-35.2h59.6s33.5.5 33.5-32.4V32.5S189.5 0 126.9 0zM92 18.7a10.8 10.8 0 110 21.6 10.8 10.8 0 010-21.6z" fill="currentColor"/><path d="M128.6 254.1c64.6 0 60.4-27.6 60.4-27.6l-.1-28.6H127.4v-8.6h87.8s40.3 4.3 40.3-62.4c0-66.7-35.2-64.3-35.2-64.3h-21v30.5s1.1 35.2-34.6 35.2h-59.6s-33.5-.5-33.5 32.4v60.9s-5.6 32.5 57 32.5zm34.9-18.7a10.8 10.8 0 110-21.6 10.8 10.8 0 010 21.6z" fill="currentColor"/></svg>
-          Python
-        </button>
-        <button data-lang="nodejs" onclick="toggleLanguage('nodejs')">
-          <svg width="14" height="14" viewBox="0 0 256 289" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M128 288.5c-3.5 0-6.8-.9-9.8-2.6L86 266.7c-4.6-2.6-2.4-3.5-0.8-4 6.4-2.2 7.7-2.7 14.5-6.6.7-.4 1.7-.3 2.4.2l24.4 14.5c.9.5 2.1.5 2.9 0l95.2-55c.9-.5 1.5-1.5 1.5-2.6V102.3c0-1.1-.6-2.1-1.5-2.6L129.4 44.8c-.9-.5-2-.5-2.9 0L31.4 99.7c-.9.5-1.5 1.6-1.5 2.6v110.9c0 1 .6 2 1.5 2.5l26 15c14.2 7.1 22.8-1.3 22.8-9.7V112.5c0-1.5 1.2-2.7 2.7-2.7h11.7c1.5 0 2.7 1.2 2.7 2.7V221c0 19.1-10.4 30-28.5 30-5.6 0-10 0-22.2-6l-25-14.4a19.7 19.7 0 01-9.8-17.1V102.6c0-7 3.7-13.5 9.8-17l95.2-55a20.3 20.3 0 0119.6 0l95.2 55c6 3.5 9.8 10 9.8 17v110.9c0 7-3.7 13.5-9.8 17l-95.2 55c-3 1.7-6.4 2.6-9.8 2.6z" fill="currentColor"/></svg>
-          Node.js
-        </button>
-      </div>
-      <div class="nav-cta">
-        <a href="https://www.synup.dev/" target="_blank" class="btn btn-primary">Get API Key</a>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero-glow"></div>
-    <div class="container hero-inner">
-      <div class="badge">Python SDK</div>
-      <h1>Build local presence<br><span class="text-accent">automations</span> in minutes</h1>
-      <p class="hero-subtitle">Auto-respond to reviews. Monitor 80+ listings. Generate reputation reports. Ship real products on top of Synup — not just API calls.</p>
-      <div class="hero-actions">
-        <a href="#install" class="btn btn-primary btn-lg">Get started</a>
-        <a href="#explorer" class="btn btn-secondary btn-lg">Try it live</a>
-      </div>
-
-      <!-- Code preview -->
-      <div class="code-window">
-        <div class="code-header">
-          <div class="code-dots">
-            <span class="dot dot-red"></span>
-            <span class="dot dot-yellow"></span>
-            <span class="dot dot-green"></span>
-          </div>
-          <span class="code-filename" id="heroFilename">auto_responder.py</span>
+  <!-- Top Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="#" class="header-logo">synup<span class="header-logo-accent">.dev</span></a>
+      <div class="header-center">
+        <div class="lang-toggle" id="langToggle">
+          <div class="lang-toggle-track" id="langTrack"></div>
+          <button class="active" data-lang="python" onclick="toggleLanguage('python')">Python</button>
+          <button data-lang="nodejs" onclick="toggleLanguage('nodejs')">Node.js</button>
         </div>
-        <pre class="code-body" id="heroPython"><code><span class="kw">import</span> <span class="mod">synup</span>
+      </div>
+      <div class="header-right">
+        <a href="https://github.com/synup/synup-sdk" target="_blank" class="header-link">GitHub</a>
+        <a href="https://pypi.org/project/synup-sdk/" target="_blank" class="header-link" id="headerPkgLink">PyPI</a>
+        <a href="https://www.synup.dev/" target="_blank" class="btn btn-primary btn-sm">Get API Key</a>
+      </div>
+      <button class="mobile-menu-btn" onclick="toggleMobileNav()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Layout: Sidebar + Content -->
+  <div class="docs-layout">
+
+    <!-- Left Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <div class="sidebar-heading">Get started</div>
+          <a href="#overview" class="sidebar-link active">Overview</a>
+          <a href="#install" class="sidebar-link">Installation</a>
+          <a href="#quickstart" class="sidebar-link">Quickstart</a>
+          <a href="#configuration" class="sidebar-link">Configuration</a>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-heading">Workflows</div>
+          <a href="#workflows" class="sidebar-link">Overview</a>
+          <a href="#wf-auto-reply" class="sidebar-link">Auto-reply reviews</a>
+          <a href="#wf-onboard" class="sidebar-link">Onboard location</a>
+          <a href="#wf-bulk-onboard" class="sidebar-link">Bulk onboard</a>
+          <a href="#wf-report" class="sidebar-link">Reputation report</a>
+          <a href="#wf-audit" class="sidebar-link">Listings audit</a>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-heading">Resources</div>
+          <a href="#locations" class="sidebar-link">Locations</a>
+          <a href="#reviews" class="sidebar-link">Reviews</a>
+          <a href="#listings" class="sidebar-link">Listings</a>
+          <a href="#analytics" class="sidebar-link">Analytics</a>
+          <a href="#keywords" class="sidebar-link">Keywords</a>
+          <a href="#campaigns" class="sidebar-link">Campaigns</a>
+          <a href="#folders" class="sidebar-link">Folders</a>
+          <a href="#tags" class="sidebar-link">Tags</a>
+          <a href="#users" class="sidebar-link">Users</a>
+          <a href="#photos" class="sidebar-link">Photos</a>
+          <a href="#connected-accounts" class="sidebar-link">Connected accounts</a>
+          <a href="#grid-reports" class="sidebar-link">Grid reports</a>
+          <a href="#automations" class="sidebar-link">Automations</a>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-heading">More</div>
+          <a href="#errors" class="sidebar-link">Error handling</a>
+          <a href="#explorer" class="sidebar-link">API Explorer</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+
+      <!-- Overview -->
+      <section id="overview" class="doc-section">
+        <h1>Synup SDK</h1>
+        <p class="doc-lead">Build local presence automations in minutes — review auto-responders, listings monitors, reputation dashboards, and more.</p>
+        <div class="doc-badges">
+          <span class="doc-badge" id="badgeText">Python SDK</span>
+          <span class="doc-badge doc-badge-muted">v0.4.0</span>
+        </div>
+        <div class="callout">
+          <div class="callout-title">What you can build</div>
+          <ul class="callout-list">
+            <li>Auto-reply to reviews across all locations</li>
+            <li>Bulk onboard 500+ locations from CSV</li>
+            <li>Monitor listing sync health across 80+ directories</li>
+            <li>Generate weekly reputation reports</li>
+            <li>Launch SMS/email review campaigns</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Installation -->
+      <section id="install" class="doc-section">
+        <h2>Installation</h2>
+        <div class="code-block" id="installBlock">
+          <div class="code-block-header">
+            <span class="code-block-lang">bash</span>
+            <button class="copy-btn" onclick="copyText('pip install synup-sdk')">Copy</button>
+          </div>
+          <pre><code>pip install synup-sdk</code></pre>
+        </div>
+      </section>
+
+      <!-- Quickstart -->
+      <section id="quickstart" class="doc-section">
+        <h2>Quickstart</h2>
+        <p>Auto-reply to positive reviews in 10 lines. Set <code>SYNUP_API_KEY</code> in your environment and run:</p>
+        <div class="code-block" id="quickstartBlock">
+          <div class="code-block-header">
+            <span class="code-block-lang" id="qsFilename">auto_responder.py</span>
+            <button class="copy-btn" onclick="copyBlock('quickstartCode')">Copy</button>
+          </div>
+          <pre><code id="quickstartCode"><span class="kw">import</span> <span class="mod">synup</span>
 
 client = <span class="mod">synup</span>.<span class="cls">Synup</span>()  <span class="cmt"># reads SYNUP_API_KEY from env</span>
 
-<span class="cmt"># Auto-reply to all 4-5 star reviews in one call</span>
+<span class="cmt"># Auto-reply to all 4-5 star reviews that haven't been answered</span>
 results = client.workflows.auto_reply_to_reviews(
     <span class="num">16808</span>,
     template=<span class="str">"Thanks for the {rating}-star review!"</span>,
     min_rating=<span class="num">4</span>,
 )
-<span class="kw">print</span>(<span class="str">f"Replied to </span>{len(results)}<span class="str"> reviews"</span>)
+<span class="kw">print</span>(<span class="str">f"Replied to </span>{len(results)}<span class="str"> reviews"</span>)</code></pre>
+        </div>
+      </section>
 
-<span class="cmt"># Full listings health audit</span>
-audit = client.workflows.listings_health_audit(<span class="num">16808</span>)
-<span class="kw">print</span>(<span class="str">f"Health score: </span>{audit.health_score}<span class="str">%"</span>)</code></pre>
-        <pre class="code-body" id="heroNodejs" style="display:none"><code><span class="kw">import</span> { <span class="cls">SynupClient</span> } <span class="kw">from</span> <span class="str">'synup-js'</span>
+      <!-- Configuration -->
+      <section id="configuration" class="doc-section">
+        <h2>Configuration</h2>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code><span class="kw">import</span> <span class="mod">synup</span>
 
-<span class="kw">const</span> client = <span class="kw">new</span> <span class="cls">SynupClient</span>({ apiKey: <span class="str">"YOUR_API_KEY"</span> })
+<span class="cmt"># Minimal — reads SYNUP_API_KEY env var</span>
+client = <span class="mod">synup</span>.<span class="cls">Synup</span>()
 
-<span class="cmt">// Fetch all locations</span>
-<span class="kw">const</span> locations = <span class="kw">await</span> client.locations.list({ first: <span class="num">10</span> })
+<span class="cmt"># Explicit key</span>
+client = <span class="mod">synup</span>.<span class="cls">Synup</span>(api_key=<span class="str">"your-api-key"</span>)
 
-<span class="cmt">// Get reviews for a location</span>
-<span class="kw">const</span> reviews = <span class="kw">await</span> client.reviews.list({ locationId: <span class="num">16808</span>, first: <span class="num">20</span> })
+<span class="cmt"># With custom config</span>
+client = <span class="mod">synup</span>.<span class="cls">Synup</span>(
+    api_key=<span class="str">"your-api-key"</span>,
+    timeout=<span class="num">300.0</span>,       <span class="cmt"># seconds (default: 240)</span>
+    max_retries=<span class="num">3</span>,       <span class="cmt"># auto-retry on 429/5xx (default: 2)</span>
+)</code></pre>
+        </div>
+        <h3>Parameters</h3>
+        <table class="param-table">
+          <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>api_key</code></td><td>str</td><td>Your Synup API key. Reads from <code>SYNUP_API_KEY</code> env var if not provided.</td></tr>
+            <tr><td><code>base_url</code></td><td>str</td><td>API base URL. Default: <code>https://api.synup.com</code></td></tr>
+            <tr><td><code>timeout</code></td><td>float</td><td>Request timeout in seconds. Default: <code>240.0</code></td></tr>
+            <tr><td><code>max_retries</code></td><td>int</td><td>Auto-retry count on 429/5xx. Default: <code>2</code></td></tr>
+          </tbody>
+        </table>
+      </section>
 
-<span class="cmt">// Respond to a review</span>
-<span class="kw">await</span> client.reviews.respond(<span class="str">"review-uuid"</span>, <span class="str">"Thank you for your feedback!"</span>)</code></pre>
-      </div>
-    </div>
-  </section>
+      <!-- Workflows -->
+      <section id="workflows" class="doc-section">
+        <h2>Workflows</h2>
+        <p>Pre-built automations that combine multiple API calls into single, product-level operations. These are real features, not just API wrappers.</p>
+      </section>
 
-  <!-- Install -->
-  <section id="install" class="section">
-    <div class="container">
-      <h2 class="section-title">Install in seconds</h2>
-      <p class="section-subtitle">One command. No heavy dependencies.</p>
+      <section id="wf-auto-reply" class="doc-section">
+        <h3>Auto-reply to reviews</h3>
+        <p>Fetches recent reviews, filters by rating and response status, and posts replies using your template.</p>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code><span class="cmt"># Dry-run first to preview</span>
+preview = client.workflows.auto_reply_to_reviews(
+    <span class="num">16808</span>,
+    template=<span class="str">"Thanks for the {rating}-star review!"</span>,
+    min_rating=<span class="num">4</span>,
+    only_unanswered=<span class="kw">True</span>,
+    dry_run=<span class="kw">True</span>,
+)
 
-      <div class="install-grid">
-        <div class="step-card">
-          <div class="step-number">1</div>
-          <h3>Install the SDK</h3>
-          <div class="code-inline"><code id="installCmd">pip install synup-sdk</code></div>
+<span class="cmt"># Then send for real</span>
+results = client.workflows.auto_reply_to_reviews(
+    <span class="num">16808</span>,
+    template=<span class="str">"Thanks for the {rating}-star review!"</span>,
+    min_rating=<span class="num">4</span>,
+)
+<span class="kw">print</span>(<span class="str">f"Replied to </span>{len(results)}<span class="str"> reviews"</span>)</code></pre>
         </div>
-        <div class="step-card">
-          <div class="step-number">2</div>
-          <h3>Get your API key</h3>
-          <p class="text-muted">Settings &rarr; Integrations &rarr; Generate in your <a href="https://www.synup.dev/" class="link-accent">Synup workspace</a></p>
-        </div>
-        <div class="step-card">
-          <div class="step-number">3</div>
-          <h3>Start building</h3>
-          <div class="code-inline"><code id="installInit">client = synup.Synup()</code></div>
-        </div>
-      </div>
-    </div>
-  </section>
+        <table class="param-table">
+          <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>location_id</code></td><td>str | int</td><td>Location to process.</td></tr>
+            <tr><td><code>template</code></td><td>str</td><td>Reply text. Use <code>{rating}</code> as placeholder.</td></tr>
+            <tr><td><code>min_rating</code></td><td>int</td><td>Only reply to reviews with this rating or higher. Default: <code>4</code></td></tr>
+            <tr><td><code>only_unanswered</code></td><td>bool</td><td>Skip reviews that already have a response. Default: <code>True</code></td></tr>
+            <tr><td><code>dry_run</code></td><td>bool</td><td>Preview without sending. Default: <code>False</code></td></tr>
+          </tbody>
+        </table>
+      </section>
 
-  <!-- Features -->
-  <section id="features" class="section section-alt">
-    <div class="container">
-      <h2 class="section-title">Why use the SDK instead of the API?</h2>
-      <p class="section-subtitle">Ship in hours, not weeks. The SDK handles the hard parts so you can focus on building.</p>
+      <section id="wf-onboard" class="doc-section">
+        <h3>Onboard location</h3>
+        <p>Creates a location, assigns it to a folder, adds tags, and sets up keyword tracking — all in one call.</p>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code>result = client.workflows.onboard_location(
+    name=<span class="str">"Acme Coffee"</span>,
+    street=<span class="str">"123 Main St"</span>,
+    city=<span class="str">"New York"</span>,
+    state=<span class="str">"NY"</span>,
+    postal_code=<span class="str">"10001"</span>,
+    country=<span class="str">"US"</span>,
+    phone=<span class="str">"5551234567"</span>,
+    folder_name=<span class="str">"NYC Stores"</span>,
+    tags=[<span class="str">"new"</span>, <span class="str">"coffee"</span>],
+    keywords=[<span class="str">"coffee shop near me"</span>],
+)</code></pre>
+        </div>
+      </section>
 
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">&#9889;</div>
-          <h3>Pre-built workflows</h3>
-          <p>Auto-reply to reviews, bulk onboard locations, generate reports — one function call.</p>
+      <section id="wf-bulk-onboard" class="doc-section">
+        <h3>Bulk onboard from CSV</h3>
+        <p>Import hundreds of locations from a CSV file. Columns: <code>name, street, city, state, postal_code, country, phone, store_id</code></p>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code>results = client.workflows.bulk_onboard_locations(
+    <span class="str">"locations.csv"</span>,
+    folder_name=<span class="str">"Imported"</span>,
+    tags=[<span class="str">"batch-2024"</span>],
+)
+succeeded = [r <span class="kw">for</span> r <span class="kw">in</span> results <span class="kw">if</span> r[<span class="str">"status"</span>] == <span class="str">"created"</span>]
+<span class="kw">print</span>(<span class="str">f"Created </span>{len(succeeded)}<span class="str"> of </span>{len(results)}<span class="str"> locations"</span>)</code></pre>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">&#128260;</div>
-          <h3>Auto-retry + rate limits</h3>
-          <p>Built-in exponential backoff on 429/5xx. Your scripts survive API hiccups.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">&#128196;</div>
-          <h3>Auto-pagination</h3>
-          <p id="featurePagination">Call <code>.auto_paging_iter()</code> and iterate all results. No cursor tracking.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">&#128204;</div>
-          <h3>Typed responses</h3>
-          <p>Access <code>location.name</code> instead of <code>result["locations"][0]["name"]</code>. IDE autocomplete works.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">&#128214;</div>
-          <h3 id="featureDocsTitle">Specific errors</h3>
-          <p id="featureDocsDesc">Catch <code>RateLimitError</code>, <code>AuthenticationError</code>, <code>NotFoundError</code> — not generic 400s.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">&#128736;</div>
-          <h3>Zero boilerplate</h3>
-          <p>Reads API key from env. Default timeouts. Sensible defaults. Two lines to start.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <!-- APIs -->
-  <section id="apis" class="section">
-    <div class="container">
-      <h2 class="section-title">What you can build</h2>
-      <p class="section-subtitle" id="apiSubtitle">Real products, not just API calls. Each module is a building block for local presence automation.</p>
+      <section id="wf-report" class="doc-section">
+        <h3>Weekly reputation report</h3>
+        <p>Generates a complete report — reviews, analytics, and listings health — for a location.</p>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code>report = client.workflows.weekly_reputation_report(<span class="num">16808</span>)
+<span class="kw">print</span>(report.review_summary)
+<span class="kw">print</span>(report.analytics.google)
+<span class="kw">print</span>(<span class="str">f"Listings sync rate: </span>{report.listings_health.sync_rate}<span class="str">"</span>)</code></pre>
+        </div>
+      </section>
 
-      <div class="api-grid">
-        <div class="api-card">
-          <div class="api-method post">BUILD</div>
-          <div class="api-info">
-            <h3>Review Auto-Responder Bot</h3>
-            <p>Auto-reply to positive reviews. Flag negative ones for human review. Maintain 100% response rate.</p>
-            <div class="api-methods-list">client.workflows.auto_reply_to_reviews() &middot; client.reviews.list() &middot; client.reviews.respond()</div>
-          </div>
+      <section id="wf-audit" class="doc-section">
+        <h3>Listings health audit</h3>
+        <p>Checks premium listings, voice listings, duplicates, and connection status. Returns a health score.</p>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code>audit = client.workflows.listings_health_audit(<span class="num">16808</span>)
+<span class="kw">print</span>(<span class="str">f"Health score: </span>{audit.health_score}<span class="str">%"</span>)
+<span class="kw">print</span>(<span class="str">f"Synced: </span>{audit.synced_count}<span class="str">, Issues: </span>{audit.issue_count}<span class="str">"</span>)
+<span class="kw">print</span>(<span class="str">f"Duplicates: </span>{len(audit.duplicates)}<span class="str">"</span>)</code></pre>
         </div>
-        <div class="api-card">
-          <div class="api-method post">BUILD</div>
-          <div class="api-info">
-            <h3>Multi-location Reputation Dashboard</h3>
-            <p>Aggregate review scores, listing sync status, and analytics across all locations in one view.</p>
-            <div class="api-methods-list">client.workflows.weekly_reputation_report() &middot; client.analytics.google() &middot; client.reviews.analytics.overview()</div>
-          </div>
-        </div>
-        <div class="api-card">
-          <div class="api-method post">BUILD</div>
-          <div class="api-info">
-            <h3>Bulk Location Onboarding Tool</h3>
-            <p>Import 500 locations from CSV, assign folders, add tags, and set up keyword tracking — one command.</p>
-            <div class="api-methods-list">client.workflows.bulk_onboard_locations() &middot; client.workflows.onboard_location()</div>
-          </div>
-        </div>
-        <div class="api-card">
-          <div class="api-method post">BUILD</div>
-          <div class="api-info">
-            <h3>Listings Sync Monitor</h3>
-            <p>Daily check across 80+ directories. Alert on sync failures. Track duplicate listings.</p>
-            <div class="api-methods-list">client.workflows.listings_health_audit() &middot; client.listings.premium() &middot; client.listings.duplicates()</div>
-          </div>
-        </div>
-        <div class="api-card">
-          <div class="api-method post">BUILD</div>
-          <div class="api-info">
-            <h3>Weekly Analytics Email Reporter</h3>
-            <p>Pull Google, Bing, and review analytics. Generate a report. Send via email or Slack.</p>
-            <div class="api-methods-list">client.analytics.google() &middot; client.analytics.bing() &middot; client.reviews.analytics.overview()</div>
-          </div>
-        </div>
-        <div class="api-card">
-          <div class="api-method post">BUILD</div>
-          <div class="api-info">
-            <h3>Review Campaign Automation</h3>
-            <p>Launch SMS/email review requests. Track customer engagement. Boost star ratings.</p>
-            <div class="api-methods-list">client.campaigns.create() &middot; client.campaigns.add_customers() &middot; client.campaigns.list()</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <!-- Samples -->
-  <section id="examples" class="section section-alt">
-    <div class="container">
-      <h2 class="section-title">Copy-paste examples</h2>
-      <p class="section-subtitle">Real automations you can ship today. Set <code>SYNUP_API_KEY</code> and run.</p>
+      <!-- Resources -->
+      <section id="locations" class="doc-section">
+        <h2>Locations</h2>
+        <p>Create, list, search, update, and organize business locations.</p>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code><span class="cmt"># List with pagination</span>
+page = client.locations.list(first=<span class="num">10</span>)
+<span class="kw">for</span> loc <span class="kw">in</span> page:
+    <span class="kw">print</span>(loc.name, loc.city)
 
-      <div class="examples-grid">
-        <div class="example-card" onclick="showExample('quickstart')">
-          <div class="example-num">01</div>
-          <h3>Quick Start</h3>
-          <p>Connect and fetch your first locations in 5 lines.</p>
-        </div>
-        <div class="example-card" onclick="showExample('reviews')">
-          <div class="example-num">02</div>
-          <h3>Review Monitoring</h3>
-          <p>Scan locations for negative reviews that need attention.</p>
-        </div>
-        <div class="example-card" onclick="showExample('analytics')">
-          <div class="example-num">03</div>
-          <h3>Analytics Report</h3>
-          <p>Pull Google, Bing, and review analytics across locations.</p>
-        </div>
-        <div class="example-card" onclick="showExample('listings')">
-          <div class="example-num">04</div>
-          <h3>Listings Audit</h3>
-          <p>Audit listing sync status and flag issues across locations.</p>
-        </div>
-        <div class="example-card" onclick="showExample('users')">
-          <div class="example-num">05</div>
-          <h3>User Management</h3>
-          <p>Create users, assign roles, and manage location access.</p>
-        </div>
-        <div class="example-card" onclick="showExample('google')">
-          <div class="example-num">06</div>
-          <h3>Google Connect</h3>
-          <p>Full OAuth flow for connecting Google Business Profiles.</p>
-        </div>
-        <div class="example-card" onclick="showExample('gridrank')">
-          <div class="example-num">07</div>
-          <h3>Grid Rank</h3>
-          <p>Create Local Rank Grid reports for geographic ranking data.</p>
-        </div>
-        <div class="example-card" onclick="showExample('campaigns')">
-          <div class="example-num">08</div>
-          <h3>Review Campaigns</h3>
-          <p>Run review solicitation campaigns with SMS and email.</p>
-        </div>
-        <div class="example-card" onclick="showExample('fastapi')">
-          <div class="example-num">09</div>
-          <h3 id="exFastapiTitle">FastAPI Backend</h3>
-          <p id="exFastapiDesc">Wire the SDK into a REST API your frontend can call.</p>
-        </div>
-        <div class="example-card" onclick="showExample('fullstack')">
-          <div class="example-num">10</div>
-          <h3 id="exFullstackTitle">Full-stack Dashboard</h3>
-          <p id="exFullstackDesc">Complete app with FastAPI backend + basic frontend for locations and listings.</p>
-        </div>
-      </div>
+<span class="cmt"># Auto-paginate all</span>
+<span class="kw">for</span> loc <span class="kw">in</span> client.locations.list(first=<span class="num">100</span>).auto_paging_iter():
+    <span class="kw">print</span>(loc.name)
 
-      <!-- Example Modal -->
-      <div class="modal-overlay" id="exampleModal" onclick="closeExample(event)">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 id="modalTitle"></h3>
-            <button class="modal-close" onclick="closeExample()">&times;</button>
-          </div>
-          <div class="modal-tabs" id="modalTabs" style="display:none"></div>
-          <div class="code-window modal-code">
-            <div class="code-header">
-              <div class="code-dots">
-                <span class="dot dot-red"></span>
-                <span class="dot dot-yellow"></span>
-                <span class="dot dot-green"></span>
-              </div>
-              <span class="code-filename" id="modalFilename"></span>
-              <button class="copy-btn" onclick="copyCode()" id="copyBtn">Copy</button>
+<span class="cmt"># Retrieve single location</span>
+location = client.locations.retrieve(<span class="num">16808</span>)
+
+<span class="cmt"># Search, filter by IDs, store codes, folder, or tags</span>
+page = client.locations.search(<span class="str">"cafe"</span>, first=<span class="num">20</span>)
+locs = client.locations.list_by_ids([<span class="num">16808</span>, <span class="num">16749</span>])
+locs = client.locations.list_by_store_codes([<span class="str">"STORE01"</span>])
+locs = client.locations.list_by_folder(folder_name=<span class="str">"franchise"</span>)
+page = client.locations.list_by_tags([<span class="str">"vip"</span>], first=<span class="num">20</span>)
+
+<span class="cmt"># Create, update, archive</span>
+result = client.locations.create({<span class="str">"name"</span>: <span class="str">"Acme"</span>, <span class="str">"city"</span>: <span class="str">"NYC"</span>, ...})
+client.locations.update({<span class="str">"id"</span>: <span class="num">16808</span>, <span class="str">"phone"</span>: <span class="str">"5559876543"</span>})
+client.locations.archive([<span class="num">16808</span>])</code></pre>
+        </div>
+      </section>
+
+      <section id="reviews" class="doc-section">
+        <h2>Reviews</h2>
+        <p>List reviews, respond, and access review analytics.</p>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code><span class="cmt"># List reviews with filters</span>
+page = client.reviews.list(<span class="num">16808</span>, first=<span class="num">20</span>, rating_filters=[<span class="num">1</span>, <span class="num">2</span>])
+<span class="kw">for</span> review <span class="kw">in</span> page:
+    <span class="kw">print</span>(review.content, review.rating)
+
+<span class="cmt"># Respond to a review</span>
+client.reviews.respond(interaction_id=<span class="str">"uuid"</span>, content=<span class="str">"Thank you!"</span>)
+
+<span class="cmt"># Review analytics</span>
+overview = client.reviews.analytics.overview(<span class="num">16808</span>, start_date=<span class="str">"2024-01-01"</span>)
+timeline = client.reviews.analytics.timeline(<span class="num">16808</span>)
+phrases = client.reviews.phrases([<span class="str">"TG9jYXRpb246MTY4MDg="</span>])</code></pre>
+        </div>
+      </section>
+
+      <section id="listings" class="doc-section">
+        <h2>Listings</h2>
+        <p>Check sync status across 80+ directories, manage duplicates, connect/disconnect profiles.</p>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code>premium = client.listings.premium(<span class="num">16808</span>)
+voice = client.listings.voice(<span class="num">16808</span>)
+ai = client.listings.ai(<span class="num">16808</span>)
+dupes = client.listings.duplicates(<span class="num">16808</span>)
+
+client.listings.mark_duplicate(<span class="num">16808</span>, [<span class="str">"listing-id"</span>])
+client.listings.connect(<span class="num">16808</span>, <span class="str">"listing-id"</span>, <span class="str">"account-id"</span>)
+client.listings.disconnect(<span class="num">16808</span>, <span class="str">"GOOGLE"</span>)</code></pre>
+        </div>
+      </section>
+
+      <section id="analytics" class="doc-section">
+        <h2>Analytics</h2>
+        <p>Google, Bing, and Facebook profile analytics. Ranking timelines and histograms.</p>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code>google = client.analytics.google(<span class="num">16808</span>, from_date=<span class="str">"2024-01-01"</span>)
+bing = client.analytics.bing(<span class="num">16808</span>)
+facebook = client.analytics.facebook(<span class="num">16808</span>)
+
+timeline = client.analytics.rankings_timeline([<span class="num">16808</span>], <span class="str">"2024-01-01"</span>, <span class="str">"2024-03-31"</span>, [<span class="str">"Google"</span>])</code></pre>
+        </div>
+      </section>
+
+      <section id="keywords" class="doc-section">
+        <h2>Keywords</h2>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code>keywords = client.keywords.list(<span class="num">16808</span>)
+performance = client.keywords.performance(<span class="num">16808</span>, from_date=<span class="str">"2024-01-01"</span>)
+created = client.keywords.add(<span class="num">16808</span>, [<span class="str">"plumber"</span>, <span class="str">"plumbing near me"</span>])
+client.keywords.archive(<span class="str">"keyword-id"</span>)</code></pre>
+        </div>
+      </section>
+
+      <section id="campaigns" class="doc-section">
+        <h2>Campaigns</h2>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code>campaigns = client.campaigns.list(<span class="num">16808</span>)
+result = client.campaigns.create(
+    <span class="num">16808</span>, name=<span class="str">"Holiday Feedback"</span>,
+    customers=[{<span class="str">"name"</span>: <span class="str">"John"</span>, <span class="str">"email"</span>: <span class="str">"john@example.com"</span>}],
+    screening=<span class="kw">False</span>,
+)
+client.campaigns.add_customers(<span class="str">"campaign-id"</span>, [{<span class="str">"name"</span>: <span class="str">"Jane"</span>}])</code></pre>
+        </div>
+      </section>
+
+      <section id="folders" class="doc-section">
+        <h2>Folders</h2>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code>folders = client.folders.list()
+tree = client.folders.tree()
+client.folders.create(<span class="str">"franchise"</span>, parent_folder_name=<span class="str">"all_franchise"</span>)
+client.folders.rename(<span class="str">"Old"</span>, <span class="str">"New"</span>)
+client.folders.add_locations(<span class="str">"franchise"</span>, [<span class="num">16808</span>])
+client.folders.delete(<span class="str">"folder-name"</span>)</code></pre>
+        </div>
+      </section>
+
+      <section id="tags" class="doc-section">
+        <h2>Tags</h2>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code>tags = client.tags.list()
+client.tags.add(<span class="num">16808</span>, <span class="str">"vip"</span>)
+client.tags.remove(<span class="num">16808</span>, <span class="str">"old-tag"</span>)</code></pre>
+        </div>
+      </section>
+
+      <section id="users" class="doc-section">
+        <h2>Users</h2>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code>users = client.users.list()
+roles = client.users.roles()
+result = client.users.create(email=<span class="str">"jane@example.com"</span>, role_id=<span class="str">"..."</span>, first_name=<span class="str">"Jane"</span>)
+client.users.update(<span class="str">"user-id"</span>, first_name=<span class="str">"Jane Updated"</span>)
+client.users.add_locations(<span class="str">"user-id"</span>, [<span class="num">16808</span>])
+client.users.remove_locations(<span class="str">"user-id"</span>, [<span class="num">16808</span>])</code></pre>
+        </div>
+      </section>
+
+      <section id="photos" class="doc-section">
+        <h2>Photos</h2>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code>photos = client.photos.list(<span class="num">16808</span>)
+client.photos.add(<span class="num">16808</span>, [{<span class="str">"photo"</span>: <span class="str">"https://example.com/img.jpg"</span>, <span class="str">"type"</span>: <span class="str">"ADDITIONAL"</span>}])
+client.photos.remove(<span class="num">16808</span>, [<span class="str">"photo-id"</span>])
+client.photos.star(<span class="num">16808</span>, [<span class="str">"media-id"</span>], starred=<span class="kw">True</span>)</code></pre>
+        </div>
+      </section>
+
+      <section id="connected-accounts" class="doc-section">
+        <h2>Connected accounts</h2>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code>accounts = client.connected_accounts.list()
+url = client.connected_accounts.connect_google(<span class="str">"https://ok.com"</span>, <span class="str">"https://err.com"</span>)
+client.connected_accounts.disconnect_google(<span class="str">"account-id"</span>)
+
+<span class="cmt"># OAuth for single location</span>
+url = client.connected_accounts.oauth_url(<span class="num">16808</span>, <span class="str">"GOOGLE"</span>, <span class="str">"https://ok.com"</span>, <span class="str">"https://err.com"</span>)
+client.connected_accounts.oauth_disconnect(<span class="num">16808</span>, <span class="str">"FACEBOOK"</span>)</code></pre>
+        </div>
+      </section>
+
+      <section id="grid-reports" class="doc-section">
+        <h2>Grid reports</h2>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code>result = client.grid_reports.create(
+    location_id=<span class="num">16808</span>,
+    keywords=[<span class="str">"italian restaurant"</span>],
+    business_name=<span class="str">"Chianti"</span>,
+    business_street=<span class="str">"No 12, 5th Block"</span>,
+    business_city=<span class="str">"Bengaluru"</span>,
+    business_state=<span class="str">"Karnataka"</span>,
+    business_country=<span class="str">"India"</span>,
+    latitude=<span class="num">12.935216</span>, longitude=<span class="num">77.619961</span>,
+    distance=<span class="num">20</span>, distance_unit=<span class="str">"km"</span>, grid_size=<span class="num">3</span>,
+)
+report = client.grid_reports.retrieve(<span class="str">"report-id"</span>)</code></pre>
+        </div>
+      </section>
+
+      <section id="automations" class="doc-section">
+        <h2>Automations</h2>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code>result = client.automations.temporary_close(
+    name=<span class="str">"Holiday closure"</span>,
+    start_date=<span class="str">"2025-12-24"</span>,
+    start_time=<span class="str">"18:00:00"</span>,
+    end_date=<span class="str">"2025-12-26"</span>,
+    location_id=<span class="num">16808</span>,
+)</code></pre>
+        </div>
+      </section>
+
+      <!-- Errors -->
+      <section id="errors" class="doc-section">
+        <h2>Error handling</h2>
+        <p>The SDK raises specific exceptions so you can handle each failure mode differently.</p>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span></div>
+          <pre><code><span class="kw">import</span> <span class="mod">synup</span>
+
+client = <span class="mod">synup</span>.<span class="cls">Synup</span>()
+
+<span class="kw">try</span>:
+    client.locations.list()
+<span class="kw">except</span> <span class="cls">synup.AuthenticationError</span>:
+    <span class="kw">print</span>(<span class="str">"Invalid API key"</span>)
+<span class="kw">except</span> <span class="cls">synup.RateLimitError</span> <span class="kw">as</span> e:
+    <span class="kw">print</span>(<span class="str">f"Rate limited — retry after </span>{e.retry_after}<span class="str">s"</span>)
+<span class="kw">except</span> <span class="cls">synup.NotFoundError</span>:
+    <span class="kw">print</span>(<span class="str">"Resource not found"</span>)
+<span class="kw">except</span> <span class="cls">synup.ValidationError</span> <span class="kw">as</span> e:
+    <span class="kw">print</span>(<span class="str">f"Bad request: </span>{e.response_body}<span class="str">"</span>)
+<span class="kw">except</span> <span class="cls">synup.APIConnectionError</span>:
+    <span class="kw">print</span>(<span class="str">"Network error"</span>)</code></pre>
+        </div>
+        <table class="param-table">
+          <thead><tr><th>Exception</th><th>Status</th><th>When</th></tr></thead>
+          <tbody>
+            <tr><td><code>AuthenticationError</code></td><td>401</td><td>Invalid or missing API key</td></tr>
+            <tr><td><code>PermissionDeniedError</code></td><td>403</td><td>Insufficient permissions</td></tr>
+            <tr><td><code>NotFoundError</code></td><td>404</td><td>Resource not found</td></tr>
+            <tr><td><code>ValidationError</code></td><td>400/422</td><td>Invalid request parameters</td></tr>
+            <tr><td><code>RateLimitError</code></td><td>429</td><td>Too many requests. Has <code>retry_after</code> attribute.</td></tr>
+            <tr><td><code>InternalServerError</code></td><td>5xx</td><td>Server-side error. Safe to retry.</td></tr>
+            <tr><td><code>APIConnectionError</code></td><td>—</td><td>Network failure</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Explorer -->
+      <section id="explorer" class="doc-section">
+        <h2>API Explorer</h2>
+        <p>Enter your API key to test any endpoint. Responses shown as JSON.</p>
+        <div class="explorer-container">
+          <div class="explorer-sidebar-inner">
+            <div class="explorer-input-group">
+              <label>API Key</label>
+              <input type="password" id="apiKeyInput" placeholder="Enter your Synup API key">
             </div>
-            <pre class="code-body"><code id="modalCode"></code></pre>
+            <div class="explorer-input-group">
+              <label>Category</label>
+              <select id="categorySelect"><option value="all">All</option></select>
+            </div>
+            <div class="explorer-input-group">
+              <label>Search</label>
+              <input type="text" id="searchInput" placeholder="Search methods...">
+            </div>
+            <div class="explorer-methods" id="methodList"></div>
+          </div>
+          <div class="explorer-main">
+            <div class="explorer-detail" id="methodDetail">
+              <div class="explorer-empty">Select a method from the sidebar to get started.</div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <!-- Explorer -->
-  <section id="explorer" class="section">
-    <div class="container">
-      <h2 class="section-title">Try it live</h2>
-      <p class="section-subtitle">Enter your API key to explore any endpoint. Responses shown as JSON.</p>
+      <!-- Footer -->
+      <footer class="doc-footer">
+        <div class="doc-footer-inner">
+          <span class="header-logo">synup<span class="header-logo-accent">.dev</span></span>
+          <span class="text-muted">&copy; 2026 Synup, Inc.</span>
+        </div>
+      </footer>
 
-      <div class="explorer-container">
-        <div class="explorer-sidebar">
-          <div class="explorer-input-group">
-            <label>API Key</label>
-            <input type="password" id="apiKeyInput" placeholder="Enter your Synup API key">
-          </div>
-          <div class="explorer-input-group">
-            <label>Category</label>
-            <select id="categorySelect">
-              <option value="all">All</option>
-            </select>
-          </div>
-          <div class="explorer-input-group">
-            <label>Search</label>
-            <input type="text" id="searchInput" placeholder="Search methods...">
-          </div>
-          <div class="explorer-methods" id="methodList"></div>
-        </div>
-        <div class="explorer-main">
-          <div class="explorer-detail" id="methodDetail">
-            <div class="explorer-empty">Select a method from the sidebar to get started.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container footer-inner">
-      <div class="footer-grid">
-        <div class="footer-col">
-          <h4>SDK</h4>
-          <a href="#install">Install</a>
-          <a href="#examples">Samples</a>
-          <a href="#explorer">Explorer</a>
-        </div>
-        <div class="footer-col">
-          <h4>Developers</h4>
-          <a href="https://www.synup.dev/">synup.dev</a>
-          <a href="https://www.synup.dev/">API Reference</a>
-          <a href="https://pypi.org/project/synup-sdk/" target="_blank" id="footerDocLink">PyPI Package</a>
-        </div>
-        <div class="footer-col">
-          <h4>Company</h4>
-          <a href="https://synup.com">synup.com</a>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span class="nav-logo">synup<span class="nav-logo-accent">.dev</span></span>
-        <span class="text-muted">&copy; 2026 Synup, Inc. All rights reserved.</span>
-      </div>
-    </div>
-  </footer>
+    </main>
+  </div>
 
   <script src="explorer.js"></script>
+  <script>
+    // Sidebar active link tracking
+    const sections = document.querySelectorAll('.doc-section[id]');
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          sidebarLinks.forEach(link => link.classList.remove('active'));
+          const active = document.querySelector('.sidebar-link[href="#' + entry.target.id + '"]');
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+
+    sections.forEach(section => observer.observe(section));
+
+    // Mobile nav toggle
+    function toggleMobileNav() {
+      document.getElementById('sidebar').classList.toggle('open');
+    }
+
+    // Close sidebar on link click (mobile)
+    sidebarLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        document.getElementById('sidebar').classList.remove('open');
+      });
+    });
+
+    // Copy helpers
+    function copyText(text) {
+      navigator.clipboard.writeText(text);
+    }
+    function copyBlock(id) {
+      const el = document.getElementById(id);
+      if (el) navigator.clipboard.writeText(el.textContent);
+    }
+  </script>
 </body>
 </html>
