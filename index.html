@@ -32,24 +32,24 @@
       cursor: pointer;
     }
     .sidebar-dropdown summary::-webkit-details-marker { display: none; }
-    .sidebar-dropdown summary .sidebar-link {
-      position: relative;
-      padding-right: 28px;
+    .sidebar-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-right: 12px;
     }
-    .sidebar-dropdown summary .sidebar-link::after {
+    .sidebar-toggle::after {
       content: "";
-      position: absolute;
-      right: 12px;
-      top: 50%;
       width: 5px;
       height: 5px;
       border-right: 1.5px solid var(--text-muted);
       border-bottom: 1.5px solid var(--text-muted);
-      transform: translateY(-60%) rotate(45deg);
+      transform: rotate(45deg);
       transition: transform 0.2s;
+      flex-shrink: 0;
     }
-    .sidebar-dropdown[open] summary .sidebar-link::after {
-      transform: translateY(-40%) rotate(-135deg);
+    .sidebar-dropdown[open] .sidebar-toggle::after {
+      transform: rotate(-135deg);
     }
     .sidebar-sublink {
       display: block;
@@ -132,7 +132,8 @@
         <div class="sidebar-section">
           <div class="sidebar-heading">Common Resources</div>
           <details class="sidebar-dropdown">
-            <summary><a href="#locations" class="sidebar-link">Locations</a></summary>
+            <summary class="sidebar-link sidebar-toggle">Locations</summary>
+            <a href="#locations" class="sidebar-sublink">overview</a>
             <a href="#locations-list" class="sidebar-sublink">list</a>
             <a href="#locations-retrieve" class="sidebar-sublink">retrieve</a>
             <a href="#locations-search" class="sidebar-sublink">search</a>
@@ -144,21 +145,24 @@
             <a href="#automations" class="sidebar-sublink">automations</a>
           </details>
           <details class="sidebar-dropdown">
-            <summary><a href="#reviews" class="sidebar-link">Reviews</a></summary>
+            <summary class="sidebar-link sidebar-toggle">Reviews</summary>
+            <a href="#reviews" class="sidebar-sublink">overview</a>
             <a href="#reviews-list" class="sidebar-sublink">list</a>
             <a href="#reviews-respond" class="sidebar-sublink">respond</a>
             <a href="#reviews-analytics" class="sidebar-sublink">analytics</a>
             <a href="#campaigns" class="sidebar-sublink">campaigns</a>
           </details>
           <details class="sidebar-dropdown">
-            <summary><a href="#listings" class="sidebar-link">Listings</a></summary>
+            <summary class="sidebar-link sidebar-toggle">Listings</summary>
+            <a href="#listings" class="sidebar-sublink">overview</a>
             <a href="#listings-premium" class="sidebar-sublink">premium</a>
             <a href="#listings-voice" class="sidebar-sublink">voice</a>
             <a href="#listings-duplicates" class="sidebar-sublink">duplicates</a>
             <a href="#connected-accounts" class="sidebar-sublink">connected accounts</a>
           </details>
           <details class="sidebar-dropdown">
-            <summary><a href="#analytics" class="sidebar-link">Analytics</a></summary>
+            <summary class="sidebar-link sidebar-toggle">Analytics</summary>
+            <a href="#analytics" class="sidebar-sublink">overview</a>
             <a href="#keywords" class="sidebar-sublink">keywords</a>
             <a href="#grid-reports" class="sidebar-sublink">grid reports</a>
           </details>
