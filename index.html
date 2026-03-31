@@ -43,9 +43,9 @@
   <section class="hero">
     <div class="hero-glow"></div>
     <div class="container hero-inner">
-      <div class="badge">SDK for Synup API</div>
-      <h1>Build on Synup's<br><span class="text-accent">local presence</span> infrastructure</h1>
-      <p class="hero-subtitle">Listings, reviews, and local search. One install, full API coverage, zero boilerplate.</p>
+      <div class="badge">Python &amp; Node.js SDK</div>
+      <h1>Build local presence<br><span class="text-accent">automations</span> in minutes</h1>
+      <p class="hero-subtitle">Auto-respond to reviews. Monitor 80+ listings. Generate reputation reports. Ship real products on top of Synup — not just API calls.</p>
       <div class="hero-actions">
         <a href="#install" class="btn btn-primary btn-lg">Get started</a>
         <a href="#explorer" class="btn btn-secondary btn-lg">Try it live</a>
@@ -59,35 +59,35 @@
             <span class="dot dot-yellow"></span>
             <span class="dot dot-green"></span>
           </div>
-          <span class="code-filename" id="heroFilename">quickstart.py</span>
+          <span class="code-filename" id="heroFilename">auto_responder.py</span>
         </div>
-        <pre class="code-body" id="heroPython"><code><span class="kw">from</span> <span class="mod">synup</span> <span class="kw">import</span> <span class="cls">SynupClient</span>
+        <pre class="code-body" id="heroPython"><code><span class="kw">import</span> <span class="mod">synup</span>
 
-client = <span class="cls">SynupClient</span>(api_key=<span class="str">"YOUR_API_KEY"</span>)
+client = <span class="mod">synup</span>.<span class="cls">Synup</span>()  <span class="cmt"># reads SYNUP_API_KEY from env</span>
 
-<span class="cmt"># Fetch all locations</span>
-locations = client.fetch_all_locations(fetch_all=<span class="kw">True</span>)
+<span class="cmt"># Auto-reply to all 4-5 star reviews in one call</span>
+results = client.workflows.auto_reply_to_reviews(
+    <span class="num">16808</span>,
+    template=<span class="str">"Thanks for the {rating}-star review!"</span>,
+    min_rating=<span class="num">4</span>,
+)
+<span class="kw">print</span>(<span class="str">f"Replied to </span>{len(results)}<span class="str"> reviews"</span>)
 
-<span class="cmt"># Get reviews for a location</span>
-reviews = client.fetch_interactions(<span class="num">16808</span>, first=<span class="num">20</span>)
-
-<span class="cmt"># Respond to a review</span>
-client.respond_to_review(
-    interaction_id=<span class="str">"review-uuid"</span>,
-    response_content=<span class="str">"Thank you for your feedback!"</span>
-)</code></pre>
+<span class="cmt"># Full listings health audit</span>
+audit = client.workflows.listings_health_audit(<span class="num">16808</span>)
+<span class="kw">print</span>(<span class="str">f"Health score: </span>{audit.health_score}<span class="str">%"</span>)</code></pre>
         <pre class="code-body" id="heroNodejs" style="display:none"><code><span class="kw">import</span> { <span class="cls">SynupClient</span> } <span class="kw">from</span> <span class="str">'synup-js'</span>
 
 <span class="kw">const</span> client = <span class="kw">new</span> <span class="cls">SynupClient</span>({ apiKey: <span class="str">"YOUR_API_KEY"</span> })
 
 <span class="cmt">// Fetch all locations</span>
-<span class="kw">const</span> locations = <span class="kw">await</span> client.fetchAllLocations({ fetchAll: <span class="kw">true</span> })
+<span class="kw">const</span> locations = <span class="kw">await</span> client.locations.list({ first: <span class="num">10</span> })
 
 <span class="cmt">// Get reviews for a location</span>
-<span class="kw">const</span> reviews = <span class="kw">await</span> client.fetchInteractions({ locationId: <span class="num">16808</span>, first: <span class="num">20</span> })
+<span class="kw">const</span> reviews = <span class="kw">await</span> client.reviews.list({ locationId: <span class="num">16808</span>, first: <span class="num">20</span> })
 
 <span class="cmt">// Respond to a review</span>
-<span class="kw">await</span> client.respondToReview(<span class="str">"review-uuid"</span>, <span class="str">"Thank you for your feedback!"</span>)</code></pre>
+<span class="kw">await</span> client.reviews.respond(<span class="str">"review-uuid"</span>, <span class="str">"Thank you for your feedback!"</span>)</code></pre>
       </div>
     </div>
   </section>
@@ -112,7 +112,7 @@ client.respond_to_review(
         <div class="step-card">
           <div class="step-number">3</div>
           <h3>Start building</h3>
-          <div class="code-inline"><code id="installInit">client = SynupClient(api_key="...")</code></div>
+          <div class="code-inline"><code id="installInit">client = synup.Synup()</code></div>
         </div>
       </div>
     </div>
@@ -121,39 +121,39 @@ client.respond_to_review(
   <!-- Features -->
   <section id="features" class="section section-alt">
     <div class="container">
-      <h2 class="section-title">Built for developers</h2>
-      <p class="section-subtitle"></p>
+      <h2 class="section-title">Why use the SDK instead of the API?</h2>
+      <p class="section-subtitle">Ship in hours, not weeks. The SDK handles the hard parts so you can focus on building.</p>
 
       <div class="features-grid">
         <div class="feature-card">
           <div class="feature-icon">&#9889;</div>
-          <h3>Full API coverage</h3>
-          <p>Locations, listings, reviews, rankings, analytics, users, and more.</p>
+          <h3>Pre-built workflows</h3>
+          <p>Auto-reply to reviews, bulk onboard locations, generate reports — one function call.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">&#128268;</div>
-          <h3>Thin wrapper</h3>
-          <p>Returns raw API data. No opinionated models. Bring your own data layer.</p>
+          <div class="feature-icon">&#128260;</div>
+          <h3>Auto-retry + rate limits</h3>
+          <p>Built-in exponential backoff on 429/5xx. Your scripts survive API hiccups.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">&#128196;</div>
           <h3>Auto-pagination</h3>
-          <p id="featurePagination">Pass <code>fetch_all=True</code> to any list method. The SDK handles cursor logic.</p>
+          <p id="featurePagination">Call <code>.auto_paging_iter()</code> and iterate all results. No cursor tracking.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">&#128273;</div>
-          <h3>Auto-encoding</h3>
-          <p>Pass numeric IDs like <code>16808</code>. The SDK base64-encodes them automatically.</p>
+          <div class="feature-icon">&#128204;</div>
+          <h3>Typed responses</h3>
+          <p>Access <code>location.name</code> instead of <code>result["locations"][0]["name"]</code>. IDE autocomplete works.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">&#128214;</div>
-          <h3 id="featureDocsTitle">Full docstrings</h3>
-          <p id="featureDocsDesc">Every method has Args, Returns, and Example. IDE autocompletion just works.</p>
+          <h3 id="featureDocsTitle">Specific errors</h3>
+          <p id="featureDocsDesc">Catch <code>RateLimitError</code>, <code>AuthenticationError</code>, <code>NotFoundError</code> — not generic 400s.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">&#128736;</div>
-          <h3>Error handling</h3>
-          <p>Clear exceptions with HTTP status and response body. Easy to debug.</p>
+          <h3>Zero boilerplate</h3>
+          <p>Reads API key from env. Default timeouts. Sensible defaults. Two lines to start.</p>
         </div>
       </div>
     </div>
@@ -162,56 +162,56 @@ client.respond_to_review(
   <!-- APIs -->
   <section id="apis" class="section">
     <div class="container">
-      <h2 class="section-title">Every API, one client</h2>
-      <p class="section-subtitle" id="apiSubtitle">All endpoints accessible through <code>SynupClient</code>. Install with <code>pip install synup-sdk</code>.</p>
+      <h2 class="section-title">What you can build</h2>
+      <p class="section-subtitle" id="apiSubtitle">Real products, not just API calls. Each module is a building block for local presence automation.</p>
 
       <div class="api-grid">
         <div class="api-card">
-          <div class="api-method get">GET</div>
+          <div class="api-method post">BUILD</div>
           <div class="api-info">
-            <h3>Locations API</h3>
-            <p>Create, update, search, and manage business locations. Organize with folders and tags.</p>
-            <div class="api-methods-list" id="apiLocations">fetch_all_locations &middot; search_locations &middot; create_location &middot; update_location &middot; archive_locations</div>
+            <h3>Review Auto-Responder Bot</h3>
+            <p>Auto-reply to positive reviews. Flag negative ones for human review. Maintain 100% response rate.</p>
+            <div class="api-methods-list" id="apiLocations">client.workflows.auto_reply_to_reviews() &middot; client.reviews.list() &middot; client.reviews.respond()</div>
           </div>
         </div>
         <div class="api-card">
-          <div class="api-method get">GET</div>
+          <div class="api-method post">BUILD</div>
           <div class="api-info">
-            <h3>Listings Sync API</h3>
-            <p>Push business data to 80+ directories. Check sync status and detect duplicates.</p>
-            <div class="api-methods-list" id="apiListings">fetch_premium_listings &middot; fetch_voice_listings &middot; fetch_ai_listings</div>
+            <h3>Multi-location Reputation Dashboard</h3>
+            <p>Aggregate review scores, listing sync status, and analytics across all locations in one view.</p>
+            <div class="api-methods-list" id="apiListings">client.workflows.weekly_reputation_report() &middot; client.analytics.google() &middot; client.reviews.analytics.overview()</div>
           </div>
         </div>
         <div class="api-card">
-          <div class="api-method post">POST</div>
+          <div class="api-method post">BUILD</div>
           <div class="api-info">
-            <h3>Reviews API</h3>
-            <p>Aggregate reviews from all platforms. Respond programmatically. Get sentiment analytics.</p>
-            <div class="api-methods-list" id="apiReviews">fetch_interactions &middot; respond_to_review &middot; fetch_review_analytics_overview &middot; fetch_review_phrases</div>
+            <h3>Bulk Location Onboarding Tool</h3>
+            <p>Import 500 locations from CSV, assign folders, add tags, and set up keyword tracking — one command.</p>
+            <div class="api-methods-list" id="apiReviews">client.workflows.bulk_onboard_locations() &middot; client.workflows.onboard_location()</div>
           </div>
         </div>
         <div class="api-card">
-          <div class="api-method get">GET</div>
+          <div class="api-method post">BUILD</div>
           <div class="api-info">
-            <h3>Rankings API</h3>
-            <p>Track keyword positions and local pack rankings. Generate grid rank heatmaps.</p>
-            <div class="api-methods-list" id="apiRankings">fetch_keywords &middot; fetch_keywords_performance &middot; create_grid_report &middot; fetch_grid_report</div>
+            <h3>Listings Sync Monitor</h3>
+            <p>Daily check across 80+ directories. Alert on sync failures. Track duplicate listings.</p>
+            <div class="api-methods-list" id="apiRankings">client.workflows.listings_health_audit() &middot; client.listings.premium() &middot; client.listings.duplicates()</div>
           </div>
         </div>
         <div class="api-card">
-          <div class="api-method get">GET</div>
+          <div class="api-method post">BUILD</div>
           <div class="api-info">
-            <h3>Analytics API</h3>
-            <p>Unified insights from Google Business Profile, Facebook, and Bing.</p>
-            <div class="api-methods-list" id="apiAnalytics">fetch_google_analytics &middot; fetch_bing_analytics &middot; fetch_facebook_analytics</div>
+            <h3>Weekly Analytics Email Reporter</h3>
+            <p>Pull Google, Bing, and review analytics. Generate a report. Send via email or Slack.</p>
+            <div class="api-methods-list" id="apiAnalytics">client.analytics.google() &middot; client.analytics.bing() &middot; client.reviews.analytics.overview()</div>
           </div>
         </div>
         <div class="api-card">
-          <div class="api-method post">POST</div>
+          <div class="api-method post">BUILD</div>
           <div class="api-info">
-            <h3>Review Campaigns API</h3>
-            <p>Send automated review requests via SMS and email. Customize templates.</p>
-            <div class="api-methods-list" id="apiCampaigns">create_review_campaign &middot; add_review_campaign_customers &middot; fetch_review_campaigns</div>
+            <h3>Review Campaign Automation</h3>
+            <p>Launch SMS/email review requests. Track customer engagement. Boost star ratings.</p>
+            <div class="api-methods-list" id="apiCampaigns">client.campaigns.create() &middot; client.campaigns.add_customers() &middot; client.campaigns.list()</div>
           </div>
         </div>
       </div>
@@ -221,8 +221,8 @@ client.respond_to_review(
   <!-- Samples -->
   <section id="examples" class="section section-alt">
     <div class="container">
-      <h2 class="section-title">Use cases</h2>
-      <p class="section-subtitle">Runnable scripts for common workflows. Set <code>SYNUP_API_KEY</code> and go.</p>
+      <h2 class="section-title">Copy-paste examples</h2>
+      <p class="section-subtitle">Real automations you can ship today. Set <code>SYNUP_API_KEY</code> and run.</p>
 
       <div class="examples-grid">
         <div class="example-card" onclick="showExample('quickstart')">
