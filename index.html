@@ -24,6 +24,39 @@
       color: var(--text-muted);
       margin-top: 8px;
     }
+    .sidebar-sublink {
+      display: block;
+      padding: 4px 16px 4px 32px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .sidebar-sublink:hover {
+      color: var(--text-primary);
+    }
+    .doc-subsection {
+      padding-top: 16px;
+    }
+    .doc-subsection h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+    }
+    .steps-list {
+      padding-left: 1.5rem;
+      margin: 12px 0;
+    }
+    .steps-list li {
+      margin-bottom: 8px;
+    }
+    .link-accent {
+      color: var(--accent, #0085ff);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .link-accent:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -47,26 +80,45 @@
         <div class="sidebar-section">
           <div class="sidebar-heading">Get started</div>
           <a href="#overview" class="sidebar-link active">Overview</a>
+          <a href="#account" class="sidebar-link">Create account</a>
           <a href="#install" class="sidebar-link">Installation</a>
           <a href="#quickstart" class="sidebar-link">Quickstart</a>
           <a href="#configuration" class="sidebar-link">Configuration</a>
         </div>
 
         <div class="sidebar-section">
-          <div class="sidebar-heading">Workflows</div>
-          <a href="#workflows" class="sidebar-link">Overview</a>
-          <a href="#wf-auto-reply" class="sidebar-link">Auto-reply reviews</a>
-          <a href="#wf-onboard" class="sidebar-link">Onboard location</a>
-          <a href="#wf-bulk-onboard" class="sidebar-link">Bulk onboard</a>
-          <a href="#wf-report" class="sidebar-link">Reputation report</a>
-          <a href="#wf-audit" class="sidebar-link">Listings audit</a>
+          <div class="sidebar-heading">Use Cases</div>
+          <a href="#use-cases" class="sidebar-link">Overview</a>
+          <a href="#uc-auto-reply" class="sidebar-link">Auto-reply reviews</a>
+          <a href="#uc-onboard" class="sidebar-link">Onboard location</a>
+          <a href="#uc-bulk-onboard" class="sidebar-link">Bulk onboard</a>
+          <a href="#uc-report" class="sidebar-link">Reputation report</a>
+          <a href="#uc-audit" class="sidebar-link">Listings audit</a>
+          <a href="#uc-review-monitor" class="sidebar-link">Review monitoring</a>
+          <a href="#uc-analytics" class="sidebar-link">Analytics report</a>
+          <a href="#uc-users" class="sidebar-link">User management</a>
+          <a href="#uc-google-connect" class="sidebar-link">Google connect flow</a>
+          <a href="#uc-grid-rank" class="sidebar-link">Grid rank report</a>
+          <a href="#uc-fastapi" class="sidebar-link">FastAPI backend</a>
+          <a href="#uc-fullstack" class="sidebar-link">Full-stack dashboard</a>
         </div>
 
         <div class="sidebar-section">
           <div class="sidebar-heading">Resources</div>
           <a href="#locations" class="sidebar-link">Locations</a>
+          <a href="#locations-list" class="sidebar-sublink">list</a>
+          <a href="#locations-retrieve" class="sidebar-sublink">retrieve</a>
+          <a href="#locations-search" class="sidebar-sublink">search</a>
+          <a href="#locations-create" class="sidebar-sublink">create</a>
+          <a href="#locations-update" class="sidebar-sublink">update</a>
           <a href="#reviews" class="sidebar-link">Reviews</a>
+          <a href="#reviews-list" class="sidebar-sublink">list</a>
+          <a href="#reviews-respond" class="sidebar-sublink">respond</a>
+          <a href="#reviews-analytics" class="sidebar-sublink">analytics</a>
           <a href="#listings" class="sidebar-link">Listings</a>
+          <a href="#listings-premium" class="sidebar-sublink">premium</a>
+          <a href="#listings-voice" class="sidebar-sublink">voice</a>
+          <a href="#listings-duplicates" class="sidebar-sublink">duplicates</a>
           <a href="#analytics" class="sidebar-link">Analytics</a>
           <a href="#keywords" class="sidebar-link">Keywords</a>
           <a href="#campaigns" class="sidebar-link">Campaigns</a>
@@ -99,7 +151,7 @@
         <h1>Synup SDK</h1>
         <p class="doc-lead">Build local presence automations in minutes — review auto-responders, listings monitors, reputation dashboards, and more.</p>
         <div class="doc-badges">
-          <span class="doc-badge" id="badgeText">Python SDK</span>
+          <span class="doc-badge" id="badgeText">Synup SDK</span>
           <span class="doc-badge doc-badge-muted">v0.4.0</span>
         </div>
         <div class="callout">
@@ -111,6 +163,26 @@
             <li>Generate weekly reputation reports</li>
             <li>Launch SMS/email review campaigns</li>
           </ul>
+        </div>
+      </section>
+
+      <!-- Create account & get API key -->
+      <section id="account" class="doc-section">
+        <h2>Create account & get API key</h2>
+        <ol class="steps-list">
+          <li>Sign up at <a href="https://www.synup.dev/" target="_blank" class="link-accent">synup.dev</a></li>
+          <li>Go to <strong>Settings &rarr; Integrations &rarr; Generate</strong></li>
+          <li>Copy your API key and set it as an environment variable:</li>
+        </ol>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+          </div>
+          <pre class="code-lang-python"><code>export SYNUP_API_KEY="your-api-key-here"</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code>export SYNUP_API_KEY="your-api-key-here"</code></pre>
         </div>
       </section>
 
@@ -213,14 +285,14 @@ client = <span class="mod">synup</span>.<span class="cls">Synup</span>(
         </table>
       </section>
 
-      <!-- Workflows -->
-      <section id="workflows" class="doc-section">
-        <h2>Workflows</h2>
-        <p>Pre-built automations that combine multiple API calls into single, product-level operations. These are real features, not just API wrappers.</p>
-        <div class="workflow-notice code-lang-nodejs" style="display:none">Workflows are available in the Python SDK. Node.js support coming soon.</div>
+      <!-- Use Cases -->
+      <section id="use-cases" class="doc-section">
+        <h2>Use Cases</h2>
+        <p>Pre-built automations that combine multiple API calls into single, product-level operations. These are real features — one function call, multiple API operations.</p>
+        <div class="workflow-notice code-lang-nodejs" style="display:none">Workflows are available in the Synup SDK. Node.js support coming soon.</div>
       </section>
 
-      <section id="wf-auto-reply" class="doc-section">
+      <section id="uc-auto-reply" class="doc-section">
         <h3>Auto-reply to reviews</h3>
         <p>Fetches recent reviews, filters by rating and response status, and posts replies using your template.</p>
         <div class="code-block">
@@ -247,7 +319,7 @@ results = client.workflows.auto_reply_to_reviews(
     min_rating=<span class="num">4</span>,
 )
 <span class="kw">print</span>(<span class="str">f"Replied to </span>{len(results)}<span class="str"> reviews"</span>)</code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="cmt">// Workflows are available in the Python SDK.</span>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="cmt">// Workflows are available in the Synup SDK.</span>
 <span class="cmt">// Node.js support coming soon.</span></code></pre>
         </div>
         <table class="param-table">
@@ -262,7 +334,7 @@ results = client.workflows.auto_reply_to_reviews(
         </table>
       </section>
 
-      <section id="wf-onboard" class="doc-section">
+      <section id="uc-onboard" class="doc-section">
         <h3>Onboard location</h3>
         <p>Creates a location, assigns it to a folder, adds tags, and sets up keyword tracking — all in one call.</p>
         <div class="code-block">
@@ -285,12 +357,12 @@ results = client.workflows.auto_reply_to_reviews(
     tags=[<span class="str">"new"</span>, <span class="str">"coffee"</span>],
     keywords=[<span class="str">"coffee shop near me"</span>],
 )</code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="cmt">// Workflows are available in the Python SDK.</span>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="cmt">// Workflows are available in the Synup SDK.</span>
 <span class="cmt">// Node.js support coming soon.</span></code></pre>
         </div>
       </section>
 
-      <section id="wf-bulk-onboard" class="doc-section">
+      <section id="uc-bulk-onboard" class="doc-section">
         <h3>Bulk onboard from CSV</h3>
         <p>Import hundreds of locations from a CSV file. Columns: <code>name, street, city, state, postal_code, country, phone, store_id</code></p>
         <div class="code-block">
@@ -308,12 +380,12 @@ results = client.workflows.auto_reply_to_reviews(
 )
 succeeded = [r <span class="kw">for</span> r <span class="kw">in</span> results <span class="kw">if</span> r[<span class="str">"status"</span>] == <span class="str">"created"</span>]
 <span class="kw">print</span>(<span class="str">f"Created </span>{len(succeeded)}<span class="str"> of </span>{len(results)}<span class="str"> locations"</span>)</code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="cmt">// Workflows are available in the Python SDK.</span>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="cmt">// Workflows are available in the Synup SDK.</span>
 <span class="cmt">// Node.js support coming soon.</span></code></pre>
         </div>
       </section>
 
-      <section id="wf-report" class="doc-section">
+      <section id="uc-report" class="doc-section">
         <h3>Weekly reputation report</h3>
         <p>Generates a complete report — reviews, analytics, and listings health — for a location.</p>
         <div class="code-block">
@@ -328,12 +400,12 @@ succeeded = [r <span class="kw">for</span> r <span class="kw">in</span> results 
 <span class="kw">print</span>(report.review_summary)
 <span class="kw">print</span>(report.analytics.google)
 <span class="kw">print</span>(<span class="str">f"Listings sync rate: </span>{report.listings_health.sync_rate}<span class="str">"</span>)</code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="cmt">// Workflows are available in the Python SDK.</span>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="cmt">// Workflows are available in the Synup SDK.</span>
 <span class="cmt">// Node.js support coming soon.</span></code></pre>
         </div>
       </section>
 
-      <section id="wf-audit" class="doc-section">
+      <section id="uc-audit" class="doc-section">
         <h3>Listings health audit</h3>
         <p>Checks premium listings, voice listings, duplicates, and connection status. Returns a health score.</p>
         <div class="code-block">
@@ -348,15 +420,272 @@ succeeded = [r <span class="kw">for</span> r <span class="kw">in</span> results 
 <span class="kw">print</span>(<span class="str">f"Health score: </span>{audit.health_score}<span class="str">%"</span>)
 <span class="kw">print</span>(<span class="str">f"Synced: </span>{audit.synced_count}<span class="str">, Issues: </span>{audit.issue_count}<span class="str">"</span>)
 <span class="kw">print</span>(<span class="str">f"Duplicates: </span>{len(audit.duplicates)}<span class="str">"</span>)</code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="cmt">// Workflows are available in the Python SDK.</span>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="cmt">// Workflows are available in the Synup SDK.</span>
 <span class="cmt">// Node.js support coming soon.</span></code></pre>
         </div>
       </section>
 
+      <section id="uc-review-monitor" class="doc-section">
+        <h3>Review monitoring</h3>
+        <p>Scan locations for negative reviews (1-2 stars) that need attention.</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code><span class="cmt"># Monitor all locations for negative reviews</span>
+<span class="kw">for</span> loc <span class="kw">in</span> client.locations.list(first=<span class="num">100</span>).auto_paging_iter():
+    page = client.reviews.list(loc.id, first=<span class="num">20</span>, rating_filters=[<span class="num">1</span>, <span class="num">2</span>])
+    <span class="kw">for</span> review <span class="kw">in</span> page:
+        <span class="kw">print</span>(<span class="str">f"[</span>{review.rating}<span class="str"> star] </span>{loc.name}<span class="str">: </span>{review.content[:80]}<span class="str">"</span>)</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> locations = <span class="kw">await</span> client.fetchAllLocations({ fetchAll: <span class="kw">true</span> })
+<span class="kw">for</span> (<span class="kw">const</span> loc <span class="kw">of</span> locations) {
+  <span class="kw">const</span> result = <span class="kw">await</span> client.fetchInteractions({ locationId: loc.id, first: <span class="num">20</span>, ratingFilters: [<span class="num">1</span>, <span class="num">2</span>] })
+  <span class="kw">for</span> (<span class="kw">const</span> review <span class="kw">of</span> result.interactions) {
+    console.log(<span class="str">`[${review.rating} star] ${loc.name}: ${review.content?.slice(0, 80)}`</span>)
+  }
+}</code></pre>
+        </div>
+      </section>
+
+      <section id="uc-analytics" class="doc-section">
+        <h3>Analytics report</h3>
+        <p>Pull Google, Bing, and review analytics across locations.</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code><span class="kw">for</span> loc <span class="kw">in</span> client.locations.list(first=<span class="num">10</span>):
+    google = client.analytics.google(loc.id, from_date=<span class="str">"2024-01-01"</span>)
+    overview = client.reviews.analytics.overview(loc.id, start_date=<span class="str">"2024-01-01"</span>)
+    <span class="kw">print</span>(<span class="str">f"</span>{loc.name}<span class="str">: Google views=</span>{google.get(<span class="str">'views'</span>, <span class="str">'N/A'</span>)}<span class="str">"</span>)</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> result = <span class="kw">await</span> client.fetchAllLocations({ first: <span class="num">10</span> })
+<span class="kw">for</span> (<span class="kw">const</span> loc <span class="kw">of</span> result.locations) {
+  <span class="kw">const</span> google = <span class="kw">await</span> client.fetchGoogleAnalytics(loc.id, { fromDate: <span class="str">"2024-01-01"</span> })
+  console.log(<span class="str">`${loc.name}: Google views=${google.views || 'N/A'}`</span>)
+}</code></pre>
+        </div>
+      </section>
+
+      <section id="uc-users" class="doc-section">
+        <h3>User management</h3>
+        <p>Create users, assign roles, manage location access.</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code>roles = client.users.roles()
+result = client.users.create(
+    email=<span class="str">"manager@example.com"</span>, role_id=roles[<span class="num">0</span>].id,
+    first_name=<span class="str">"Jane"</span>, last_name=<span class="str">"Doe"</span>,
+)
+client.users.add_locations(result.user.id, [<span class="num">16808</span>, <span class="num">16749</span>])</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> roles = <span class="kw">await</span> client.fetchRoles()
+<span class="kw">const</span> result = <span class="kw">await</span> client.createUser({
+  email: <span class="str">"manager@example.com"</span>, roleId: roles[<span class="num">0</span>].id,
+  firstName: <span class="str">"Jane"</span>, lastName: <span class="str">"Doe"</span>,
+})
+<span class="kw">await</span> client.addUserLocations(result.user.id, [<span class="num">16808</span>, <span class="num">16749</span>])</code></pre>
+        </div>
+      </section>
+
+      <section id="uc-google-connect" class="doc-section">
+        <h3>Google connect flow</h3>
+        <p>OAuth flow for connecting Google Business Profiles.</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code>url_result = client.connected_accounts.oauth_url(
+    <span class="num">16808</span>, <span class="str">"GOOGLE"</span>,
+    success_url=<span class="str">"https://yoursite.com/success"</span>,
+    error_url=<span class="str">"https://yoursite.com/error"</span>,
+)
+<span class="kw">print</span>(<span class="str">f"Redirect user to: </span>{url_result.url}<span class="str">"</span>)</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> result = <span class="kw">await</span> client.getOauthConnectUrl({
+  locationId: <span class="num">16808</span>, site: <span class="str">"GOOGLE"</span>,
+  successUrl: <span class="str">"https://yoursite.com/success"</span>,
+  errorUrl: <span class="str">"https://yoursite.com/error"</span>,
+})
+console.log(<span class="str">`Redirect user to: ${result.url}`</span>)</code></pre>
+        </div>
+      </section>
+
+      <section id="uc-grid-rank" class="doc-section">
+        <h3>Grid rank report</h3>
+        <p>Create Local Rank Grid reports for geographic ranking data.</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code>result = client.grid_reports.create(
+    location_id=<span class="num">16808</span>,
+    keywords=[<span class="str">"italian restaurant"</span>, <span class="str">"best pizza"</span>],
+    business_name=<span class="str">"Chianti"</span>, business_street=<span class="str">"No 12, 5th Block"</span>,
+    business_city=<span class="str">"Bengaluru"</span>, business_state=<span class="str">"Karnataka"</span>,
+    business_country=<span class="str">"India"</span>,
+    latitude=<span class="num">12.935216</span>, longitude=<span class="num">77.619961</span>,
+    distance=<span class="num">20</span>, distance_unit=<span class="str">"km"</span>, grid_size=<span class="num">5</span>,
+)
+<span class="kw">print</span>(<span class="str">f"Report IDs: </span>{result.to_dict()}<span class="str">"</span>)</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> result = <span class="kw">await</span> client.createGridReport({
+  locationId: <span class="num">16808</span>, keywords: [<span class="str">"italian restaurant"</span>, <span class="str">"best pizza"</span>],
+  businessName: <span class="str">"Chianti"</span>, businessStreet: <span class="str">"No 12, 5th Block"</span>,
+  businessCity: <span class="str">"Bengaluru"</span>, businessState: <span class="str">"Karnataka"</span>,
+  businessCountry: <span class="str">"India"</span>,
+  latitude: <span class="num">12.935216</span>, longitude: <span class="num">77.619961</span>,
+  distance: <span class="num">20</span>, distanceUnit: <span class="str">"km"</span>, gridSize: <span class="num">5</span>,
+})
+console.log(<span class="str">"Report IDs:"</span>, result)</code></pre>
+        </div>
+      </section>
+
+      <section id="uc-fastapi" class="doc-section">
+        <h3>FastAPI backend</h3>
+        <p>Wire the SDK into a REST API your frontend can call.</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code><span class="kw">from</span> <span class="mod">fastapi</span> <span class="kw">import</span> <span class="cls">FastAPI</span>
+<span class="kw">from</span> <span class="mod">fastapi.middleware.cors</span> <span class="kw">import</span> <span class="cls">CORSMiddleware</span>
+<span class="kw">import</span> <span class="mod">synup</span>
+
+app = <span class="cls">FastAPI</span>()
+app.add_middleware(<span class="cls">CORSMiddleware</span>, allow_origins=[<span class="str">"*"</span>], allow_methods=[<span class="str">"*"</span>], allow_headers=[<span class="str">"*"</span>])
+client = <span class="mod">synup</span>.<span class="cls">Synup</span>()
+
+@app.get(<span class="str">"/api/locations"</span>)
+<span class="kw">async def</span> get_locations(first: int = <span class="num">10</span>):
+    page = client.locations.list(first=first)
+    <span class="kw">return</span> {<span class="str">"locations"</span>: [loc.to_dict() <span class="kw">for</span> loc <span class="kw">in</span> page], <span class="str">"has_more"</span>: page.has_more}
+
+@app.get(<span class="str">"/api/locations/{location_id}/reviews"</span>)
+<span class="kw">async def</span> get_reviews(location_id: int, first: int = <span class="num">20</span>):
+    page = client.reviews.list(location_id, first=first)
+    <span class="kw">return</span> {<span class="str">"reviews"</span>: [r.to_dict() <span class="kw">for</span> r <span class="kw">in</span> page]}
+
+@app.post(<span class="str">"/api/reviews/{interaction_id}/respond"</span>)
+<span class="kw">async def</span> respond(interaction_id: str, content: str):
+    result = client.reviews.respond(interaction_id, content)
+    <span class="kw">return</span> result.to_dict()</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">import</span> express <span class="kw">from</span> <span class="str">'express'</span>
+<span class="kw">import</span> { <span class="cls">SynupClient</span> } <span class="kw">from</span> <span class="str">'synup-js'</span>
+
+<span class="kw">const</span> app = express()
+<span class="kw">const</span> client = <span class="kw">new</span> <span class="cls">SynupClient</span>({ apiKey: process.env.<span class="mod">SYNUP_API_KEY</span> })
+
+app.get(<span class="str">'/api/locations'</span>, <span class="kw">async</span> (req, res) => {
+  <span class="kw">const</span> result = <span class="kw">await</span> client.fetchAllLocations({ first: Number(req.query.first) || <span class="num">10</span> })
+  res.json(result)
+})
+
+app.get(<span class="str">'/api/locations/:id/reviews'</span>, <span class="kw">async</span> (req, res) => {
+  <span class="kw">const</span> result = <span class="kw">await</span> client.fetchInteractions({ locationId: req.params.id, first: <span class="num">20</span> })
+  res.json(result)
+})
+
+app.listen(<span class="num">8000</span>, () => console.log(<span class="str">'Server on :8000'</span>))</code></pre>
+        </div>
+      </section>
+
+      <section id="uc-fullstack" class="doc-section">
+        <h3>Full-stack dashboard</h3>
+        <p>Complete app with backend + frontend for locations, reviews, analytics.</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code><span class="cmt"># server.py — Full-stack FastAPI app with static frontend</span>
+<span class="kw">from</span> <span class="mod">fastapi</span> <span class="kw">import</span> <span class="cls">FastAPI</span>
+<span class="kw">from</span> <span class="mod">fastapi.staticfiles</span> <span class="kw">import</span> <span class="cls">StaticFiles</span>
+<span class="kw">import</span> <span class="mod">synup</span>
+
+app = <span class="cls">FastAPI</span>()
+client = <span class="mod">synup</span>.<span class="cls">Synup</span>()
+
+@app.get(<span class="str">"/api/locations"</span>)
+<span class="kw">async def</span> locations(first: int = <span class="num">10</span>):
+    page = client.locations.list(first=first)
+    <span class="kw">return</span> [loc.to_dict() <span class="kw">for</span> loc <span class="kw">in</span> page]
+
+@app.get(<span class="str">"/api/locations/{loc_id}/dashboard"</span>)
+<span class="kw">async def</span> dashboard(loc_id: int):
+    reviews = client.reviews.analytics.overview(loc_id)
+    listings = client.listings.premium(loc_id)
+    google = client.analytics.google(loc_id)
+    <span class="kw">return</span> {
+        <span class="str">"reviews"</span>: reviews.to_dict(),
+        <span class="str">"listings"</span>: [l.to_dict() <span class="kw">for</span> l <span class="kw">in</span> listings],
+        <span class="str">"google"</span>: google.to_dict(),
+    }
+
+app.mount(<span class="str">"/"</span>, <span class="cls">StaticFiles</span>(directory=<span class="str">"static"</span>, html=<span class="kw">True</span>))
+<span class="cmt"># Run: SYNUP_API_KEY='key' uvicorn server:app --reload --port 8000</span></code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">import</span> express <span class="kw">from</span> <span class="str">'express'</span>
+<span class="kw">import</span> { <span class="cls">SynupClient</span> } <span class="kw">from</span> <span class="str">'synup-js'</span>
+
+<span class="kw">const</span> app = express()
+<span class="kw">const</span> client = <span class="kw">new</span> <span class="cls">SynupClient</span>({ apiKey: process.env.<span class="mod">SYNUP_API_KEY</span> })
+
+app.get(<span class="str">'/api/locations'</span>, <span class="kw">async</span> (req, res) => {
+  <span class="kw">const</span> result = <span class="kw">await</span> client.fetchAllLocations({ first: <span class="num">10</span> })
+  res.json(result.locations)
+})
+
+app.get(<span class="str">'/api/locations/:id/dashboard'</span>, <span class="kw">async</span> (req, res) => {
+  <span class="kw">const</span> [reviews, listings, google] = <span class="kw">await</span> Promise.all([
+    client.fetchReviewAnalyticsOverview(req.params.id),
+    client.fetchPremiumListings(req.params.id),
+    client.fetchGoogleAnalytics(req.params.id),
+  ])
+  res.json({ reviews, listings, google })
+})
+
+app.use(express.static(<span class="str">'public'</span>))
+app.listen(<span class="num">8000</span>)
+<span class="cmt">// Run: SYNUP_API_KEY='key' node server.js</span></code></pre>
+        </div>
+      </section>
+
       <!-- Resources -->
+
+      <!-- Locations -->
       <section id="locations" class="doc-section">
         <h2>Locations</h2>
         <p>Create, list, search, update, and organize business locations.</p>
+      </section>
+
+      <section id="locations-list" class="doc-section doc-subsection">
+        <h3>locations.list()</h3>
+        <p>List locations with cursor-based pagination. Returns a SyncPage you can iterate or auto-paginate.</p>
         <div class="code-block">
           <div class="code-block-header">
             <div class="code-lang-tabs">
@@ -372,38 +701,94 @@ page = client.locations.list(first=<span class="num">10</span>)
 
 <span class="cmt"># Auto-paginate all</span>
 <span class="kw">for</span> loc <span class="kw">in</span> client.locations.list(first=<span class="num">100</span>).auto_paging_iter():
-    <span class="kw">print</span>(loc.name)
-
-<span class="cmt"># Retrieve single location</span>
-location = client.locations.retrieve(<span class="num">16808</span>)
-
-<span class="cmt"># Search, filter by IDs, store codes, folder, or tags</span>
-page = client.locations.search(<span class="str">"cafe"</span>, first=<span class="num">20</span>)
-locs = client.locations.list_by_ids([<span class="num">16808</span>, <span class="num">16749</span>])
-locs = client.locations.list_by_store_codes([<span class="str">"STORE01"</span>])
-locs = client.locations.list_by_folder(folder_name=<span class="str">"franchise"</span>)
-page = client.locations.list_by_tags([<span class="str">"vip"</span>], first=<span class="num">20</span>)
-
-<span class="cmt"># Create, update, archive</span>
-result = client.locations.create({<span class="str">"name"</span>: <span class="str">"Acme"</span>, <span class="str">"city"</span>: <span class="str">"NYC"</span>, ...})
-client.locations.update({<span class="str">"id"</span>: <span class="num">16808</span>, <span class="str">"phone"</span>: <span class="str">"5559876543"</span>})
-client.locations.archive([<span class="num">16808</span>])</code></pre>
+    <span class="kw">print</span>(loc.name)</code></pre>
           <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> result = <span class="kw">await</span> client.fetchAllLocations({ first: <span class="num">10</span> })
 <span class="kw">for</span> (<span class="kw">const</span> loc <span class="kw">of</span> result.locations) {
   console.log(loc.name, loc.city)
-}
+}</code></pre>
+        </div>
+      </section>
 
-<span class="kw">const</span> locs = <span class="kw">await</span> client.fetchLocationsByIds([<span class="num">16808</span>, <span class="num">16749</span>])
-<span class="kw">const</span> page = <span class="kw">await</span> client.searchLocations(<span class="str">"cafe"</span>, { first: <span class="num">20</span> })
-<span class="kw">const</span> created = <span class="kw">await</span> client.createLocation({ name: <span class="str">"Acme"</span>, city: <span class="str">"NYC"</span> })
-<span class="kw">await</span> client.updateLocation({ id: <span class="num">16808</span>, phone: <span class="str">"5559876543"</span> })
+      <section id="locations-retrieve" class="doc-section doc-subsection">
+        <h3>locations.retrieve()</h3>
+        <p>Get a single location by ID.</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code>location = client.locations.retrieve(<span class="num">16808</span>)</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> locs = <span class="kw">await</span> client.fetchLocationsByIds([<span class="num">16808</span>])</code></pre>
+        </div>
+      </section>
+
+      <section id="locations-search" class="doc-section doc-subsection">
+        <h3>locations.search()</h3>
+        <p>Search locations by name, filter by IDs, store codes, folder, or tags.</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code>page = client.locations.search(<span class="str">"cafe"</span>, first=<span class="num">20</span>)
+locs = client.locations.list_by_ids([<span class="num">16808</span>, <span class="num">16749</span>])
+locs = client.locations.list_by_store_codes([<span class="str">"STORE01"</span>])
+locs = client.locations.list_by_folder(folder_name=<span class="str">"franchise"</span>)
+page = client.locations.list_by_tags([<span class="str">"vip"</span>], first=<span class="num">20</span>)</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> page = <span class="kw">await</span> client.searchLocations(<span class="str">"cafe"</span>, { first: <span class="num">20</span> })
+<span class="kw">const</span> locs = <span class="kw">await</span> client.fetchLocationsByIds([<span class="num">16808</span>, <span class="num">16749</span>])</code></pre>
+        </div>
+      </section>
+
+      <section id="locations-create" class="doc-section doc-subsection">
+        <h3>locations.create()</h3>
+        <p>Create a new location.</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code>result = client.locations.create({<span class="str">"name"</span>: <span class="str">"Acme"</span>, <span class="str">"city"</span>: <span class="str">"NYC"</span>, ...})</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> created = <span class="kw">await</span> client.createLocation({ name: <span class="str">"Acme"</span>, city: <span class="str">"NYC"</span> })</code></pre>
+        </div>
+      </section>
+
+      <section id="locations-update" class="doc-section doc-subsection">
+        <h3>locations.update()</h3>
+        <p>Update or archive an existing location.</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code>client.locations.update({<span class="str">"id"</span>: <span class="num">16808</span>, <span class="str">"phone"</span>: <span class="str">"5559876543"</span>})
+client.locations.archive([<span class="num">16808</span>])</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">await</span> client.updateLocation({ id: <span class="num">16808</span>, phone: <span class="str">"5559876543"</span> })
 <span class="kw">await</span> client.archiveLocations([<span class="num">16808</span>])</code></pre>
         </div>
       </section>
 
+      <!-- Reviews -->
       <section id="reviews" class="doc-section">
         <h2>Reviews</h2>
         <p>List reviews, respond, and access review analytics.</p>
+      </section>
+
+      <section id="reviews-list" class="doc-section doc-subsection">
+        <h3>reviews.list()</h3>
+        <p>List reviews with filters for rating, response status, and more.</p>
         <div class="code-block">
           <div class="code-block-header">
             <div class="code-lang-tabs">
@@ -415,27 +800,57 @@ client.locations.archive([<span class="num">16808</span>])</code></pre>
           <pre class="code-lang-python"><code><span class="cmt"># List reviews with filters</span>
 page = client.reviews.list(<span class="num">16808</span>, first=<span class="num">20</span>, rating_filters=[<span class="num">1</span>, <span class="num">2</span>])
 <span class="kw">for</span> review <span class="kw">in</span> page:
-    <span class="kw">print</span>(review.content, review.rating)
-
-<span class="cmt"># Respond to a review</span>
-client.reviews.respond(interaction_id=<span class="str">"uuid"</span>, content=<span class="str">"Thank you!"</span>)
-
-<span class="cmt"># Review analytics</span>
-overview = client.reviews.analytics.overview(<span class="num">16808</span>, start_date=<span class="str">"2024-01-01"</span>)
-timeline = client.reviews.analytics.timeline(<span class="num">16808</span>)
-phrases = client.reviews.phrases([<span class="str">"TG9jYXRpb246MTY4MDg="</span>])</code></pre>
+    <span class="kw">print</span>(review.content, review.rating)</code></pre>
           <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> result = <span class="kw">await</span> client.fetchInteractions({ locationId: <span class="num">16808</span>, first: <span class="num">20</span> })
 <span class="kw">for</span> (<span class="kw">const</span> review <span class="kw">of</span> result.interactions) {
   console.log(review.content, review.rating)
-}
-
-<span class="kw">await</span> client.respondToReview(<span class="str">"uuid"</span>, <span class="str">"Thank you!"</span>)</code></pre>
+}</code></pre>
         </div>
       </section>
 
+      <section id="reviews-respond" class="doc-section doc-subsection">
+        <h3>reviews.respond()</h3>
+        <p>Post a reply to a review.</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code>client.reviews.respond(interaction_id=<span class="str">"uuid"</span>, content=<span class="str">"Thank you!"</span>)</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">await</span> client.respondToReview(<span class="str">"uuid"</span>, <span class="str">"Thank you!"</span>)</code></pre>
+        </div>
+      </section>
+
+      <section id="reviews-analytics" class="doc-section doc-subsection">
+        <h3>reviews.analytics</h3>
+        <p>Review analytics overview, timeline, and phrase analysis.</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code>overview = client.reviews.analytics.overview(<span class="num">16808</span>, start_date=<span class="str">"2024-01-01"</span>)
+timeline = client.reviews.analytics.timeline(<span class="num">16808</span>)
+phrases = client.reviews.phrases([<span class="str">"TG9jYXRpb246MTY4MDg="</span>])</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> overview = <span class="kw">await</span> client.fetchReviewAnalyticsOverview(<span class="num">16808</span>, { startDate: <span class="str">"2024-01-01"</span> })</code></pre>
+        </div>
+      </section>
+
+      <!-- Listings -->
       <section id="listings" class="doc-section">
         <h2>Listings</h2>
         <p>Check sync status across 80+ directories, manage duplicates, connect/disconnect profiles.</p>
+      </section>
+
+      <section id="listings-premium" class="doc-section doc-subsection">
+        <h3>listings.premium()</h3>
+        <p>Get premium listing sync status across major directories.</p>
         <div class="code-block">
           <div class="code-block-header">
             <div class="code-lang-tabs">
@@ -445,15 +860,44 @@ phrases = client.reviews.phrases([<span class="str">"TG9jYXRpb246MTY4MDg="</span
             <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
           </div>
           <pre class="code-lang-python"><code>premium = client.listings.premium(<span class="num">16808</span>)
-voice = client.listings.voice(<span class="num">16808</span>)
 ai = client.listings.ai(<span class="num">16808</span>)
-dupes = client.listings.duplicates(<span class="num">16808</span>)
 
-client.listings.mark_duplicate(<span class="num">16808</span>, [<span class="str">"listing-id"</span>])
 client.listings.connect(<span class="num">16808</span>, <span class="str">"listing-id"</span>, <span class="str">"account-id"</span>)
 client.listings.disconnect(<span class="num">16808</span>, <span class="str">"GOOGLE"</span>)</code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> premium = <span class="kw">await</span> client.fetchPremiumListings(<span class="num">16808</span>)
-<span class="kw">const</span> voice = <span class="kw">await</span> client.fetchVoiceListings(<span class="num">16808</span>)</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> premium = <span class="kw">await</span> client.fetchPremiumListings(<span class="num">16808</span>)</code></pre>
+        </div>
+      </section>
+
+      <section id="listings-voice" class="doc-section doc-subsection">
+        <h3>listings.voice()</h3>
+        <p>Get voice listing status for voice assistant directories.</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code>voice = client.listings.voice(<span class="num">16808</span>)</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> voice = <span class="kw">await</span> client.fetchVoiceListings(<span class="num">16808</span>)</code></pre>
+        </div>
+      </section>
+
+      <section id="listings-duplicates" class="doc-section doc-subsection">
+        <h3>listings.duplicates()</h3>
+        <p>Find and manage duplicate listings.</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="code-lang-tabs">
+              <button class="code-lang-tab active" data-lang="python">Python</button>
+              <button class="code-lang-tab" data-lang="nodejs">Node.js</button>
+            </div>
+            <button class="copy-btn" onclick="copyActiveBlock(this)">Copy</button>
+          </div>
+          <pre class="code-lang-python"><code>dupes = client.listings.duplicates(<span class="num">16808</span>)
+client.listings.mark_duplicate(<span class="num">16808</span>, [<span class="str">"listing-id"</span>])</code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> dupes = <span class="kw">await</span> client.fetchDuplicateListings(<span class="num">16808</span>)</code></pre>
         </div>
       </section>
 
@@ -859,7 +1303,7 @@ client = <span class="mod">synup</span>.<span class="cls">Synup</span>()
       });
       // Update badge
       const badge = document.getElementById('badgeText');
-      if (badge) badge.textContent = lang === 'python' ? 'Python SDK' : 'Node.js SDK';
+      if (badge) badge.textContent = lang === 'python' ? 'Synup SDK' : 'Synup SDK';
       // Show floating indicator
       showLangIndicator(lang === 'python' ? 'Python' : 'Node.js');
     }
