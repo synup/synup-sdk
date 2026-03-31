@@ -1278,40 +1278,10 @@ function toggleLanguage(lang) {
   }
   var featDocsTitle = document.getElementById('featureDocsTitle');
   var featDocsDesc = document.getElementById('featureDocsDesc');
-  if (featDocsTitle) featDocsTitle.textContent = useNodejs ? 'Full TypeDoc' : 'Full docstrings';
-  if (featDocsDesc) featDocsDesc.textContent = useNodejs ? 'Every method has full TypeScript types and JSDoc. IDE autocompletion just works.' : 'Every method has Args, Returns, and Example. IDE autocompletion just works.';
+  if (featDocsTitle) featDocsTitle.textContent = useNodejs ? 'Full TypeDoc' : 'Specific errors';
+  if (featDocsDesc) featDocsDesc.innerHTML = useNodejs ? 'Every method has full TypeScript types and JSDoc. IDE autocompletion just works.' : 'Catch <code>RateLimitError</code>, <code>AuthenticationError</code>, <code>NotFoundError</code> — not generic 400s.';
 
-  // API method name lists
-  var apiMap = {
-    apiLocations: {
-      python: 'fetch_all_locations \u00b7 search_locations \u00b7 create_location \u00b7 update_location \u00b7 archive_locations',
-      nodejs: 'fetchAllLocations \u00b7 searchLocations \u00b7 createLocation \u00b7 updateLocation \u00b7 archiveLocations'
-    },
-    apiListings: {
-      python: 'fetch_premium_listings \u00b7 fetch_voice_listings \u00b7 fetch_ai_listings',
-      nodejs: 'fetchPremiumListings \u00b7 fetchVoiceListings \u00b7 fetchAiListings'
-    },
-    apiReviews: {
-      python: 'fetch_interactions \u00b7 respond_to_review \u00b7 fetch_review_analytics_overview \u00b7 fetch_review_phrases',
-      nodejs: 'fetchInteractions \u00b7 respondToReview \u00b7 fetchReviewAnalyticsOverview \u00b7 fetchReviewPhrases'
-    },
-    apiRankings: {
-      python: 'fetch_keywords \u00b7 fetch_keywords_performance \u00b7 create_grid_report \u00b7 fetch_grid_report',
-      nodejs: 'fetchKeywords \u00b7 fetchKeywordsPerformance \u00b7 createGridReport \u00b7 fetchGridReport'
-    },
-    apiAnalytics: {
-      python: 'fetch_google_analytics \u00b7 fetch_bing_analytics \u00b7 fetch_facebook_analytics',
-      nodejs: 'fetchGoogleAnalytics \u00b7 fetchBingAnalytics \u00b7 fetchFacebookAnalytics'
-    },
-    apiCampaigns: {
-      python: 'create_review_campaign \u00b7 add_review_campaign_customers \u00b7 fetch_review_campaigns',
-      nodejs: 'createReviewCampaign \u00b7 addReviewCampaignCustomers \u00b7 fetchReviewCampaigns'
-    }
-  };
-  for (var id in apiMap) {
-    var el = document.getElementById(id);
-    if (el) el.textContent = useNodejs ? apiMap[id].nodejs : apiMap[id].python;
-  }
+  // "What you can build" cards no longer have IDs — content is static in HTML
 
   // Example card titles for fastapi/fullstack
   var exFastapiTitle = document.getElementById('exFastapiTitle');
@@ -1333,14 +1303,12 @@ function toggleLanguage(lang) {
 
   // Badge text
   var badge = document.querySelector('.badge');
-  if (badge) badge.textContent = useNodejs ? 'Node.js SDK for Synup API' : 'Python SDK for Synup API';
+  if (badge) badge.textContent = useNodejs ? 'Node.js SDK' : 'Python & Node.js SDK';
 
-  // API section subtitle
+  // API section subtitle — keep builder-focused copy
   var apiSubtitle = document.getElementById('apiSubtitle');
   if (apiSubtitle) {
-    apiSubtitle.innerHTML = useNodejs
-      ? 'All endpoints accessible through <code>SynupClient</code>. Install with <code>npm install synup-js</code>.'
-      : 'All endpoints accessible through <code>SynupClient</code>. Install with <code>pip install synup-sdk</code>.';
+    apiSubtitle.innerHTML = 'Real products, not just API calls. Each module is a building block for local presence automation.';
   }
 
   // Re-render explorer method list with correct names
