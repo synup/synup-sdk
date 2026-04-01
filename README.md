@@ -346,4 +346,4 @@ except synup.APIConnectionError:
 
 ## Version
 
-Current version: 0.4.0
+Current version: 0.4.1
