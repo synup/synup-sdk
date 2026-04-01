@@ -1,0 +1,197 @@
+"""Main Synup client."""
+
+from __future__ import annotations
+
+import logging
+import os
+from typing import Any
+
+import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
+from synup._types import SynupObject
+from synup._utils import encode_location_id
+from synup.exceptions import (
+    APIConnectionError,
+    APIError,
+    AuthenticationError,
+    InternalServerError,
+    NotFoundError,
+    PermissionDeniedError,
+    RateLimitError,
+    ValidationError,
+)
+
+logger = logging.getLogger("synup")
+
+DEFAULT_BASE_URL = "https://api.synup.com"
+DEFAULT_TIMEOUT = 240.0
+DEFAULT_MAX_RETRIES = 2
+
+
+class Synup:
+    """Client for the Synup API.
+
+    Example:
+        import synup
+
+        # Reads SYNUP_API_KEY from environment
+        client = synup.Synup()
+
+        # Or pass explicitly
+        client = synup.Synup(api_key="your-key")
+
+        # With custom config
+        client = synup.Synup(api_key="...", timeout=60.0, max_retries=3)
+
+        # Use resources
+        page = client.locations.list(first=10)
+        for location in page:
+            print(location.name, location.city)
+    """
+
+    def __init__(
+        self,
+        api_key: str | None = None,
+        *,
+        base_url: str | None = None,
+        timeout: float = DEFAULT_TIMEOUT,
+        max_retries: int = DEFAULT_MAX_RETRIES,
+    ):
+        self.api_key = api_key or os.environ.get("SYNUP_API_KEY")
+        if not self.api_key:
+            raise AuthenticationError(
+                "No API key provided. Set the SYNUP_API_KEY environment variable "
+                "or pass api_key= to Synup().",
+                status_code=401,
+            )
+
+        self._base_url = (base_url or DEFAULT_BASE_URL).rstrip("/")
+        self._timeout = timeout
+
+        self._session = requests.Session()
+        self._session.headers.update(
+            {
+                "Authorization": f"API {self.api_key}",
+                "Content-Type": "application/json",
+            }
+        )
+
+        retry = Retry(
+            total=max_retries,
+            backoff_factor=0.5,
+            status_forcelist=[429, 500, 502, 503, 504],
+            allowed_methods=["GET", "POST"],
+            respect_retry_after_header=True,
+        )
+        adapter = HTTPAdapter(max_retries=retry)
+        self._session.mount("https://", adapter)
+        self._session.mount("http://", adapter)
+
+        # Resources — lazy imports to avoid circular deps
+        from synup.resources import (
+            Analytics,
+            Automations,
+            Campaigns,
+            ConnectedAccounts,
+            Folders,
+            GridReports,
+            Keywords,
+            Listings,
+            Locations,
+            Photos,
+            Reviews,
+            Tags,
+            Users,
+            Workflows,
+        )
+
+        self.locations = Locations(self)
+        self.reviews = Reviews(self)
+        self.listings = Listings(self)
+        self.analytics = Analytics(self)
+        self.folders = Folders(self)
+        self.users = Users(self)
+        self.keywords = Keywords(self)
+        self.campaigns = Campaigns(self)
+        self.connected_accounts = ConnectedAccounts(self)
+        self.tags = Tags(self)
+        self.grid_reports = GridReports(self)
+        self.photos = Photos(self)
+        self.automations = Automations(self)
+        self.workflows = Workflows(self)
+
+    # --- HTTP methods (used by resources) ---
+
+    def _get(self, path: str, params: dict | None = None) -> dict[str, Any]:
+        url = f"{self._base_url}/api/v4/{path}"
+        logger.debug("GET %s params=%s", url, params)
+        try:
+            response = self._session.get(url, params=params or {}, timeout=self._timeout)
+        except requests.ConnectionError as e:
+            raise APIConnectionError(f"Connection error: {e}") from e
+        except requests.Timeout as e:
+            raise APIConnectionError(f"Request timed out: {e}") from e
+        return self._handle_response(response)
+
+    def _post(self, path: str, json_body: dict[str, Any]) -> dict[str, Any]:
+        url = f"{self._base_url}/api/v4/{path}"
+        logger.debug("POST %s", url)
+        try:
+            response = self._session.post(url, json=json_body, timeout=self._timeout)
+        except requests.ConnectionError as e:
+            raise APIConnectionError(f"Connection error: {e}") from e
+        except requests.Timeout as e:
+            raise APIConnectionError(f"Request timed out: {e}") from e
+        return self._handle_response(response)
+
+    def _location_get(
+        self, location_id: str | int, path_suffix: str, params: dict | None = None
+    ) -> dict[str, Any]:
+        encoded_id = encode_location_id(location_id)
+        return self._get(f"locations/{encoded_id}/{path_suffix}", params)
+
+    def _handle_response(self, response: requests.Response) -> dict[str, Any]:
+        if response.ok:
+            return response.json()
+
+        status = response.status_code
+        body = response.text
+        msg = f"API request failed: {status}"
+
+        if status == 401:
+            raise AuthenticationError(msg, status_code=status, response_body=body)
+        elif status == 403:
+            raise PermissionDeniedError(msg, status_code=status, response_body=body)
+        elif status == 404:
+            raise NotFoundError(msg, status_code=status, response_body=body)
+        elif status == 429:
+            retry_after = response.headers.get("Retry-After")
+            raise RateLimitError(msg, status_code=status, response_body=body, retry_after=retry_after)
+        elif status in (400, 422):
+            raise ValidationError(msg, status_code=status, response_body=body)
+        elif status >= 500:
+            raise InternalServerError(msg, status_code=status, response_body=body)
+        else:
+            raise APIError(msg, status_code=status, response_body=body)
+
+    # --- Account-level convenience methods ---
+
+    def plan_sites(self) -> list[SynupObject]:
+        """Get supported directories for your plan."""
+        data = self._get("plan-sites")
+        items = data.get("data", {}).get("planSites") or []
+        return [SynupObject(item) for item in items]
+
+    def countries(self) -> list[SynupObject]:
+        """Get supported countries and states (ISO codes)."""
+        data = self._get("countries")
+        items = data.get("data", {}).get("supportedCountries") or []
+        return [SynupObject(item) for item in items]
+
+    def subscriptions(self) -> list[SynupObject]:
+        """Get active subscriptions for the account."""
+        data = self._get("subscriptions")
+        items = data.get("data", {}).get("activeSubscriptions") or []
+        return [SynupObject(item) for item in items]
