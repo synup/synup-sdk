@@ -36,12 +36,26 @@ class SynupObject:
     def __contains__(self, key: str) -> bool:
         return key in self._data
 
+    def __iter__(self):
+        return iter(self._data)
+
+    def __len__(self) -> int:
+        return len(self._data)
+
+    def keys(self):
+        return self._data.keys()
+
+    def values(self):
+        return self._data.values()
+
+    def items(self):
+        return self._data.items()
+
     def __repr__(self) -> str:
-        fields = list(self._data.keys())[:6]
-        preview = ", ".join(fields)
-        if len(self._data) > 6:
-            preview += ", ..."
-        return f"SynupObject({preview})"
+        return repr(self._data)
+
+    def __str__(self) -> str:
+        return str(self._data)
 
     def __bool__(self) -> bool:
         return bool(self._data)
