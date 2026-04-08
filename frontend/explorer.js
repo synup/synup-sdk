@@ -1969,6 +1969,12 @@ function renderMethodDetail(method) {
   const detail = document.getElementById("methodDetail");
   const displayName = getMethodDisplayName(method);
 
+  // Reset the right-column scroll so the title of the newly-selected method
+  // is visible — without this, switching from a method whose response was
+  // scrolled down can leave the new method's params and title off-screen.
+  const main = detail.parentElement;
+  if (main) main.scrollTop = 0;
+
   let paramsHTML = "";
   if (method.params.length > 0) {
     paramsHTML = `<div class="explorer-params">`;

@@ -485,6 +485,12 @@ a:hover { color: var(--text-primary); }
   border-radius: var(--radius-lg);
   overflow: hidden;
   min-height: 420px;
+  /* Cap the grid to roughly the viewport so the long method list scrolls
+     inside its own column instead of stretching the page. Without this the
+     `flex: 1; overflow-y: auto` on .explorer-methods has no bounded height
+     to work against, and clicking a method at the bottom of the list pushes
+     the detail panel above the viewport. */
+  max-height: calc(100vh - 120px);
   background: var(--bg-card);
 }
 
@@ -545,7 +551,12 @@ a:hover { color: var(--text-primary); }
 .method-item:hover { background: var(--bg-elevated); color: var(--text-primary); }
 .method-item.active { background: rgba(0, 133, 255, 0.15); color: var(--accent); }
 
-.explorer-main { padding: 20px; }
+.explorer-main {
+  padding: 20px;
+  /* Let the right column scroll on its own so a method with many params
+     doesn't blow out the grid height set on .explorer-container above. */
+  overflow-y: auto;
+}
 
 .explorer-empty {
   display: flex;
