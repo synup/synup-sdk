@@ -1493,6 +1493,15 @@ const SDK_METHODS = [
     { name: "location_ids", type: "json", required: true, placeholder: '["16808"]' },
   ]},
 
+  { name: "retrieve", jsName: "retrieve", category: "Locations", doc: "Get a single location by ID. Convenience over fetch_locations_by_ids.", params: [
+    { name: "location_id", type: "str", required: true, placeholder: "16808" },
+  ]},
+  { name: "cancel_archive_locations", jsName: "cancelArchiveLocations", category: "Locations", doc: "Cancel scheduled archival for the given locations.", params: [
+    { name: "location_ids", type: "json", required: true, placeholder: '["16808"]' },
+    { name: "selection_type", type: "str", required: true, placeholder: "INDIVIDUAL" },
+    { name: "changed_by", type: "str", required: true },
+  ]},
+
   // --- Listings ---
   { name: "fetch_premium_listings", jsName: "fetchPremiumListings", category: "Listings", doc: "Get premium (directory) listings for a location.", params: [
     { name: "location_id", type: "str", required: true },
@@ -1505,6 +1514,36 @@ const SDK_METHODS = [
   ]},
   { name: "fetch_ai_listings", jsName: "fetchAiListings", category: "Listings", doc: "Get AI-generated listing suggestions for a location.", params: [
     { name: "location_id", type: "str", required: true },
+  ]},
+
+  { name: "fetch_duplicate_listings", jsName: "fetchDuplicateListings", category: "Listings", doc: "Get duplicate listings detected for a location.", params: [
+    { name: "location_id", type: "str", required: true },
+  ]},
+  { name: "fetch_all_duplicate_listings", jsName: "fetchAllDuplicateListings", category: "Listings", doc: "Get a rollup of duplicate listings across all locations.", params: [
+    { name: "tag", type: "str", required: false },
+    { name: "page", type: "int", required: false },
+  ]},
+  { name: "mark_listings_as_duplicate", jsName: "markListingsAsDuplicate", category: "Listings", doc: "Mark one or more listing items as duplicate for a location.", params: [
+    { name: "location_id", type: "str", required: true },
+    { name: "listing_item_ids", type: "json", required: true, placeholder: '["item-id-1"]' },
+  ]},
+  { name: "mark_listings_as_not_duplicate", jsName: "markListingsAsNotDuplicate", category: "Listings", doc: "Clear duplicate status for listing items.", params: [
+    { name: "location_id", type: "str", required: true },
+    { name: "listing_item_ids", type: "json", required: true, placeholder: '["item-id-1"]' },
+  ]},
+  { name: "connect_listing", jsName: "connectListing", category: "Listings", doc: "Link a Synup location to a listing from a connected Google or Facebook account.", params: [
+    { name: "location_id", type: "str", required: true },
+    { name: "connected_account_listing_id", type: "str", required: true },
+    { name: "connected_account_id", type: "str", required: true },
+  ]},
+  { name: "disconnect_listing", jsName: "disconnectListing", category: "Listings", doc: "Unlink a location from its Google or Facebook listing.", params: [
+    { name: "location_id", type: "str", required: true },
+    { name: "site", type: "str", required: true, placeholder: "GOOGLE" },
+  ]},
+  { name: "create_gmb_listing", jsName: "createGmbListing", category: "Listings", doc: "Create a Google Business Profile listing for an existing Synup location.", params: [
+    { name: "location_id", type: "str", required: true },
+    { name: "connected_account_id", type: "str", required: true },
+    { name: "folder_id", type: "str", required: false },
   ]},
 
   // --- Reviews ---
@@ -1527,6 +1566,38 @@ const SDK_METHODS = [
     { name: "end_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
   ]},
 
+  { name: "fetch_review_analytics_timeline", jsName: "fetchReviewAnalyticsTimeline", category: "Reviews", doc: "Get review analytics over time for a location.", params: [
+    { name: "location_id", type: "str", required: true },
+    { name: "start_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
+    { name: "end_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
+  ]},
+  { name: "fetch_review_analytics_sites_stats", jsName: "fetchReviewAnalyticsSitesStats", category: "Reviews", doc: "Get review analytics broken down by site for a location.", params: [
+    { name: "location_id", type: "str", required: true },
+    { name: "start_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
+    { name: "end_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
+  ]},
+  { name: "fetch_review_details", jsName: "fetchReviewDetails", category: "Reviews", doc: "Get detailed information for specific reviews by interaction IDs.", params: [
+    { name: "interaction_ids", type: "json", required: true, placeholder: '["interaction-id-1"]' },
+  ]},
+  { name: "fetch_review_phrases", jsName: "fetchReviewPhrases", category: "Reviews", doc: "Get review phrase analysis for given locations.", params: [
+    { name: "location_ids", type: "json", required: true, placeholder: '["16808"]' },
+    { name: "site_urls", type: "json", required: false },
+    { name: "start_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
+    { name: "end_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
+  ]},
+  { name: "edit_review_response", jsName: "editReviewResponse", category: "Reviews", doc: "Edit an existing reply to a review.", params: [
+    { name: "review_id", type: "str", required: true },
+    { name: "response_id", type: "str", required: true },
+    { name: "response_content", type: "str", required: true },
+  ]},
+  { name: "archive_review_response", jsName: "archiveReviewResponse", category: "Reviews", doc: "Archive (hide) a reply to a review.", params: [
+    { name: "response_id", type: "str", required: true },
+  ]},
+  { name: "edit_review_settings", jsName: "editReviewSettings", category: "Reviews", doc: "Set or update review source URLs for a location.", params: [
+    { name: "location_id", type: "str", required: true },
+    { name: "site_urls", type: "json", required: true, placeholder: '[{"name":"Google","url":"https://..."}]' },
+  ]},
+
   // --- Rankings ---
   { name: "fetch_keywords", jsName: "fetchKeywords", category: "Rankings", doc: "Get all keywords tracked for a location.", params: [
     { name: "location_id", type: "str", required: true },
@@ -1539,6 +1610,22 @@ const SDK_METHODS = [
   { name: "add_keywords", jsName: "addKeywords", category: "Rankings", doc: "Add keywords to a location for ranking tracking.", params: [
     { name: "location_id", type: "str", required: true },
     { name: "keywords", type: "json", required: true, placeholder: '["plumber","plumbing near me"]' },
+  ]},
+
+  { name: "archive_keyword", jsName: "archiveKeyword", category: "Rankings", doc: "Archive a keyword so it is no longer tracked.", params: [
+    { name: "keyword_id", type: "str", required: true },
+  ]},
+  { name: "fetch_ranking_analytics_timeline", jsName: "fetchRankingAnalyticsTimeline", category: "Rankings", doc: "Get ranking analytics timeline for locations and a source.", params: [
+    { name: "location_ids", type: "json", required: true, placeholder: '["16808"]' },
+    { name: "from_date", type: "str", required: true, placeholder: "YYYY-MM-DD" },
+    { name: "to_date", type: "str", required: true, placeholder: "YYYY-MM-DD" },
+    { name: "source", type: "str", required: true, placeholder: "GOOGLE_SEARCH" },
+  ]},
+  { name: "fetch_ranking_sitewise_histogram", jsName: "fetchRankingSitewiseHistogram", category: "Rankings", doc: "Get ranking histogram by keyword count for locations and a source.", params: [
+    { name: "location_ids", type: "json", required: true, placeholder: '["16808"]' },
+    { name: "from_date", type: "str", required: true, placeholder: "YYYY-MM-DD" },
+    { name: "to_date", type: "str", required: true, placeholder: "YYYY-MM-DD" },
+    { name: "source", type: "str", required: true, placeholder: "GOOGLE_SEARCH" },
   ]},
 
   // --- Analytics ---
@@ -1567,6 +1654,19 @@ const SDK_METHODS = [
     { name: "photos", type: "json", required: true, placeholder: '[{"photo":"https://...","type":"LOGO"}]' },
   ]},
 
+  { name: "remove_location_photos", jsName: "removeLocationPhotos", category: "Photos", doc: "Remove photos from a location by photo IDs.", params: [
+    { name: "location_id", type: "str", required: true },
+    { name: "photo_ids", type: "json", required: true, placeholder: '["photo-id-1"]' },
+  ]},
+  { name: "star_location_photos", jsName: "starLocationPhotos", category: "Photos", doc: "Star or unstar location photos.", params: [
+    { name: "location_id", type: "str", required: true },
+    { name: "media_ids", type: "json", required: true, placeholder: '["media-id-1"]' },
+    { name: "starred", type: "str", required: true, placeholder: "true" },
+  ]},
+  { name: "fetch_photo_upload_status", jsName: "fetchPhotoUploadStatus", category: "Photos", doc: "Get the processing status for a bulk photo upload request.", params: [
+    { name: "request_id", type: "str", required: true },
+  ]},
+
   // --- Folders ---
   { name: "fetch_folders_flat", jsName: "fetchFoldersFlat", category: "Folders", doc: "Get all folders as a flat list.", params: [] },
   { name: "fetch_folders_tree", jsName: "fetchFoldersTree", category: "Folders", doc: "Get all folders as a nested tree structure.", params: [] },
@@ -1575,9 +1675,33 @@ const SDK_METHODS = [
     { name: "parent_folder_name", type: "str", required: false },
   ]},
 
+  { name: "fetch_folder_details", jsName: "fetchFolderDetails", category: "Folders", doc: "Get details for a specific folder by ID or name.", params: [
+    { name: "folder_id", type: "str", required: false },
+    { name: "folder_name", type: "str", required: false },
+  ]},
+  { name: "delete_folder", jsName: "deleteFolder", category: "Folders", doc: "Delete a folder by name. Locations in the folder are not deleted.", params: [
+    { name: "name", type: "str", required: true },
+  ]},
+  { name: "rename_folder", jsName: "renameFolder", category: "Folders", doc: "Rename an existing folder.", params: [
+    { name: "old_name", type: "str", required: true },
+    { name: "new_name", type: "str", required: true },
+  ]},
+  { name: "add_locations_to_folder", jsName: "addLocationsToFolder", category: "Folders", doc: "Add locations to a folder. Folder is created if it does not exist.", params: [
+    { name: "folder_name", type: "str", required: true },
+    { name: "location_ids", type: "json", required: true, placeholder: '["16808"]' },
+  ]},
+  { name: "remove_locations_from_folder", jsName: "removeLocationsFromFolder", category: "Folders", doc: "Remove locations from their current folder.", params: [
+    { name: "location_ids", type: "json", required: true, placeholder: '["16808"]' },
+  ]},
+
   // --- Tags ---
   { name: "fetch_tags", jsName: "fetchTags", category: "Tags", doc: "Get all tags defined in the account.", params: [] },
   { name: "add_location_tag", jsName: "addLocationTag", category: "Tags", doc: "Add a tag to a location.", params: [
+    { name: "location_id", type: "str", required: true },
+    { name: "tag", type: "str", required: true },
+  ]},
+
+  { name: "remove_location_tag", jsName: "removeLocationTag", category: "Tags", doc: "Remove a tag from a location.", params: [
     { name: "location_id", type: "str", required: true },
     { name: "tag", type: "str", required: true },
   ]},
@@ -1592,6 +1716,40 @@ const SDK_METHODS = [
     { name: "last_name", type: "str", required: false },
   ]},
 
+  { name: "fetch_users_by_ids", jsName: "fetchUsersByIds", category: "Users", doc: "Get users by a list of user IDs.", params: [
+    { name: "user_ids", type: "json", required: true, placeholder: '["user-id-1"]' },
+  ]},
+  { name: "fetch_user_resources", jsName: "fetchUserResources", category: "Users", doc: "Get resources (locations, folders, etc.) assigned to a specific user.", params: [
+    { name: "user_id", type: "str", required: true },
+  ]},
+  { name: "update_user", jsName: "updateUser", category: "Users", doc: "Update a user. Pass user_id and any fields to change.", params: [
+    { name: "user_id", type: "str", required: true },
+    { name: "email", type: "str", required: false },
+    { name: "role_id", type: "str", required: false },
+    { name: "first_name", type: "str", required: false },
+    { name: "last_name", type: "str", required: false },
+    { name: "phone", type: "str", required: false },
+  ]},
+  { name: "add_user_locations", jsName: "addUserLocations", category: "Users", doc: "Assign locations to a user.", params: [
+    { name: "user_id", type: "str", required: true },
+    { name: "location_ids", type: "json", required: true, placeholder: '["16808"]' },
+  ]},
+  { name: "remove_user_locations", jsName: "removeUserLocations", category: "Users", doc: "Remove location assignments from a user.", params: [
+    { name: "user_id", type: "str", required: true },
+    { name: "location_ids", type: "json", required: true, placeholder: '["16808"]' },
+  ]},
+  { name: "add_user_folders", jsName: "addUserFolders", category: "Users", doc: "Assign folders to a user.", params: [
+    { name: "user_id", type: "str", required: true },
+    { name: "folder_ids", type: "json", required: true, placeholder: '["folder-id-1"]' },
+  ]},
+  { name: "remove_user_folders", jsName: "removeUserFolders", category: "Users", doc: "Remove folder assignments from a user.", params: [
+    { name: "user_id", type: "str", required: true },
+    { name: "folder_ids", type: "json", required: true, placeholder: '["folder-id-1"]' },
+  ]},
+  { name: "add_user_and_folder", jsName: "addUserAndFolder", category: "Users", doc: "Create a user and a folder, then assign the folder to the user in one call.", params: [
+    { name: "input", type: "json", required: true, placeholder: '{"email":"...","firstName":"...","folderName":"..."}' },
+  ]},
+
   // --- Grid Rank ---
   { name: "fetch_location_grid_reports", jsName: "fetchLocationGridReports", category: "Grid Rank", doc: "Get all Local Rank Grid reports for a location.", params: [
     { name: "location_id", type: "str", required: true },
@@ -1602,11 +1760,39 @@ const SDK_METHODS = [
     { name: "report_id", type: "str", required: true },
   ]},
 
+  { name: "create_grid_report", jsName: "createGridReport", category: "Grid Rank", doc: "Create a Local Rank Grid report.", params: [
+    { name: "location_id", type: "str", required: true },
+    { name: "keywords", type: "json", required: true, placeholder: '["plumber"]' },
+    { name: "business_name", type: "str", required: true },
+    { name: "business_street", type: "str", required: true },
+    { name: "business_city", type: "str", required: true },
+    { name: "business_state", type: "str", required: true },
+    { name: "business_country", type: "str", required: true },
+    { name: "latitude", type: "str", required: true },
+    { name: "longitude", type: "str", required: true },
+    { name: "distance", type: "int", required: true },
+    { name: "distance_unit", type: "str", required: true, placeholder: "MILES" },
+    { name: "grid_size", type: "int", required: true, placeholder: "5" },
+  ]},
+
   // --- Review Campaigns ---
   { name: "fetch_review_campaigns", jsName: "fetchReviewCampaigns", category: "Campaigns", doc: "Get review campaigns for a location.", params: [
     { name: "location_id", type: "str", required: true },
     { name: "start_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
     { name: "end_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
+  ]},
+
+  { name: "fetch_review_campaign_customers", jsName: "fetchReviewCampaignCustomers", category: "Campaigns", doc: "Get customer details for a specific review campaign.", params: [
+    { name: "review_campaign_id", type: "str", required: true },
+  ]},
+  { name: "create_review_campaign", jsName: "createReviewCampaign", category: "Campaigns", doc: "Create a review campaign for a location with customers and optional templates.", params: [
+    { name: "location_id", type: "str", required: true },
+    { name: "name", type: "str", required: true },
+    { name: "location_customers", type: "json", required: true, placeholder: '[{"firstName":"Jane","email":"jane@example.com"}]' },
+  ]},
+  { name: "add_review_campaign_customers", jsName: "addReviewCampaignCustomers", category: "Campaigns", doc: "Add customers to an existing review campaign.", params: [
+    { name: "review_campaign_id", type: "str", required: true },
+    { name: "location_customers", type: "json", required: true, placeholder: '[{"firstName":"Jane","email":"jane@example.com"}]' },
   ]},
 
   // --- Connected Accounts ---
@@ -1615,12 +1801,107 @@ const SDK_METHODS = [
     { name: "page", type: "int", required: false },
   ]},
 
+  { name: "fetch_connected_account_details", jsName: "fetchConnectedAccountDetails", category: "Connected Accounts", doc: "Get detailed information about a specific connected account.", params: [
+    { name: "connected_account_id", type: "str", required: true },
+  ]},
+  { name: "fetch_connected_account_folders", jsName: "fetchConnectedAccountFolders", category: "Connected Accounts", doc: "Get folders (business groups) under a connected Google account.", params: [
+    { name: "connected_account_id", type: "str", required: true },
+    { name: "folder_name", type: "str", required: false },
+  ]},
+  { name: "fetch_connected_account_listings", jsName: "fetchConnectedAccountListings", category: "Connected Accounts", doc: "Get listings the connected Google or Facebook account has access to.", params: [
+    { name: "connected_account_id", type: "str", required: true },
+    { name: "location_info", type: "str", required: false },
+    { name: "page", type: "int", required: false },
+    { name: "per_page", type: "int", required: false },
+  ]},
+  { name: "fetch_connection_suggestions", jsName: "fetchConnectionSuggestions", category: "Connected Accounts", doc: "Get suggested matches between a connected account's listings and Synup locations.", params: [
+    { name: "connected_account_id", type: "str", required: true },
+    { name: "page", type: "int", required: false },
+    { name: "per_page", type: "int", required: false },
+  ]},
+  { name: "connect_google_account", jsName: "connectGoogleAccount", category: "Connected Accounts", doc: "Get a URL to connect a Google account for bulk use across locations.", params: [
+    { name: "success_url", type: "str", required: true },
+    { name: "error_url", type: "str", required: true },
+  ]},
+  { name: "connect_facebook_account", jsName: "connectFacebookAccount", category: "Connected Accounts", doc: "Get a URL to connect a Facebook account for bulk use across locations.", params: [
+    { name: "success_url", type: "str", required: true },
+    { name: "error_url", type: "str", required: true },
+  ]},
+  { name: "disconnect_google_account", jsName: "disconnectGoogleAccount", category: "Connected Accounts", doc: "Disconnect a Google connected account (bulk).", params: [
+    { name: "connected_account_id", type: "str", required: true },
+  ]},
+  { name: "disconnect_facebook_account", jsName: "disconnectFacebookAccount", category: "Connected Accounts", doc: "Disconnect a Facebook connected account (bulk).", params: [
+    { name: "connected_account_id", type: "str", required: true },
+  ]},
+  { name: "trigger_connected_account_matches", jsName: "triggerConnectedAccountMatches", category: "Connected Accounts", doc: "Trigger matching of Google/Facebook profile locations to Synup locations.", params: [
+    { name: "connected_account_ids", type: "json", required: true, placeholder: '["acct-id-1"]' },
+  ]},
+  { name: "confirm_connected_account_matches", jsName: "confirmConnectedAccountMatches", category: "Connected Accounts", doc: "Confirm suggested matches between connected account listings and Synup locations.", params: [
+    { name: "match_record_ids", type: "json", required: true, placeholder: '["match-id-1"]' },
+  ]},
+  { name: "get_oauth_connect_url", jsName: "getOauthConnectUrl", category: "Connected Accounts", doc: "Get a URL to connect a Google or Facebook profile to a single location.", params: [
+    { name: "location_id", type: "str", required: true },
+    { name: "site", type: "str", required: true, placeholder: "GOOGLE" },
+    { name: "success_url", type: "str", required: true },
+    { name: "error_url", type: "str", required: true },
+  ]},
+  { name: "oauth_disconnect", jsName: "oauthDisconnect", category: "Connected Accounts", doc: "Disconnect a Google or Facebook profile from a single location.", params: [
+    { name: "location_id", type: "str", required: true },
+    { name: "site", type: "str", required: true, placeholder: "GOOGLE" },
+  ]},
+
   // --- Account ---
   { name: "fetch_plan_sites", jsName: "fetchPlanSites", category: "Account", doc: "Get supported directories for your plan.", params: [] },
   { name: "fetch_countries", jsName: "fetchCountries", category: "Account", doc: "Get supported countries and states.", params: [] },
   { name: "fetch_subscriptions", jsName: "fetchSubscriptions", category: "Account", doc: "Get active subscriptions for the account.", params: [] },
   { name: "fetch_review_site_config", jsName: "fetchReviewSiteConfig", category: "Account", doc: "Get eligible review sources and site config.", params: [] },
   { name: "fetch_connection_info", jsName: "fetchConnectionInfo", category: "Account", doc: "Get OAuth connection status for a location.", params: [
+    { name: "location_id", type: "str", required: true },
+  ]},
+
+  // --- Automations ---
+  { name: "create_temporary_close_automation", jsName: "createTemporaryCloseAutomation", category: "Automations", doc: "Create an automation that temporarily closes a location and reopens on a set date.", params: [
+    { name: "name", type: "str", required: true, placeholder: "Holiday Close" },
+    { name: "location_id", type: "str", required: true },
+    { name: "start_date", type: "str", required: true, placeholder: "YYYY-MM-DD" },
+    { name: "start_time", type: "str", required: true, placeholder: "09:00:00" },
+    { name: "end_date", type: "str", required: true, placeholder: "YYYY-MM-DD" },
+  ]},
+
+  // --- Workflows ---
+  { name: "auto_reply_to_reviews", jsName: "autoReplyToReviews", category: "Workflows", doc: "Composed: fetch reviews + filter by rating + post replies. Set dry_run to preview.", params: [
+    { name: "location_id", type: "str", required: true },
+    { name: "template", type: "str", required: false, placeholder: "Thanks for your {rating}-star review!" },
+    { name: "min_rating", type: "int", required: false, placeholder: "4" },
+    { name: "only_unanswered", type: "str", required: false, placeholder: "true" },
+    { name: "dry_run", type: "str", required: false, placeholder: "true" },
+  ]},
+  { name: "onboard_location", jsName: "onboardLocation", category: "Workflows", doc: "Composed: create_location + add_locations_to_folder + add_location_tag + add_keywords in one call.", params: [
+    { name: "name", type: "str", required: true },
+    { name: "store_id", type: "str", required: true },
+    { name: "street", type: "str", required: true },
+    { name: "city", type: "str", required: true },
+    { name: "state_iso", type: "str", required: true, placeholder: "NY" },
+    { name: "postal_code", type: "str", required: true, placeholder: "10001" },
+    { name: "country_iso", type: "str", required: true, placeholder: "US" },
+    { name: "phone", type: "str", required: true },
+    { name: "sub_category_id", type: "int", required: true, placeholder: "1" },
+    { name: "folder_name", type: "str", required: false },
+    { name: "tags", type: "json", required: false, placeholder: '["new","coffee"]' },
+    { name: "keywords", type: "json", required: false, placeholder: '["coffee shop near me"]' },
+  ]},
+  { name: "bulk_onboard_locations", jsName: "bulkOnboardLocations", category: "Workflows", doc: "Composed: onboard_location per row. Browser explorer requires pre-parsed `rows` (no CSV path).", params: [
+    { name: "rows", type: "json", required: true, placeholder: '[{"name":"Acme","storeId":"ACME-01","street":"123 Main St","city":"NYC","stateIso":"NY","postalCode":"10001","countryIso":"US","phone":"5551234567","subCategoryId":1}]' },
+    { name: "folder_name", type: "str", required: false },
+    { name: "tags", type: "json", required: false, placeholder: '["imported"]' },
+    { name: "dry_run", type: "str", required: false, placeholder: "true" },
+  ]},
+  { name: "weekly_reputation_report", jsName: "generateWeeklyReputationReport", category: "Workflows", doc: "Composed: review analytics + recent reviews + Google + Bing + premium listings rolled into one report.", params: [
+    { name: "location_id", type: "str", required: true },
+    { name: "start_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
+    { name: "end_date", type: "str", required: false, placeholder: "YYYY-MM-DD" },
+  ]},
+  { name: "listings_health_audit", jsName: "auditListingsHealth", category: "Workflows", doc: "Composed: premium + voice + duplicate listings + connection status + computed health score.", params: [
     { name: "location_id", type: "str", required: true },
   ]},
 ];
@@ -1773,6 +2054,15 @@ async function callSynupAPI(apiKey, methodName, params, method) {
     return s;
   }
 
+  // Single-call helper used by both the standard switch tail and any
+  // workflow case that needs to compose multiple API calls. Workflow cases
+  // bypass the switch's url/fetchOpts pattern entirely and short-circuit
+  // by `return`ing their own composed response directly.
+  async function doApiCall(callUrl, callOpts) {
+    const r = await fetch(callUrl, callOpts);
+    return await r.json();
+  }
+
   // Route to the correct endpoint
   let url, fetchOpts;
 
@@ -1820,6 +2110,13 @@ async function callSynupAPI(apiKey, methodName, params, method) {
       break;
     }
 
+    case "retrieve": {
+      // Convenience: re-uses locations-by-ids and returns the first match.
+      url = `${BASE}/locations-by-ids?ids=${encodeURIComponent(JSON.stringify([encodeLocId(params.location_id)]))}`;
+      fetchOpts = { method: "GET", headers };
+      break;
+    }
+
     // --- POST: Location mutations ---
     case "create_location":
       url = `${BASE}/locations`;
@@ -1845,6 +2142,13 @@ async function callSynupAPI(apiKey, methodName, params, method) {
       break;
     }
 
+    case "cancel_archive_locations": {
+      const ids = (params.location_ids || []).map(encodeLocId);
+      url = `${BASE}/locations/cancel_archive`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { locationIds: ids, selectionType: params.selection_type, changedBy: params.changed_by } }) };
+      break;
+    }
+
     // --- GET: Listings ---
     case "fetch_premium_listings":
       url = `${BASE}/locations/${encodeLocId(params.location_id)}/listings/premium`;
@@ -1862,6 +2166,42 @@ async function callSynupAPI(apiKey, methodName, params, method) {
       url = `${BASE}/locations/${encodeLocId(params.location_id)}/ai-listings`;
       fetchOpts = { method: "GET", headers };
       break;
+
+    case "fetch_duplicate_listings":
+      url = `${BASE}/locations/${encodeLocId(params.location_id)}/listings/duplicates`;
+      fetchOpts = { method: "GET", headers };
+      break;
+    case "fetch_all_duplicate_listings": {
+      const qs = new URLSearchParams();
+      if (params.tag) qs.set("tag", params.tag);
+      if (params.page) qs.set("page", params.page);
+      url = `${BASE}/locations/listings/duplicates?${qs}`;
+      fetchOpts = { method: "GET", headers };
+      break;
+    }
+    case "mark_listings_as_duplicate":
+      url = `${BASE}/locations/listings/mark-as-duplicate`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { locationId: encodeLocId(params.location_id), listingItemIds: params.listing_item_ids } }) };
+      break;
+    case "mark_listings_as_not_duplicate":
+      url = `${BASE}/locations/listings/mark-as-not-duplicate`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { locationId: encodeLocId(params.location_id), listingItemIds: params.listing_item_ids } }) };
+      break;
+    case "connect_listing":
+      url = `${BASE}/connected-accounts/connect-listing`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { locationId: encodeLocId(params.location_id), connectedAccountListingId: params.connected_account_listing_id, connectedAccountId: params.connected_account_id } }) };
+      break;
+    case "disconnect_listing":
+      url = `${BASE}/connected-accounts/disconnect-listing`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { locationId: encodeLocId(params.location_id), site: String(params.site || "").toUpperCase() } }) };
+      break;
+    case "create_gmb_listing": {
+      const payload = { locationId: encodeLocId(params.location_id), connectedAccountId: params.connected_account_id };
+      if (params.folder_id) payload.folderId = params.folder_id;
+      url = `${BASE}/locations/create/gmb-listing`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: payload }) };
+      break;
+    }
 
     // --- GET/POST: Reviews ---
     case "fetch_interactions": {
@@ -1890,6 +2230,50 @@ async function callSynupAPI(apiKey, methodName, params, method) {
       break;
     }
 
+    case "fetch_review_analytics_timeline": {
+      const qs = new URLSearchParams();
+      if (params.start_date) qs.set("startDate", params.start_date);
+      if (params.end_date) qs.set("endDate", params.end_date);
+      url = `${BASE}/locations/${encodeLocId(params.location_id)}/review-analytics-timeline?${qs}`;
+      fetchOpts = { method: "GET", headers };
+      break;
+    }
+    case "fetch_review_analytics_sites_stats": {
+      const qs = new URLSearchParams();
+      if (params.start_date) qs.set("startDate", params.start_date);
+      if (params.end_date) qs.set("endDate", params.end_date);
+      url = `${BASE}/locations/${encodeLocId(params.location_id)}/review-analytics-sites-stats?${qs}`;
+      fetchOpts = { method: "GET", headers };
+      break;
+    }
+    case "fetch_review_details": {
+      url = `${BASE}/reviewDetails?interactionIds=${encodeURIComponent(JSON.stringify(params.interaction_ids || []))}`;
+      fetchOpts = { method: "GET", headers };
+      break;
+    }
+    case "fetch_review_phrases": {
+      const qs = new URLSearchParams();
+      qs.set("locationIds", JSON.stringify(params.location_ids || []));
+      if (params.site_urls) qs.set("siteUrls", JSON.stringify(params.site_urls));
+      if (params.start_date) qs.set("startDate", params.start_date);
+      if (params.end_date) qs.set("endDate", params.end_date);
+      url = `${BASE}/review-phrases?${qs}`;
+      fetchOpts = { method: "GET", headers };
+      break;
+    }
+    case "edit_review_response":
+      url = `${BASE}/locations/reviews/respond/edit`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ reviewId: params.review_id, responseId: params.response_id, responseContent: params.response_content }) };
+      break;
+    case "archive_review_response":
+      url = `${BASE}/locations/reviews/respond/archive`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ responseId: params.response_id }) };
+      break;
+    case "edit_review_settings":
+      url = `${BASE}/locations/reviews/settings/edit`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ locationId: encodeLocId(params.location_id), siteUrls: params.site_urls }) };
+      break;
+
     // --- Rankings ---
     case "fetch_keywords":
       url = `${BASE}/locations/${encodeLocId(params.location_id)}/keywords`;
@@ -1907,6 +2291,23 @@ async function callSynupAPI(apiKey, methodName, params, method) {
       url = `${BASE}/locations/keywords`;
       fetchOpts = { method: "POST", headers, body: JSON.stringify({ locationId: encodeLocId(params.location_id), inputKeywords: params.keywords }) };
       break;
+
+    case "archive_keyword":
+      url = `${BASE}/locations/keywords/archive`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ id: params.keyword_id }) };
+      break;
+    case "fetch_ranking_analytics_timeline": {
+      const ids = (params.location_ids || []).map(encodeLocId);
+      url = `${BASE}/locations/ranking-analytics-timeline`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ fromDate: params.from_date, toDate: params.to_date, locationIds: ids, source: params.source }) };
+      break;
+    }
+    case "fetch_ranking_sitewise_histogram": {
+      const ids = (params.location_ids || []).map(encodeLocId);
+      url = `${BASE}/locations/ranking-sitewise-histogram`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ fromDate: params.from_date, toDate: params.to_date, locationIds: ids, source: params.source }) };
+      break;
+    }
 
     // --- Analytics ---
     case "fetch_google_analytics":
@@ -1931,6 +2332,19 @@ async function callSynupAPI(apiKey, methodName, params, method) {
       fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { locationId: encodeLocId(params.location_id), photos: params.photos } }) };
       break;
 
+    case "remove_location_photos":
+      url = `${BASE}/locations/photos/remove`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { locationId: encodeLocId(params.location_id), photoIds: params.photo_ids } }) };
+      break;
+    case "star_location_photos":
+      url = `${BASE}/locations/photos/star`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { locationId: encodeLocId(params.location_id), mediaIds: params.media_ids, starred: String(params.starred).toLowerCase() === "true" } }) };
+      break;
+    case "fetch_photo_upload_status":
+      url = `${BASE}/locations/photos/requests/${params.request_id}`;
+      fetchOpts = { method: "GET", headers };
+      break;
+
     // --- Folders ---
     case "fetch_folders_flat":
       url = `${BASE}/folders/flat`;
@@ -1948,6 +2362,35 @@ async function callSynupAPI(apiKey, methodName, params, method) {
       break;
     }
 
+    case "fetch_folder_details": {
+      const qs = new URLSearchParams();
+      if (params.folder_id) qs.set("folderId", params.folder_id);
+      if (params.folder_name) qs.set("folderName", params.folder_name);
+      url = `${BASE}/folder-details?${qs}`;
+      fetchOpts = { method: "GET", headers };
+      break;
+    }
+    case "delete_folder":
+      url = `${BASE}/folders/delete`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { name: params.name } }) };
+      break;
+    case "rename_folder":
+      url = `${BASE}/locations/folders/rename`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { oldName: params.old_name, name: params.new_name } }) };
+      break;
+    case "add_locations_to_folder": {
+      const ids = (params.location_ids || []).map(encodeLocId);
+      url = `${BASE}/locations/folders`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { name: params.folder_name, locationIds: ids } }) };
+      break;
+    }
+    case "remove_locations_from_folder": {
+      const ids = (params.location_ids || []).map(encodeLocId);
+      url = `${BASE}/locations/folders/remove`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { locationIds: ids } }) };
+      break;
+    }
+
     // --- Tags ---
     case "fetch_tags":
       url = `${BASE}/tags`;
@@ -1955,6 +2398,11 @@ async function callSynupAPI(apiKey, methodName, params, method) {
       break;
     case "add_location_tag":
       url = `${BASE}/locations/tags`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { locationId: encodeLocId(params.location_id), tag: params.tag } }) };
+      break;
+
+    case "remove_location_tag":
+      url = `${BASE}/locations/tags/remove`;
       fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { locationId: encodeLocId(params.location_id), tag: params.tag } }) };
       break;
 
@@ -1972,6 +2420,50 @@ async function callSynupAPI(apiKey, methodName, params, method) {
       fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { email: params.email, roleId: params.role_id, firstName: params.first_name, lastName: params.last_name } }) };
       break;
 
+    case "fetch_users_by_ids":
+      url = `${BASE}/users-by-ids?userIds=${encodeURIComponent(JSON.stringify(params.user_ids || []))}`;
+      fetchOpts = { method: "GET", headers };
+      break;
+    case "fetch_user_resources":
+      url = `${BASE}/users/${params.user_id}/resources`;
+      fetchOpts = { method: "GET", headers };
+      break;
+    case "update_user": {
+      const payload = { id: params.user_id };
+      if (params.email) payload.email = params.email;
+      if (params.role_id) payload.roleId = params.role_id;
+      if (params.first_name) payload.firstName = params.first_name;
+      if (params.last_name) payload.lastName = params.last_name;
+      if (params.phone) payload.phone = params.phone;
+      url = `${BASE}/users/update`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: payload }) };
+      break;
+    }
+    case "add_user_locations": {
+      const ids = (params.location_ids || []).map(encodeLocId);
+      url = `${BASE}/users/locations/add`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { userId: params.user_id, locationIds: ids } }) };
+      break;
+    }
+    case "remove_user_locations": {
+      const ids = (params.location_ids || []).map(encodeLocId);
+      url = `${BASE}/users/locations/remove`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { userId: params.user_id, locationIds: ids } }) };
+      break;
+    }
+    case "add_user_folders":
+      url = `${BASE}/users/folders/add`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { userId: params.user_id, folderIds: params.folder_ids } }) };
+      break;
+    case "remove_user_folders":
+      url = `${BASE}/users/folders/remove`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { userId: params.user_id, folderIds: params.folder_ids } }) };
+      break;
+    case "add_user_and_folder":
+      url = `${BASE}/users/add_user_and_folder`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: params.input }) };
+      break;
+
     // --- Grid Rank ---
     case "fetch_location_grid_reports": {
       const qs = new URLSearchParams();
@@ -1986,6 +2478,26 @@ async function callSynupAPI(apiKey, methodName, params, method) {
       fetchOpts = { method: "GET", headers };
       break;
 
+    case "create_grid_report": {
+      const body = {
+        locationId: encodeLocId(params.location_id),
+        keywords: params.keywords,
+        businessName: params.business_name,
+        businessStreet: params.business_street,
+        businessCity: params.business_city,
+        businessState: params.business_state,
+        businessCountry: params.business_country,
+        latitude: params.latitude,
+        longitude: params.longitude,
+        distance: params.distance,
+        distanceUnit: params.distance_unit,
+        gridSize: params.grid_size,
+      };
+      url = `${BASE}/create-grid-report`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify(body) };
+      break;
+    }
+
     // --- Review Campaigns ---
     case "fetch_review_campaigns": {
       const qs = new URLSearchParams();
@@ -1996,6 +2508,25 @@ async function callSynupAPI(apiKey, methodName, params, method) {
       break;
     }
 
+    case "fetch_review_campaign_customers":
+      url = `${BASE}/locations/review-campaigns/${params.review_campaign_id}/customers`;
+      fetchOpts = { method: "GET", headers };
+      break;
+    case "create_review_campaign": {
+      const payload = {
+        locationId: encodeLocId(params.location_id),
+        name: params.name,
+        locationCustomers: params.location_customers,
+      };
+      url = `${BASE}/locations/review-campaigns`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: payload }) };
+      break;
+    }
+    case "add_review_campaign_customers":
+      url = `${BASE}/locations/review-campaigns/customers`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { reviewCampaignId: params.review_campaign_id, locationCustomers: params.location_customers } }) };
+      break;
+
     // --- Connected Accounts ---
     case "fetch_connected_accounts": {
       const qs = new URLSearchParams();
@@ -2005,6 +2536,67 @@ async function callSynupAPI(apiKey, methodName, params, method) {
       fetchOpts = { method: "GET", headers };
       break;
     }
+
+    case "fetch_connected_account_details":
+      url = `${BASE}/connected-accounts/${params.connected_account_id}/details`;
+      fetchOpts = { method: "GET", headers };
+      break;
+    case "fetch_connected_account_folders": {
+      const qs = new URLSearchParams();
+      if (params.folder_name) qs.set("folderName", params.folder_name);
+      url = `${BASE}/connected-accounts/${params.connected_account_id}/folders?${qs}`;
+      fetchOpts = { method: "GET", headers };
+      break;
+    }
+    case "fetch_connected_account_listings": {
+      const payload = { connectedAccountId: params.connected_account_id };
+      if (params.location_info !== undefined) payload.locationInfo = params.location_info;
+      if (params.page !== undefined) payload.page = params.page;
+      if (params.per_page !== undefined) payload.perPage = params.per_page;
+      url = `${BASE}/connected-accounts/connected-account-listings`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify(payload) };
+      break;
+    }
+    case "fetch_connection_suggestions": {
+      const qs = new URLSearchParams();
+      if (params.page) qs.set("page", params.page);
+      if (params.per_page) qs.set("perPage", params.per_page);
+      url = `${BASE}/connected-accounts/${params.connected_account_id}/connection-suggestions?${qs}`;
+      fetchOpts = { method: "GET", headers };
+      break;
+    }
+    case "connect_google_account":
+      url = `${BASE}/connected-accounts/connect-google`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { successUrl: params.success_url, errorUrl: params.error_url } }) };
+      break;
+    case "connect_facebook_account":
+      url = `${BASE}/connected-accounts/connect-facebook`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { successUrl: params.success_url, errorUrl: params.error_url } }) };
+      break;
+    case "disconnect_google_account":
+      url = `${BASE}/connected-accounts/disconnect-google`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { connectedAccountId: params.connected_account_id } }) };
+      break;
+    case "disconnect_facebook_account":
+      url = `${BASE}/connected-accounts/disconnect-facebook`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { connectedAccountId: params.connected_account_id } }) };
+      break;
+    case "trigger_connected_account_matches":
+      url = `${BASE}/connected-accounts/trigger-matches`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { connectedAccountIds: params.connected_account_ids } }) };
+      break;
+    case "confirm_connected_account_matches":
+      url = `${BASE}/connected-accounts/confirm-matches`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { matchRecordIds: params.match_record_ids } }) };
+      break;
+    case "get_oauth_connect_url":
+      url = `${BASE}/locations/oauth_connect_url`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { locationId: encodeLocId(params.location_id), site: String(params.site || "").toUpperCase(), successUrl: params.success_url, errorUrl: params.error_url } }) };
+      break;
+    case "oauth_disconnect":
+      url = `${BASE}/locations/oauth-disconnect`;
+      fetchOpts = { method: "POST", headers, body: JSON.stringify({ input: { locationId: encodeLocId(params.location_id), site: String(params.site || "").toUpperCase() } }) };
+      break;
 
     // --- Account ---
     case "fetch_plan_sites":
@@ -2028,13 +2620,275 @@ async function callSynupAPI(apiKey, methodName, params, method) {
       fetchOpts = { method: "GET", headers };
       break;
 
+    // --- Automations ---
+    case "create_temporary_close_automation":
+      url = `${BASE}/automations/temporary-close-location-with-reopening-date`;
+      fetchOpts = {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          input: {
+            name: params.name,
+            startDate: params.start_date,
+            startTime: params.start_time,
+            endDate: params.end_date,
+            locationId: encodeLocId(params.location_id),
+          },
+        }),
+      };
+      break;
+
+    // --- Workflows (composed: use doApiCall + early return) ---
+    case "auto_reply_to_reviews": {
+      const locId = encodeLocId(params.location_id);
+      const template = params.template || "Thank you for your feedback!";
+      const minRating = parseInt(params.min_rating, 10) || 4;
+      const onlyUnanswered = String(params.only_unanswered).toLowerCase() !== "false";
+      const dryRun = String(params.dry_run).toLowerCase() === "true";
+
+      const reviewsResp = await doApiCall(`${BASE}/locations/${locId}/reviews?first=50`, { method: "GET", headers });
+      const edges = reviewsResp?.data?.interactions?.edges || [];
+      const results = [];
+      for (const edge of edges) {
+        const review = edge.node || {};
+        const rating = review.rating ?? review.ratingValue ?? 0;
+        const hasResponse = (Array.isArray(review.responses) && review.responses.length > 0) || Boolean(review.responseContent);
+        if (rating < minRating) continue;
+        if (onlyUnanswered && hasResponse) continue;
+        const replyText = template.replace("{rating}", String(rating));
+        const interactionId = review.interactionId || review.uid || review.id || "";
+        const entry = { id: interactionId, rating, reply: replyText, status: "dry_run" };
+        if (!dryRun && interactionId) {
+          try {
+            await doApiCall(`${BASE}/locations/reviews/respond`, {
+              method: "POST", headers,
+              body: JSON.stringify({ interactionId, responseContent: replyText }),
+            });
+            entry.status = "sent";
+          } catch (e) {
+            entry.status = `error: ${e?.message || String(e)}`;
+          }
+        }
+        results.push(entry);
+      }
+      return { data: results };
+    }
+
+    case "onboard_location": {
+      // Step 1: createLocation
+      const createBody = {
+        name: params.name,
+        storeId: params.store_id,
+        street: params.street,
+        city: params.city,
+        stateIso: params.state_iso,
+        postalCode: params.postal_code,
+        countryIso: params.country_iso,
+        phone: params.phone,
+        subCategoryId: params.sub_category_id,
+      };
+      const createResp = await doApiCall(`${BASE}/locations`, {
+        method: "POST", headers,
+        body: JSON.stringify({ input: createBody }),
+      });
+      const locationData = createResp?.data?.createLocation?.location || createResp?.data?.createLocation || {};
+      const locId = locationData.id;
+      const result = { location: locationData, folder: null, tags: [], keywords: [] };
+      if (!locId) return { data: result };
+      const encodedLocId = encodeLocId(locId);
+
+      // Step 2: addLocationsToFolder
+      if (params.folder_name) {
+        try {
+          const r = await doApiCall(`${BASE}/locations/folders`, {
+            method: "POST", headers,
+            body: JSON.stringify({ input: { name: params.folder_name, locationIds: [encodedLocId] } }),
+          });
+          result.folder = r?.data?.addLocationsToFolder || {};
+        } catch (e) {
+          result.folder = { error: e?.message || String(e) };
+        }
+      }
+
+      // Step 3: addLocationTag per tag
+      if (Array.isArray(params.tags)) {
+        for (const tag of params.tags) {
+          try {
+            const r = await doApiCall(`${BASE}/locations/tags`, {
+              method: "POST", headers,
+              body: JSON.stringify({ input: { locationId: encodedLocId, tag } }),
+            });
+            result.tags.push(r?.data?.addLocationTag || {});
+          } catch (e) {
+            result.tags.push({ tag, error: e?.message || String(e) });
+          }
+        }
+      }
+
+      // Step 4: addKeywords
+      if (Array.isArray(params.keywords) && params.keywords.length > 0) {
+        try {
+          const r = await doApiCall(`${BASE}/locations/keywords`, {
+            method: "POST", headers,
+            body: JSON.stringify({ locationId: encodedLocId, inputKeywords: params.keywords }),
+          });
+          result.keywords = r?.data?.addKeywords?.keywords || [];
+        } catch (e) {
+          result.keywords = [{ error: e?.message || String(e) }];
+        }
+      }
+
+      return { data: result };
+    }
+
+    case "bulk_onboard_locations": {
+      // Browser explorer: rows array only (no CSV file path).
+      const rows = Array.isArray(params.rows) ? params.rows : null;
+      if (!rows) {
+        return { error: "bulk_onboard_locations in the explorer requires a `rows` array (CSV file path is Node-only)" };
+      }
+      const dryRun = String(params.dry_run).toLowerCase() === "true";
+      const results = [];
+      for (const row of rows) {
+        const entry = { row, status: "created" };
+        if (dryRun) {
+          entry.status = "dry_run";
+          results.push(entry);
+          continue;
+        }
+        // Compose onboard_location for this row by calling the same case logic
+        // — replicated inline since switch cases can't easily call each other.
+        try {
+          const createBody = {
+            name: row.name,
+            storeId: row.storeId,
+            street: row.street,
+            city: row.city,
+            stateIso: row.stateIso,
+            postalCode: row.postalCode,
+            countryIso: row.countryIso,
+            phone: row.phone,
+            subCategoryId: row.subCategoryId,
+          };
+          const createResp = await doApiCall(`${BASE}/locations`, {
+            method: "POST", headers,
+            body: JSON.stringify({ input: createBody }),
+          });
+          const locationData = createResp?.data?.createLocation?.location || createResp?.data?.createLocation || {};
+          const locId = locationData.id;
+          if (!locId) {
+            entry.status = "error: createLocation returned no id";
+            results.push(entry);
+            continue;
+          }
+          const encodedLocId = encodeLocId(locId);
+          if (params.folder_name) {
+            try {
+              await doApiCall(`${BASE}/locations/folders`, {
+                method: "POST", headers,
+                body: JSON.stringify({ input: { name: params.folder_name, locationIds: [encodedLocId] } }),
+              });
+            } catch (_) {}
+          }
+          if (Array.isArray(params.tags)) {
+            for (const tag of params.tags) {
+              try {
+                await doApiCall(`${BASE}/locations/tags`, {
+                  method: "POST", headers,
+                  body: JSON.stringify({ input: { locationId: encodedLocId, tag } }),
+                });
+              } catch (_) {}
+            }
+          }
+          entry.result = { location: locationData };
+          entry.status = "created";
+        } catch (e) {
+          entry.status = `error: ${e?.message || String(e)}`;
+        }
+        results.push(entry);
+      }
+      return { data: results };
+    }
+
+    case "weekly_reputation_report": {
+      const locId = encodeLocId(params.location_id);
+      const dateQs = new URLSearchParams();
+      if (params.start_date) dateQs.set("startDate", params.start_date);
+      if (params.end_date) dateQs.set("endDate", params.end_date);
+      const dateQsStr = dateQs.toString();
+      const fromDateQs = new URLSearchParams();
+      if (params.start_date) fromDateQs.set("fromDate", params.start_date);
+      if (params.end_date) fromDateQs.set("toDate", params.end_date);
+      const fromDateQsStr = fromDateQs.toString();
+
+      const [reviewOverview, reviewsPage, googleInsights, bingInsights, premium] = await Promise.all([
+        doApiCall(`${BASE}/locations/${locId}/review-analytics-overview?${dateQsStr}`, { method: "GET", headers }),
+        doApiCall(`${BASE}/locations/${locId}/reviews?first=50&${dateQsStr}`, { method: "GET", headers }),
+        doApiCall(`${BASE}/locations/${locId}/google-analytics?${fromDateQsStr}`, { method: "GET", headers }),
+        doApiCall(`${BASE}/locations/${locId}/bing-analytics?${fromDateQsStr}`, { method: "GET", headers }),
+        doApiCall(`${BASE}/locations/${locId}/listings/premium`, { method: "GET", headers }),
+      ]);
+
+      const recentReviews = (reviewsPage?.data?.interactions?.edges || []).map((e) => e.node);
+      const premiumList = premium?.data?.listingsForLocation || [];
+      const synced = premiumList.filter((l) => l.syncStatus === "SYNCED");
+      const syncRate = premiumList.length > 0
+        ? `${Math.round((synced.length / premiumList.length) * 100)}%`
+        : "N/A";
+
+      return {
+        data: {
+          locationId: params.location_id,
+          reviewSummary: reviewOverview?.data?.interactionsAnalyticsStats || {},
+          recentReviews,
+          analytics: {
+            google: googleInsights?.data?.googleInsights || {},
+            bing: bingInsights?.data?.bingInsights || {},
+          },
+          listingsHealth: { total: premiumList.length, synced: synced.length, syncRate },
+        },
+      };
+    }
+
+    case "listings_health_audit": {
+      const locId = encodeLocId(params.location_id);
+      const [premium, voice, dupes, connection] = await Promise.all([
+        doApiCall(`${BASE}/locations/${locId}/listings/premium`, { method: "GET", headers }),
+        doApiCall(`${BASE}/locations/${locId}/voice-assistants`, { method: "GET", headers }),
+        doApiCall(`${BASE}/locations/${locId}/listings/duplicates`, { method: "GET", headers }),
+        doApiCall(`${BASE}/locations/${locId}/connection_info`, { method: "GET", headers }),
+      ]);
+
+      const premiumList = premium?.data?.listingsForLocation || [];
+      const voiceList = voice?.data?.voiceAssistantsForLocation || [];
+      const dupeList = dupes?.data?.duplicateListingsForLocation || [];
+      const connectionStatus = connection?.data?.locationConnectionInfo || {};
+      const synced = premiumList.filter((l) => l.syncStatus === "SYNCED");
+      const issues = premiumList.filter((l) => l.syncStatus && l.syncStatus !== "SYNCED");
+      const healthScore = premiumList.length > 0
+        ? Math.round((synced.length / premiumList.length) * 100)
+        : 0;
+
+      return {
+        data: {
+          locationId: params.location_id,
+          premium: premiumList,
+          voice: voiceList,
+          duplicates: dupeList,
+          connectionStatus,
+          syncedCount: synced.length,
+          issueCount: issues.length,
+          issues,
+          healthScore,
+        },
+      };
+    }
+
     default:
       return { error: `Method ${methodName} not implemented in explorer yet` };
   }
 
-  const resp = await fetch(url, fetchOpts);
-  const data = await resp.json();
-  return data;
+  return await doApiCall(url, fetchOpts);
 }
 
 function showResult(data) {

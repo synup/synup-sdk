@@ -1451,10 +1451,18 @@ client = <span class="mod">synup</span>.<span class="cls">Synup</span>()
     }
 
     // Global language switching
-    let currentLang = 'python';
+    // Initial value is restored from localStorage so the page boots in the
+    // language the user last picked. The API Explorer's `useNodejs` state in
+    // explorer.js is driven from here via toggleLanguage(), so the two stay
+    // in sync regardless of which UI element triggers a switch.
+    let currentLang = (typeof localStorage !== 'undefined' && localStorage.getItem('synup-sdk-lang') === 'nodejs')
+      ? 'nodejs'
+      : 'python';
 
     function setGlobalLang(lang) {
       currentLang = lang;
+      // Persist for the next page load.
+      try { localStorage.setItem('synup-sdk-lang', lang); } catch (_) {}
       // Update all code blocks
       document.querySelectorAll('.code-block').forEach(block => updateBlockVisibility(block));
       // Update all tab buttons
@@ -1466,7 +1474,17 @@ client = <span class="mod">synup</span>.<span class="cls">Synup</span>()
       if (badge) badge.textContent = lang === 'python' ? 'Synup SDK' : 'Synup SDK';
       // Show floating indicator
       showLangIndicator(lang === 'python' ? 'Python' : 'Node.js');
+      // Drive the API Explorer (explorer.js) so its method names and hero
+      // code blocks switch in lockstep with the inline code-block tabs.
+      if (typeof toggleLanguage === 'function') {
+        try { toggleLanguage(lang); } catch (_) {}
+      }
     }
+
+    // On initial load, apply the persisted language so both systems are in
+    // sync from the start. Without this, the API Explorer would default to
+    // Python (useNodejs=false) regardless of what the inline tabs show.
+    document.addEventListener('DOMContentLoaded', () => setGlobalLang(currentLang));
 
     // Tab click handler — delegate
     document.addEventListener('click', (e) => {
