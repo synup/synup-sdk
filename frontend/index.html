@@ -377,8 +377,20 @@ results = client.workflows.auto_reply_to_reviews(
     min_rating=<span class="num">4</span>,
 )
 <span class="kw">print</span>(<span class="str">f"Replied to </span>{len(results)}<span class="str"> reviews"</span>)</code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="cmt">// Workflows are available in the Synup SDK.</span>
-<span class="cmt">// Node.js support coming soon.</span></code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="cmt">// Dry-run first to preview</span>
+<span class="kw">const</span> preview = <span class="kw">await</span> client.autoReplyToReviews(<span class="num">16808</span>, {
+  template: <span class="str">'Thanks for the {rating}-star review!'</span>,
+  minRating: <span class="num">4</span>,
+  onlyUnanswered: <span class="kw">true</span>,
+  dryRun: <span class="kw">true</span>,
+})
+
+<span class="cmt">// Then send for real</span>
+<span class="kw">const</span> results = <span class="kw">await</span> client.autoReplyToReviews(<span class="num">16808</span>, {
+  template: <span class="str">'Thanks for the {rating}-star review!'</span>,
+  minRating: <span class="num">4</span>,
+})
+console.log(<span class="str">`Replied to ${results.length} reviews`</span>)</code></pre>
         </div>
         <table class="param-table">
           <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
@@ -415,8 +427,20 @@ results = client.workflows.auto_reply_to_reviews(
     tags=[<span class="str">"new"</span>, <span class="str">"coffee"</span>],
     keywords=[<span class="str">"coffee shop near me"</span>],
 )</code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="cmt">// Workflows are available in the Synup SDK.</span>
-<span class="cmt">// Node.js support coming soon.</span></code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> result = <span class="kw">await</span> client.onboardLocation({
+  name: <span class="str">'Acme Coffee'</span>,
+  storeId: <span class="str">'ACME-NYC-01'</span>,
+  street: <span class="str">'123 Main St'</span>,
+  city: <span class="str">'New York'</span>,
+  stateIso: <span class="str">'NY'</span>,
+  postalCode: <span class="str">'10001'</span>,
+  countryIso: <span class="str">'US'</span>,
+  phone: <span class="str">'5551234567'</span>,
+  subCategoryId: <span class="num">1</span>,
+  folderName: <span class="str">'NYC Stores'</span>,
+  tags: [<span class="str">'new'</span>, <span class="str">'coffee'</span>],
+  keywords: [<span class="str">'coffee shop near me'</span>],
+})</code></pre>
         </div>
       </section>
 
@@ -438,8 +462,14 @@ results = client.workflows.auto_reply_to_reviews(
 )
 succeeded = [r <span class="kw">for</span> r <span class="kw">in</span> results <span class="kw">if</span> r[<span class="str">"status"</span>] == <span class="str">"created"</span>]
 <span class="kw">print</span>(<span class="str">f"Created </span>{len(succeeded)}<span class="str"> of </span>{len(results)}<span class="str"> locations"</span>)</code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="cmt">// Workflows are available in the Synup SDK.</span>
-<span class="cmt">// Node.js support coming soon.</span></code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="cmt">// Pass a CSV path (Node.js only) or an already-parsed `rows` array.</span>
+<span class="kw">const</span> results = <span class="kw">await</span> client.bulkOnboardLocations({
+  csvPath: <span class="str">'locations.csv'</span>,
+  folderName: <span class="str">'Imported'</span>,
+  tags: [<span class="str">'batch-2024'</span>],
+})
+<span class="kw">const</span> succeeded = results.filter((r) => r.status === <span class="str">'created'</span>)
+console.log(<span class="str">`Created ${succeeded.length} of ${results.length} locations`</span>)</code></pre>
         </div>
       </section>
 
@@ -458,8 +488,10 @@ succeeded = [r <span class="kw">for</span> r <span class="kw">in</span> results 
 <span class="kw">print</span>(report.review_summary)
 <span class="kw">print</span>(report.analytics.google)
 <span class="kw">print</span>(<span class="str">f"Listings sync rate: </span>{report.listings_health.sync_rate}<span class="str">"</span>)</code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="cmt">// Workflows are available in the Synup SDK.</span>
-<span class="cmt">// Node.js support coming soon.</span></code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> report = <span class="kw">await</span> client.generateWeeklyReputationReport(<span class="num">16808</span>)
+console.log(report.reviewSummary)
+console.log(report.analytics.google)
+console.log(<span class="str">`Listings sync rate: ${report.listingsHealth.syncRate}`</span>)</code></pre>
         </div>
       </section>
 
@@ -478,8 +510,10 @@ succeeded = [r <span class="kw">for</span> r <span class="kw">in</span> results 
 <span class="kw">print</span>(<span class="str">f"Health score: </span>{audit.health_score}<span class="str">%"</span>)
 <span class="kw">print</span>(<span class="str">f"Synced: </span>{audit.synced_count}<span class="str">, Issues: </span>{audit.issue_count}<span class="str">"</span>)
 <span class="kw">print</span>(<span class="str">f"Duplicates: </span>{len(audit.duplicates)}<span class="str">"</span>)</code></pre>
-          <pre class="code-lang-nodejs" style="display:none"><code><span class="cmt">// Workflows are available in the Synup SDK.</span>
-<span class="cmt">// Node.js support coming soon.</span></code></pre>
+          <pre class="code-lang-nodejs" style="display:none"><code><span class="kw">const</span> audit = <span class="kw">await</span> client.auditListingsHealth(<span class="num">16808</span>)
+console.log(<span class="str">`Health score: ${audit.healthScore}%`</span>)
+console.log(<span class="str">`Synced: ${audit.syncedCount}, Issues: ${audit.issueCount}`</span>)
+console.log(<span class="str">`Duplicates: ${audit.duplicates.length}`</span>)</code></pre>
         </div>
       </section>
 
