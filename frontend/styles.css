@@ -480,16 +480,22 @@ a:hover { color: var(--text-primary); }
 .explorer-container {
   display: grid;
   grid-template-columns: 240px 1fr;
+  /* Force the (single) row to fill the container instead of auto-sizing
+     to its content. Without `grid-template-rows: 1fr` the row grows to
+     the full height of the 101-method list, which then makes the grid
+     items fill that — overflow-y: auto on .explorer-methods never sees
+     any actual overflow because its parent already grew to fit. */
+  grid-template-rows: 1fr;
   gap: 0;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  /* Use a fixed height (not min/max) so the 1fr row has a concrete size
+     to fill. min-height alone leaves the height ambiguous when content
+     is shorter than the cap, and max-height alone doesn't give 1fr a
+     basis to compute against. */
+  height: calc(100vh - 120px);
   min-height: 420px;
-  /* Cap the grid to roughly the viewport so the long method list scrolls
-     inside its own column instead of stretching the page. Without this the
-     `flex: 1; overflow-y: auto` on .explorer-methods has no bounded height
-     to work against, and clicking a method at the bottom of the list pushes
-     the detail panel above the viewport. */
   max-height: calc(100vh - 120px);
   background: var(--bg-card);
 }
@@ -501,6 +507,10 @@ a:hover { color: var(--text-primary); }
   display: flex;
   flex-direction: column;
   gap: 12px;
+  /* As a grid item, the default min-height: auto would let this column
+     grow to fit the entire 101-item method list, defeating the container's
+     max-height. Setting min-height: 0 lets the grid row constrain it. */
+  min-height: 0;
 }
 
 .explorer-input-group label {
@@ -534,6 +544,10 @@ a:hover { color: var(--text-primary); }
   display: flex;
   flex-direction: column;
   gap: 1px;
+  /* Same min-height: auto trap inside the flex column — without this,
+     `flex: 1; overflow-y: auto` doesn't actually shrink and the list
+     overflows the sidebar. */
+  min-height: 0;
 }
 
 .method-item {
@@ -547,6 +561,12 @@ a:hover { color: var(--text-primary); }
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  /* As children of a flex column with default flex-shrink: 1, these items
+     would otherwise compress vertically when the column has bounded height
+     but more content than fits — making the text disappear. flex-shrink: 0
+     keeps each row at its natural height and lets the parent's
+     overflow-y: auto trigger a real scrollbar instead. */
+  flex-shrink: 0;
 }
 .method-item:hover { background: var(--bg-elevated); color: var(--text-primary); }
 .method-item.active { background: rgba(0, 133, 255, 0.15); color: var(--accent); }
@@ -556,6 +576,8 @@ a:hover { color: var(--text-primary); }
   /* Let the right column scroll on its own so a method with many params
      doesn't blow out the grid height set on .explorer-container above. */
   overflow-y: auto;
+  /* Same grid-item min-height: auto trap. */
+  min-height: 0;
 }
 
 .explorer-empty {
